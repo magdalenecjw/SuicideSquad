@@ -5,7 +5,7 @@ website:
   title: "Suicide Squad"
   site-url: "https://suicidesquad.netlify.app/"
   sidebar:
-    background: "#A8D8CA"
+    background: "##8a0116"
     pinned: true
     align: center
     tools:
