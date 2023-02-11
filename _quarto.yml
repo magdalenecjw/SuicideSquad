@@ -5,7 +5,8 @@ website:
   title: "Suicide Squad"
   site-url: "https://suicidesquad.netlify.app/"
   sidebar:
-    background: "#A8D8CA"
+    background: "#100C1A"
+    logo: "images/icon.png"
     pinned: true
     align: center
     tools:
@@ -20,6 +21,8 @@ website:
     search: true
     collapse-level: 1
     contents:
+      - href: "index.qmd"
+        text: "Home"
       - href: "Proposal/ProposalPage.html"
         text: "Proposal"
 
