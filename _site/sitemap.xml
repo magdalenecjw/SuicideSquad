@@ -2,10 +2,14 @@
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
   <url>
     <loc>https://suicidesquad.netlify.app/about.html</loc>
-    <lastmod>2023-02-11T08:19:26.071Z</lastmod>
+    <lastmod>2023-02-11T08:21:30.577Z</lastmod>
   </url>
   <url>
     <loc>https://suicidesquad.netlify.app/index.html</loc>
-    <lastmod>2023-02-11T08:19:28.015Z</lastmod>
+    <lastmod>2023-02-11T08:21:32.343Z</lastmod>
+  </url>
+  <url>
+    <loc>https://suicidesquad.netlify.app/Proposal/ProposalPage.html</loc>
+    <lastmod>2023-02-11T08:21:38.271Z</lastmod>
   </url>
 </urlset>

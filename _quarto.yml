@@ -20,10 +20,8 @@ website:
     search: true
     collapse-level: 1
     contents:
-      - section: "Proposal"
-        contents:
-          - href: "Proposal/ProposalPage.html"
-            text: "Proposal"
+      - href: "Proposal/ProposalPage.html"
+        text: "Proposal"
 
 format:
   html:

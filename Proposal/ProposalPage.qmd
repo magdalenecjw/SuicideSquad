@@ -1,0 +1,106 @@
+---
+title: "Project Proposal"
+author: "Suicide Squad"
+date: 5 Feb 2023
+date-modified: "`r Sys.Date()`"
+execute: 
+  echo: true
+  eval: true
+  warning: false
+format: html
+editor: visual
+---
+
+# Project Proposal
+
+Exploring the relationship of suicide with potential drivers to reduce suicide rates
+
+## Project Background
+
+Suicide is recognised as a public health priority by the World Health Organisation[^1], as over 700,000 people die annually due to suicide . It is a problem that is not unique to high-income countries (where there is a well-established link with mental disorders) but also affects low- and middle-income countries (where many suicides happen impulsively in moments of crisis with a breakdown in the ability to deal with life stresses). Suicide mortality rate is one of the indicators of target 3.4 of the Sustainable Development Goals: by 2030, which is to reduce by one third premature mortality from noncommunicable diseases.
+
+[^1]: https://www.who.int/news-room/fact-sheets/detail/suicide
+
+## Project Motivation
+
+Our World in Data 2015[^2] collates global suicide-related data from various sources to contribute to an informed, open debate about ways to prevent suicides. Analysis of the data through unsupervised machine learning techniques such as clustering and regression will allow for more actionable and meaningful insights to be drawn, which could ultimately contribute to timely, evidence-based suicide prevention programmes.
+
+[^2]: https://ourworldindata.org/suicide
+
+## Project Objectives
+
+The project aims to deliver an R-Shiny app that provides interactive user interface design to:
+
+• Analyse global differences and patterns in suicide-related mortality rates across countries, age groups, gender, and time using Time Series Clustering
+
+• Identify important factors driving suicide-related mortality rates using Panel Data Regression
+
+## Data Description
+
+The main data on suicide rate is obtained from Global Burden of Disease Collaborative Network (IHME 2019[^3]) as it provides comprehensive suicide statistics based on country, year, gender, and age. However, since the purpose of the project is to uncover patterns, indicators (i.e., social and economic) and risk factors (i.e., homicide, violence and drug abuse) affecting suicide rate, additional dataset from World Health Organization[^4], World Bank and United Nations will also be used.
+
+[^3]: The Institute for Health Metrics and Evaluation. 2019. "Global Burden of Disease Study 2019 (GBD 2019) Data Resources
+
+[^4]: https://www.who.int/news-room/fact-sheets/detail/suicide
+
+## Proposed Scope and Methodology
+
+1.  Confirm the selection of appropriate indicators and risk factors associated with suicide rate
+2.  Data wrangling by cleaning and joining with other dataset by country and year
+3.  Perform Exploratory Data Analysis using appropriate R packages
+4.  Analyse the data using Time Series Clustering using appropriate R packages
+5.  Analyse the data using Panel Data Regression using appropriate R packages
+6.  Model validation and selection of Panel Data Regression
+7.  Develop R-Shiny app to enhance user interaction
+
+The project milestone and timeline for the project is shown below:
+
+![](images/image-1813639033.png)
+
+## Storyboard and Visualisation
+
+### Sketch of Exploratory Data Analysis (EDA)
+
+#### Exploring the world suicide statistics
+
+![](images/image-971463215.png)
+
+#### Time Series
+
+![](images/image-74178723.png)
+
+#### Scatterplot
+
+![](images/image-1433716177.png)
+
+#### Correlation Matrix
+
+![](images/image-916517327.png)
+
+### Time Series Clustering
+
+#### Cluster selection
+
+![](images/image-1986320426.png)
+
+#### Cluster input
+
+![](images/image-89781643.png)
+
+#### Cluster result
+
+![](images/image-636978349.png)
+
+### Panel Data Regression
+
+#### Hausman Test
+
+![](images/image-955031268.png)
+
+#### Model Summary
+
+![](images/image-1649434677.png)
+
+#### Model Plot
+
+![](images/image-1559486475.png)
