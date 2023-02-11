@@ -2,7 +2,7 @@ project:
   type: website
 
 website:
-  title: "SuicideSquad"
+  title: "Suicide Squad"
   navbar:
     left:
       - href: index.qmd
