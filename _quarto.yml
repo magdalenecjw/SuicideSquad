@@ -6,7 +6,7 @@ website:
   site-url: "https://suicidesquad.netlify.app/"
   sidebar:
     background: "#100C1A"
-    logo: "images/icon.png"
+    logo: "images/icon2.png"
     pinned: true
     align: center
     tools:
