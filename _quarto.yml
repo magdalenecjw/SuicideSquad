@@ -3,15 +3,31 @@ project:
 
 website:
   title: "Suicide Squad"
-  navbar:
-    left:
-      - href: index.qmd
-        text: Home
-      - about.qmd
+  site-url: "https://suicidesquad.netlify.app/"
+  sidebar:
+    background: "#A8D8CA"
+    pinned: true
+    align: center
+    tools:
+      - icon: house-fill
+        href: "https://suicidesquad.netlify.app/"
+        text: "Home"
+      - icon: github
+        href: "https://github.com/magdalenecjw/SuicideSquad"
+        text: "GitHub"
+    
+    style: "docked"
+    search: true
+    collapse-level: 1
+    contents:
+      - section: "Proposal"
+        contents:
+          - href: "Proposal/ProposalPage.html"
+            text: "Proposal"
 
 format:
   html:
-    theme: cosmo
+    theme: minty
     css: styles.css
     toc: true
 
