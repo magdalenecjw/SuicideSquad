@@ -13,7 +13,7 @@ editor: visual
 
 # Project Proposal
 
-Exploring the relationship of suicide with potential drivers to reduce suicide rates. hello
+Exploring the relationship of suicide with potential drivers to reduce suicide rates.
 
 ## Project Background
 
