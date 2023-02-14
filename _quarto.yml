@@ -25,6 +25,8 @@ website:
         text: "Home"
       - href: "Proposal/ProposalPage.html"
         text: "Proposal"
+      - href: "DataPrep/DataPrep.html"
+        text: "Data Preparation"
 
 format:
   html:

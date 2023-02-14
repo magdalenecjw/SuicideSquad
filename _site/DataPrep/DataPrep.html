@@ -1,0 +1,869 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head>
+
+<meta charset="utf-8">
+<meta name="generator" content="quarto-1.2.269">
+
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+
+<meta name="author" content="Suicide Squad">
+<meta name="dcterms.date" content="2023-02-14">
+
+<title>Suicide Squad - Data Preparation</title>
+<style>
+code{white-space: pre-wrap;}
+span.smallcaps{font-variant: small-caps;}
+div.columns{display: flex; gap: min(4vw, 1.5em);}
+div.column{flex: auto; overflow-x: auto;}
+div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+ul.task-list{list-style: none;}
+ul.task-list li input[type="checkbox"] {
+  width: 0.8em;
+  margin: 0 0.8em 0.2em -1.6em;
+  vertical-align: middle;
+}
+pre > code.sourceCode { white-space: pre; position: relative; }
+pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
+pre > code.sourceCode > span:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode > span { color: inherit; text-decoration: inherit; }
+div.sourceCode { margin: 1em 0; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+pre > code.sourceCode { white-space: pre-wrap; }
+pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+}
+pre.numberSource code
+  { counter-reset: source-line 0; }
+pre.numberSource code > span
+  { position: relative; left: -4em; counter-increment: source-line; }
+pre.numberSource code > span > a:first-child::before
+  { content: counter(source-line);
+    position: relative; left: -1em; text-align: right; vertical-align: baseline;
+    border: none; display: inline-block;
+    -webkit-touch-callout: none; -webkit-user-select: none;
+    -khtml-user-select: none; -moz-user-select: none;
+    -ms-user-select: none; user-select: none;
+    padding: 0 4px; width: 4em;
+    color: #aaaaaa;
+  }
+pre.numberSource { margin-left: 3em; border-left: 1px solid #aaaaaa;  padding-left: 4px; }
+div.sourceCode
+  {   }
+@media screen {
+pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+}
+code span.al { color: #ff0000; font-weight: bold; } /* Alert */
+code span.an { color: #60a0b0; font-weight: bold; font-style: italic; } /* Annotation */
+code span.at { color: #7d9029; } /* Attribute */
+code span.bn { color: #40a070; } /* BaseN */
+code span.bu { color: #008000; } /* BuiltIn */
+code span.cf { color: #007020; font-weight: bold; } /* ControlFlow */
+code span.ch { color: #4070a0; } /* Char */
+code span.cn { color: #880000; } /* Constant */
+code span.co { color: #60a0b0; font-style: italic; } /* Comment */
+code span.cv { color: #60a0b0; font-weight: bold; font-style: italic; } /* CommentVar */
+code span.do { color: #ba2121; font-style: italic; } /* Documentation */
+code span.dt { color: #902000; } /* DataType */
+code span.dv { color: #40a070; } /* DecVal */
+code span.er { color: #ff0000; font-weight: bold; } /* Error */
+code span.ex { } /* Extension */
+code span.fl { color: #40a070; } /* Float */
+code span.fu { color: #06287e; } /* Function */
+code span.im { color: #008000; font-weight: bold; } /* Import */
+code span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Information */
+code span.kw { color: #007020; font-weight: bold; } /* Keyword */
+code span.op { color: #666666; } /* Operator */
+code span.ot { color: #007020; } /* Other */
+code span.pp { color: #bc7a00; } /* Preprocessor */
+code span.sc { color: #4070a0; } /* SpecialChar */
+code span.ss { color: #bb6688; } /* SpecialString */
+code span.st { color: #4070a0; } /* String */
+code span.va { color: #19177c; } /* Variable */
+code span.vs { color: #4070a0; } /* VerbatimString */
+code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warning */
+</style>
+
+
+<script src="../site_libs/quarto-nav/quarto-nav.js"></script>
+<script src="../site_libs/clipboard/clipboard.min.js"></script>
+<script src="../site_libs/quarto-search/autocomplete.umd.js"></script>
+<script src="../site_libs/quarto-search/fuse.min.js"></script>
+<script src="../site_libs/quarto-search/quarto-search.js"></script>
+<meta name="quarto:offset" content="../">
+<script src="../site_libs/quarto-html/quarto.js"></script>
+<script src="../site_libs/quarto-html/popper.min.js"></script>
+<script src="../site_libs/quarto-html/tippy.umd.min.js"></script>
+<script src="../site_libs/quarto-html/anchor.min.js"></script>
+<link href="../site_libs/quarto-html/tippy.css" rel="stylesheet">
+<link href="../site_libs/quarto-html/quarto-syntax-highlighting.css" rel="stylesheet" id="quarto-text-highlighting-styles">
+<script src="../site_libs/bootstrap/bootstrap.min.js"></script>
+<link href="../site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
+<link href="../site_libs/bootstrap/bootstrap.min.css" rel="stylesheet" id="quarto-bootstrap" data-mode="light">
+<script id="quarto-search-options" type="application/json">{
+  "location": "sidebar",
+  "copy-button": false,
+  "collapse-after": 3,
+  "panel-placement": "start",
+  "type": "textbox",
+  "limit": 20,
+  "language": {
+    "search-no-results-text": "No results",
+    "search-matching-documents-text": "matching documents",
+    "search-copy-link-title": "Copy link to search",
+    "search-hide-matches-text": "Hide additional matches",
+    "search-more-match-text": "more match in this document",
+    "search-more-matches-text": "more matches in this document",
+    "search-clear-button-title": "Clear",
+    "search-detached-cancel-button-title": "Cancel",
+    "search-submit-button-title": "Submit"
+  }
+}</script>
+
+
+<link rel="stylesheet" href="../styles.css">
+</head>
+
+<body class="nav-sidebar docked">
+
+<div id="quarto-search-results"></div>
+  <header id="quarto-header" class="headroom fixed-top">
+  <nav class="quarto-secondary-nav" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
+    <div class="container-fluid d-flex justify-content-between">
+      <h1 class="quarto-secondary-nav-title">Data Preparation</h1>
+      <button type="button" class="quarto-btn-toggle btn" aria-label="Show secondary navigation">
+        <i class="bi bi-chevron-right"></i>
+      </button>
+    </div>
+  </nav>
+</header>
+<!-- content -->
+<div id="quarto-content" class="quarto-container page-columns page-rows-contents page-layout-article">
+<!-- sidebar -->
+  <nav id="quarto-sidebar" class="sidebar collapse sidebar-navigation docked overflow-auto">
+    <div class="pt-lg-2 mt-2 text-center sidebar-header">
+      <a href="../index.html" class="sidebar-logo-link">
+      <img src="../images/icon2.png" alt="" class="sidebar-logo py-0 d-lg-inline d-none">
+      </a>
+      <div class="sidebar-tools-main">
+    <a href="https://suicidesquad.netlify.app/" title="Home" class="sidebar-tool px-1"><i class="bi bi-house-fill"></i></a>
+    <a href="https://github.com/magdalenecjw/SuicideSquad" title="GitHub" class="sidebar-tool px-1"><i class="bi bi-github"></i></a>
+</div>
+      </div>
+      <div class="mt-2 flex-shrink-0 align-items-center">
+        <div class="sidebar-search">
+        <div id="quarto-search" class="" title="Search"></div>
+        </div>
+      </div>
+    <div class="sidebar-menu-container"> 
+    <ul class="list-unstyled mt-1">
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../index.html" class="sidebar-item-text sidebar-link">Home</a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../Proposal/ProposalPage.html" class="sidebar-item-text sidebar-link">Proposal</a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../DataPrep/DataPrep.html" class="sidebar-item-text sidebar-link active">Data Preparation</a>
+  </div>
+</li>
+    </ul>
+    </div>
+</nav>
+<!-- margin-sidebar -->
+    <div id="quarto-margin-sidebar" class="sidebar margin-sidebar">
+        <nav id="TOC" role="doc-toc" class="toc-active">
+    <h2 id="toc-title">On this page</h2>
+   
+  <ul>
+  <li><a href="#step-by-step-data-preparation" id="toc-step-by-step-data-preparation" class="nav-link active" data-scroll-target="#step-by-step-data-preparation">Step-by-Step Data Preparation</a>
+  <ul class="collapse">
+  <li><a href="#installing-and-launching-required-r-packages" id="toc-installing-and-launching-required-r-packages" class="nav-link" data-scroll-target="#installing-and-launching-required-r-packages">1. Installing and launching required R packages</a></li>
+  <li><a href="#loading-the-data" id="toc-loading-the-data" class="nav-link" data-scroll-target="#loading-the-data">2. Loading the data</a></li>
+  <li><a href="#data-wrangling" id="toc-data-wrangling" class="nav-link" data-scroll-target="#data-wrangling">3. Data wrangling</a></li>
+  <li><a href="#matching-countrys-name-with-region-iso3-data" id="toc-matching-countrys-name-with-region-iso3-data" class="nav-link" data-scroll-target="#matching-countrys-name-with-region-iso3-data">4. Matching country’s name with region (ISO3 data)</a></li>
+  <li><a href="#matching-countrys-name-with-world_map" id="toc-matching-countrys-name-with-world_map" class="nav-link" data-scroll-target="#matching-countrys-name-with-world_map">5. Matching country’s name with world_map</a></li>
+  </ul></li>
+  </ul>
+</nav>
+    </div>
+<!-- main -->
+<main class="content" id="quarto-document-content">
+
+<header id="title-block-header" class="quarto-title-block default">
+<div class="quarto-title">
+<h1 class="title d-none d-lg-block">Data Preparation</h1>
+</div>
+
+
+
+<div class="quarto-title-meta">
+
+    <div>
+    <div class="quarto-title-meta-heading">Author</div>
+    <div class="quarto-title-meta-contents">
+             <p>Suicide Squad </p>
+          </div>
+  </div>
+    
+    <div>
+    <div class="quarto-title-meta-heading">Published</div>
+    <div class="quarto-title-meta-contents">
+      <p class="date">February 14, 2023</p>
+    </div>
+  </div>
+  
+    <div>
+    <div class="quarto-title-meta-heading">Modified</div>
+    <div class="quarto-title-meta-contents">
+      <p class="date-modified">February 14, 2023</p>
+    </div>
+  </div>
+    
+  </div>
+  
+
+</header>
+
+<section id="step-by-step-data-preparation" class="level2">
+<h2 class="anchored" data-anchor-id="step-by-step-data-preparation">Step-by-Step Data Preparation</h2>
+<section id="installing-and-launching-required-r-packages" class="level3">
+<h3 class="anchored" data-anchor-id="installing-and-launching-required-r-packages">1. Installing and launching required R packages</h3>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb1"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a>pacman<span class="sc">::</span><span class="fu">p_load</span>(<span class="st">"rworldmap"</span>, <span class="st">"tidyverse"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+</section>
+<section id="loading-the-data" class="level3">
+<h3 class="anchored" data-anchor-id="loading-the-data">2. Loading the data</h3>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb2"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a>suicidedata <span class="ot">&lt;-</span> <span class="fu">list.files</span>(<span class="at">path =</span> <span class="st">"data"</span>,</span>
+<span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a>                          <span class="at">pattern =</span> <span class="st">"IHME-GBD_2019_DATA"</span>,</span>
+<span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a>                          <span class="at">full.names =</span> <span class="cn">TRUE</span>) <span class="sc">%&gt;%</span></span>
+<span id="cb2-4"><a href="#cb2-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">lapply</span>(read_csv) <span class="sc">%&gt;%</span></span>
+<span id="cb2-5"><a href="#cb2-5" aria-hidden="true" tabindex="-1"></a>  bind_rows</span>
+<span id="cb2-6"><a href="#cb2-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-7"><a href="#cb2-7" aria-hidden="true" tabindex="-1"></a>world_region <span class="ot">&lt;-</span> <span class="fu">read_csv</span>(<span class="st">"data/world-regions-according-to-the-world-bank.csv"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb3"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="fu">str</span>(suicidedata)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>spc_tbl_ [2,864,160 × 16] (S3: spec_tbl_df/tbl_df/tbl/data.frame)
+ $ measure_id   : num [1:2864160] 1 1 1 1 1 1 1 1 1 1 ...
+ $ measure_name : chr [1:2864160] "Deaths" "Deaths" "Deaths" "Deaths" ...
+ $ location_id  : num [1:2864160] 34 34 34 34 34 34 34 34 34 34 ...
+ $ location_name: chr [1:2864160] "Azerbaijan" "Azerbaijan" "Azerbaijan" "Azerbaijan" ...
+ $ sex_id       : num [1:2864160] 1 2 3 1 2 3 1 2 3 1 ...
+ $ sex_name     : chr [1:2864160] "Male" "Female" "Both" "Male" ...
+ $ age_id       : num [1:2864160] 7 7 7 7 7 7 7 7 7 8 ...
+ $ age_name     : chr [1:2864160] "10-14 years" "10-14 years" "10-14 years" "10-14 years" ...
+ $ cause_id     : num [1:2864160] 718 718 718 718 718 718 718 718 718 718 ...
+ $ cause_name   : chr [1:2864160] "Self-harm" "Self-harm" "Self-harm" "Self-harm" ...
+ $ metric_id    : num [1:2864160] 1 1 1 2 2 2 3 3 3 1 ...
+ $ metric_name  : chr [1:2864160] "Number" "Number" "Number" "Percent" ...
+ $ year         : num [1:2864160] 1990 1990 1990 1990 1990 1990 1990 1990 1990 1990 ...
+ $ val          : num [1:2864160] 2.12717 0.73168 2.85886 0.00936 0.00519 ...
+ $ upper        : num [1:2864160] 5.06912 1.12527 6.00823 0.02232 0.00788 ...
+ $ lower        : num [1:2864160] 1.20028 0.46192 1.80284 0.00534 0.00324 ...
+ - attr(*, "spec")=
+  .. cols(
+  ..   measure_id = col_double(),
+  ..   measure_name = col_character(),
+  ..   location_id = col_double(),
+  ..   location_name = col_character(),
+  ..   sex_id = col_double(),
+  ..   sex_name = col_character(),
+  ..   age_id = col_double(),
+  ..   age_name = col_character(),
+  ..   cause_id = col_double(),
+  ..   cause_name = col_character(),
+  ..   metric_id = col_double(),
+  ..   metric_name = col_character(),
+  ..   year = col_double(),
+  ..   val = col_double(),
+  ..   upper = col_double(),
+  ..   lower = col_double()
+  .. )
+ - attr(*, "problems")=&lt;externalptr&gt; </code></pre>
+</div>
+</div>
+</section>
+<section id="data-wrangling" class="level3">
+<h3 class="anchored" data-anchor-id="data-wrangling">3. Data wrangling</h3>
+<ul>
+<li><p>Filter for “Self=harm”</p></li>
+<li><p>Select relevant columns and arrange rows based on location_name</p></li>
+<li><p>Pivot_wider by metric_name (number, percent, and rate)</p></li>
+<li><p>Calculate the population size, death number and death rate</p></li>
+</ul>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb5"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a>suicidedata_cln <span class="ot">&lt;-</span> suicidedata <span class="sc">%&gt;%</span></span>
+<span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">filter</span>(cause_name <span class="sc">==</span> <span class="st">"Self-harm"</span>) <span class="sc">%&gt;%</span></span>
+<span id="cb5-3"><a href="#cb5-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">arrange</span>(location_name) <span class="sc">%&gt;%</span></span>
+<span id="cb5-4"><a href="#cb5-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">select</span>(<span class="dv">4</span>,<span class="dv">6</span>,<span class="dv">8</span>,<span class="dv">10</span>,(<span class="dv">12</span><span class="sc">:</span><span class="dv">14</span>)) <span class="sc">%&gt;%</span></span>
+<span id="cb5-5"><a href="#cb5-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">pivot_wider</span>(<span class="at">names_from =</span> metric_name, <span class="at">values_from =</span> val, <span class="at">names_glue =</span> <span class="st">"suicide_{metric_name}"</span>) <span class="sc">%&gt;%</span></span>
+<span id="cb5-6"><a href="#cb5-6" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">population_size =</span> suicide_Number<span class="sc">/</span>(suicide_Rate<span class="sc">/</span><span class="dv">100000</span>),</span>
+<span id="cb5-7"><a href="#cb5-7" aria-hidden="true" tabindex="-1"></a>         <span class="at">death_number =</span> suicide_Number<span class="sc">/</span>suicide_Percent,</span>
+<span id="cb5-8"><a href="#cb5-8" aria-hidden="true" tabindex="-1"></a>         <span class="at">death_rate =</span> death_number<span class="sc">/</span>population_size<span class="sc">*</span><span class="dv">100000</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+</section>
+<section id="matching-countrys-name-with-region-iso3-data" class="level3">
+<h3 class="anchored" data-anchor-id="matching-countrys-name-with-region-iso3-data">4. Matching country’s name with region (ISO3 data)</h3>
+<p>Identify key differences</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb6"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a>suicide_vs_region <span class="ot">&lt;-</span> <span class="fu">setdiff</span>(suicidedata_cln<span class="sc">$</span>location_name, world_region<span class="sc">$</span>Entity) <span class="sc">%&gt;%</span></span>
+<span id="cb6-2"><a href="#cb6-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">enframe</span>(<span class="at">name =</span> <span class="cn">NULL</span>, <span class="at">value =</span> <span class="st">"desn"</span>) <span class="sc">%&gt;%</span> </span>
+<span id="cb6-3"><a href="#cb6-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">arrange</span>(desn)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb7"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a><span class="fu">unique</span>(suicidedata_cln<span class="sc">$</span>location_name)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>  [1] "Afghanistan"                          
+  [2] "Albania"                              
+  [3] "Algeria"                              
+  [4] "American Samoa"                       
+  [5] "Andorra"                              
+  [6] "Angola"                               
+  [7] "Antigua and Barbuda"                  
+  [8] "Argentina"                            
+  [9] "Armenia"                              
+ [10] "Australia"                            
+ [11] "Austria"                              
+ [12] "Azerbaijan"                           
+ [13] "Bahamas"                              
+ [14] "Bahrain"                              
+ [15] "Bangladesh"                           
+ [16] "Barbados"                             
+ [17] "Belarus"                              
+ [18] "Belgium"                              
+ [19] "Belize"                               
+ [20] "Benin"                                
+ [21] "Bermuda"                              
+ [22] "Bhutan"                               
+ [23] "Bolivia (Plurinational State of)"     
+ [24] "Bosnia and Herzegovina"               
+ [25] "Botswana"                             
+ [26] "Brazil"                               
+ [27] "Brunei Darussalam"                    
+ [28] "Bulgaria"                             
+ [29] "Burkina Faso"                         
+ [30] "Burundi"                              
+ [31] "Cabo Verde"                           
+ [32] "Cambodia"                             
+ [33] "Cameroon"                             
+ [34] "Canada"                               
+ [35] "Central African Republic"             
+ [36] "Chad"                                 
+ [37] "Chile"                                
+ [38] "China"                                
+ [39] "Colombia"                             
+ [40] "Comoros"                              
+ [41] "Congo"                                
+ [42] "Cook Islands"                         
+ [43] "Costa Rica"                           
+ [44] "Côte d'Ivoire"                        
+ [45] "Croatia"                              
+ [46] "Cuba"                                 
+ [47] "Cyprus"                               
+ [48] "Czechia"                              
+ [49] "Democratic People's Republic of Korea"
+ [50] "Democratic Republic of the Congo"     
+ [51] "Denmark"                              
+ [52] "Djibouti"                             
+ [53] "Dominica"                             
+ [54] "Dominican Republic"                   
+ [55] "Ecuador"                              
+ [56] "Egypt"                                
+ [57] "El Salvador"                          
+ [58] "Equatorial Guinea"                    
+ [59] "Eritrea"                              
+ [60] "Estonia"                              
+ [61] "Eswatini"                             
+ [62] "Ethiopia"                             
+ [63] "Fiji"                                 
+ [64] "Finland"                              
+ [65] "France"                               
+ [66] "Gabon"                                
+ [67] "Gambia"                               
+ [68] "Georgia"                              
+ [69] "Germany"                              
+ [70] "Ghana"                                
+ [71] "Greece"                               
+ [72] "Greenland"                            
+ [73] "Grenada"                              
+ [74] "Guam"                                 
+ [75] "Guatemala"                            
+ [76] "Guinea"                               
+ [77] "Guinea-Bissau"                        
+ [78] "Guyana"                               
+ [79] "Haiti"                                
+ [80] "Honduras"                             
+ [81] "Hungary"                              
+ [82] "Iceland"                              
+ [83] "India"                                
+ [84] "Indonesia"                            
+ [85] "Iran (Islamic Republic of)"           
+ [86] "Iraq"                                 
+ [87] "Ireland"                              
+ [88] "Israel"                               
+ [89] "Italy"                                
+ [90] "Jamaica"                              
+ [91] "Japan"                                
+ [92] "Jordan"                               
+ [93] "Kazakhstan"                           
+ [94] "Kenya"                                
+ [95] "Kiribati"                             
+ [96] "Kuwait"                               
+ [97] "Kyrgyzstan"                           
+ [98] "Lao People's Democratic Republic"     
+ [99] "Latvia"                               
+[100] "Lebanon"                              
+[101] "Lesotho"                              
+[102] "Liberia"                              
+[103] "Libya"                                
+[104] "Lithuania"                            
+[105] "Luxembourg"                           
+[106] "Madagascar"                           
+[107] "Malawi"                               
+[108] "Malaysia"                             
+[109] "Maldives"                             
+[110] "Mali"                                 
+[111] "Malta"                                
+[112] "Marshall Islands"                     
+[113] "Mauritania"                           
+[114] "Mauritius"                            
+[115] "Mexico"                               
+[116] "Micronesia (Federated States of)"     
+[117] "Monaco"                               
+[118] "Mongolia"                             
+[119] "Montenegro"                           
+[120] "Morocco"                              
+[121] "Mozambique"                           
+[122] "Myanmar"                              
+[123] "Namibia"                              
+[124] "Nauru"                                
+[125] "Nepal"                                
+[126] "Netherlands"                          
+[127] "New Zealand"                          
+[128] "Nicaragua"                            
+[129] "Niger"                                
+[130] "Nigeria"                              
+[131] "Niue"                                 
+[132] "North Macedonia"                      
+[133] "Northern Mariana Islands"             
+[134] "Norway"                               
+[135] "Oman"                                 
+[136] "Pakistan"                             
+[137] "Palau"                                
+[138] "Palestine"                            
+[139] "Panama"                               
+[140] "Papua New Guinea"                     
+[141] "Paraguay"                             
+[142] "Peru"                                 
+[143] "Philippines"                          
+[144] "Poland"                               
+[145] "Portugal"                             
+[146] "Puerto Rico"                          
+[147] "Qatar"                                
+[148] "Republic of Korea"                    
+[149] "Republic of Moldova"                  
+[150] "Romania"                              
+[151] "Russian Federation"                   
+[152] "Rwanda"                               
+[153] "Saint Kitts and Nevis"                
+[154] "Saint Lucia"                          
+[155] "Saint Vincent and the Grenadines"     
+[156] "Samoa"                                
+[157] "San Marino"                           
+[158] "Sao Tome and Principe"                
+[159] "Saudi Arabia"                         
+[160] "Senegal"                              
+[161] "Serbia"                               
+[162] "Seychelles"                           
+[163] "Sierra Leone"                         
+[164] "Singapore"                            
+[165] "Slovakia"                             
+[166] "Slovenia"                             
+[167] "Solomon Islands"                      
+[168] "Somalia"                              
+[169] "South Africa"                         
+[170] "South Sudan"                          
+[171] "Spain"                                
+[172] "Sri Lanka"                            
+[173] "Sudan"                                
+[174] "Suriname"                             
+[175] "Sweden"                               
+[176] "Switzerland"                          
+[177] "Syrian Arab Republic"                 
+[178] "Taiwan (Province of China)"           
+[179] "Tajikistan"                           
+[180] "Thailand"                             
+[181] "Timor-Leste"                          
+[182] "Togo"                                 
+[183] "Tokelau"                              
+[184] "Tonga"                                
+[185] "Trinidad and Tobago"                  
+[186] "Tunisia"                              
+[187] "Turkey"                               
+[188] "Turkmenistan"                         
+[189] "Tuvalu"                               
+[190] "Uganda"                               
+[191] "Ukraine"                              
+[192] "United Arab Emirates"                 
+[193] "United Kingdom"                       
+[194] "United Republic of Tanzania"          
+[195] "United States of America"             
+[196] "United States Virgin Islands"         
+[197] "Uruguay"                              
+[198] "Uzbekistan"                           
+[199] "Vanuatu"                              
+[200] "Venezuela (Bolivarian Republic of)"   
+[201] "Viet Nam"                             
+[202] "Yemen"                                
+[203] "Zambia"                               
+[204] "Zimbabwe"                             </code></pre>
+</div>
+</div>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb9"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a><span class="co">#the list of countries in suicidedata_clean but not in world_map</span></span>
+<span id="cb9-2"><a href="#cb9-2" aria-hidden="true" tabindex="-1"></a>suicide_vs_region  <span class="sc">%&gt;%</span> </span>
+<span id="cb9-3"><a href="#cb9-3" aria-hidden="true" tabindex="-1"></a>  knitr<span class="sc">::</span><span class="fu">kable</span>(<span class="at">caption =</span> <span class="st">"Countries in suicide dataset vs. ISO3 regions: Coverage diff"</span>,</span>
+<span id="cb9-4"><a href="#cb9-4" aria-hidden="true" tabindex="-1"></a>               <span class="at">row.names =</span> <span class="cn">TRUE</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+<table class="table table-sm table-striped">
+<caption>Countries in suicide dataset vs.&nbsp;ISO3 regions: Coverage diff</caption>
+<thead>
+<tr class="header">
+<th style="text-align: left;"></th>
+<th style="text-align: left;">desn</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: left;">1</td>
+<td style="text-align: left;">Bolivia (Plurinational State of)</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">2</td>
+<td style="text-align: left;">Brunei Darussalam</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">3</td>
+<td style="text-align: left;">Cabo Verde</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">4</td>
+<td style="text-align: left;">Côte d’Ivoire</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">5</td>
+<td style="text-align: left;">Democratic People’s Republic of Korea</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">6</td>
+<td style="text-align: left;">Democratic Republic of the Congo</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">7</td>
+<td style="text-align: left;">Iran (Islamic Republic of)</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">8</td>
+<td style="text-align: left;">Lao People’s Democratic Republic</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">9</td>
+<td style="text-align: left;">Micronesia (Federated States of)</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">10</td>
+<td style="text-align: left;">Republic of Korea</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">11</td>
+<td style="text-align: left;">Republic of Moldova</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">12</td>
+<td style="text-align: left;">Russian Federation</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">13</td>
+<td style="text-align: left;">Syrian Arab Republic</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">14</td>
+<td style="text-align: left;">Taiwan (Province of China)</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">15</td>
+<td style="text-align: left;">Timor-Leste</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">16</td>
+<td style="text-align: left;">United Republic of Tanzania</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">17</td>
+<td style="text-align: left;">United States of America</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">18</td>
+<td style="text-align: left;">Venezuela (Bolivarian Republic of)</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">19</td>
+<td style="text-align: left;">Viet Nam</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+<section id="changing-the-names-of-countries" class="level4">
+<h4 class="anchored" data-anchor-id="changing-the-names-of-countries">4.1 Changing the names of countries</h4>
+<p>Change the names of countries to match the two datasets</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb10"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb10-1"><a href="#cb10-1" aria-hidden="true" tabindex="-1"></a>suicidedata_cln_ctry <span class="ot">&lt;-</span> suicidedata_cln <span class="sc">%&gt;%</span></span>
+<span id="cb10-2"><a href="#cb10-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">rename</span>(<span class="at">country =</span> location_name) <span class="sc">%&gt;%</span></span>
+<span id="cb10-3"><a href="#cb10-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">country =</span> <span class="fu">case_when</span>(country <span class="sc">==</span> <span class="st">"Bolivia (Plurinational State of)"</span> <span class="sc">~</span> <span class="st">"Bolivia"</span>,</span>
+<span id="cb10-4"><a href="#cb10-4" aria-hidden="true" tabindex="-1"></a>                             country <span class="sc">==</span> <span class="st">"Brunei Darussalam"</span> <span class="sc">~</span> <span class="st">"Brunei"</span>,</span>
+<span id="cb10-5"><a href="#cb10-5" aria-hidden="true" tabindex="-1"></a>                             country <span class="sc">==</span> <span class="st">"Cabo Verde"</span> <span class="sc">~</span> <span class="st">"Cape Verde"</span>,</span>
+<span id="cb10-6"><a href="#cb10-6" aria-hidden="true" tabindex="-1"></a>                             country <span class="sc">==</span> <span class="st">"Côte d'Ivoire"</span> <span class="sc">~</span> <span class="st">"Cote d'Ivoire"</span>,</span>
+<span id="cb10-7"><a href="#cb10-7" aria-hidden="true" tabindex="-1"></a>                             country <span class="sc">==</span> <span class="st">"Democratic People's Republic of Korea"</span> <span class="sc">~</span> <span class="st">"North Korea"</span>,</span>
+<span id="cb10-8"><a href="#cb10-8" aria-hidden="true" tabindex="-1"></a>                             country <span class="sc">==</span> <span class="st">"Democratic Republic of the Congo"</span> <span class="sc">~</span> <span class="st">"Democratic Republic of Congo"</span>,</span>
+<span id="cb10-9"><a href="#cb10-9" aria-hidden="true" tabindex="-1"></a>                             country <span class="sc">==</span> <span class="st">"Iran (Islamic Republic of)"</span> <span class="sc">~</span> <span class="st">"Iran"</span>,</span>
+<span id="cb10-10"><a href="#cb10-10" aria-hidden="true" tabindex="-1"></a>                             country <span class="sc">==</span> <span class="st">"Lao People's Democratic Republic"</span> <span class="sc">~</span> <span class="st">"Laos"</span>,</span>
+<span id="cb10-11"><a href="#cb10-11" aria-hidden="true" tabindex="-1"></a>                             country <span class="sc">==</span> <span class="st">"Micronesia (Federated States of)"</span> <span class="sc">~</span> <span class="st">"Micronesia"</span>,</span>
+<span id="cb10-12"><a href="#cb10-12" aria-hidden="true" tabindex="-1"></a>                             country <span class="sc">==</span> <span class="st">"Republic of Korea"</span> <span class="sc">~</span> <span class="st">"South Korea"</span>,</span>
+<span id="cb10-13"><a href="#cb10-13" aria-hidden="true" tabindex="-1"></a>                             country <span class="sc">==</span> <span class="st">"Republic of Moldova"</span> <span class="sc">~</span> <span class="st">"Moldova"</span>,</span>
+<span id="cb10-14"><a href="#cb10-14" aria-hidden="true" tabindex="-1"></a>                             country <span class="sc">==</span> <span class="st">"Russian Federation"</span> <span class="sc">~</span> <span class="st">"Russia"</span>,</span>
+<span id="cb10-15"><a href="#cb10-15" aria-hidden="true" tabindex="-1"></a>                             country <span class="sc">==</span> <span class="st">"Syrian Arab Republic"</span> <span class="sc">~</span> <span class="st">"Syria"</span>,</span>
+<span id="cb10-16"><a href="#cb10-16" aria-hidden="true" tabindex="-1"></a>                             country <span class="sc">==</span> <span class="st">"Taiwan (Province of China)"</span> <span class="sc">~</span> <span class="st">"Taiwan"</span>,</span>
+<span id="cb10-17"><a href="#cb10-17" aria-hidden="true" tabindex="-1"></a>                             country <span class="sc">==</span> <span class="st">"United Republic of Tanzania"</span> <span class="sc">~</span> <span class="st">"Tanzania"</span>,</span>
+<span id="cb10-18"><a href="#cb10-18" aria-hidden="true" tabindex="-1"></a>                             country <span class="sc">==</span> <span class="st">"Venezuela (Bolivarian Republic of)"</span> <span class="sc">~</span> <span class="st">"Venezuela"</span>,</span>
+<span id="cb10-19"><a href="#cb10-19" aria-hidden="true" tabindex="-1"></a>                             country <span class="sc">==</span> <span class="st">"Viet Nam"</span> <span class="sc">~</span> <span class="st">"Vietnam"</span>,</span>
+<span id="cb10-20"><a href="#cb10-20" aria-hidden="true" tabindex="-1"></a>                             <span class="cn">TRUE</span> <span class="sc">~</span> country))</span>
+<span id="cb10-21"><a href="#cb10-21" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb10-22"><a href="#cb10-22" aria-hidden="true" tabindex="-1"></a>world_region_cln <span class="ot">&lt;-</span> world_region <span class="sc">%&gt;%</span></span>
+<span id="cb10-23"><a href="#cb10-23" aria-hidden="true" tabindex="-1"></a>  <span class="fu">rename</span>(<span class="at">country =</span> Entity) <span class="sc">%&gt;%</span></span>
+<span id="cb10-24"><a href="#cb10-24" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">country =</span> <span class="fu">case_when</span>(country <span class="sc">==</span> <span class="st">"Timor"</span> <span class="sc">~</span> <span class="st">"Timor-Leste"</span>,</span>
+<span id="cb10-25"><a href="#cb10-25" aria-hidden="true" tabindex="-1"></a>                             country <span class="sc">==</span> <span class="st">"United States"</span> <span class="sc">~</span> <span class="st">"United States of America"</span>,</span>
+<span id="cb10-26"><a href="#cb10-26" aria-hidden="true" tabindex="-1"></a>                             <span class="cn">TRUE</span><span class="sc">~</span>country))</span>
+<span id="cb10-27"><a href="#cb10-27" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb10-28"><a href="#cb10-28" aria-hidden="true" tabindex="-1"></a><span class="do">### Progress check</span></span>
+<span id="cb10-29"><a href="#cb10-29" aria-hidden="true" tabindex="-1"></a><span class="fu">setdiff</span>(suicidedata_cln_ctry<span class="sc">$</span>country, world_region_cln<span class="sc">$</span>country)  <span class="sc">%&gt;%</span> </span>
+<span id="cb10-30"><a href="#cb10-30" aria-hidden="true" tabindex="-1"></a>  <span class="fu">enframe</span>(<span class="at">name =</span> <span class="cn">NULL</span>, <span class="at">value =</span> <span class="st">"diff"</span>) <span class="sc">%&gt;%</span> </span>
+<span id="cb10-31"><a href="#cb10-31" aria-hidden="true" tabindex="-1"></a>  knitr<span class="sc">::</span><span class="fu">kable</span>(<span class="at">caption =</span> <span class="st">"Remaining Cases"</span>, </span>
+<span id="cb10-32"><a href="#cb10-32" aria-hidden="true" tabindex="-1"></a>               <span class="at">row.names =</span> <span class="cn">TRUE</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+<table>
+<caption>Remaining Cases</caption>
+<thead>
+<tr class="header">
+<th style="text-align: left;"></th>
+<th style="text-align: left;">diff</th>
+</tr>
+</thead>
+<tbody>
+</tbody>
+</table>
+</div>
+</div>
+<p>Joining the two datasets</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb11"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb11-1"><a href="#cb11-1" aria-hidden="true" tabindex="-1"></a>suicidedata_cln_region <span class="ot">=</span> suicidedata_cln_ctry <span class="sc">%&gt;%</span></span>
+<span id="cb11-2"><a href="#cb11-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">left_join</span>(world_region_cln, <span class="at">by =</span> <span class="fu">c</span>(<span class="st">'country'</span> <span class="ot">=</span> <span class="st">'country'</span>)) <span class="sc">%&gt;%</span></span>
+<span id="cb11-3"><a href="#cb11-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">select</span>(<span class="sc">!</span>Year) <span class="sc">%&gt;%</span></span>
+<span id="cb11-4"><a href="#cb11-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">rename</span>(<span class="at">code =</span> Code,</span>
+<span id="cb11-5"><a href="#cb11-5" aria-hidden="true" tabindex="-1"></a>         <span class="at">region =</span> World_RegionbyWorld_Bank) <span class="sc">%&gt;%</span></span>
+<span id="cb11-6"><a href="#cb11-6" aria-hidden="true" tabindex="-1"></a>  <span class="fu">relocate</span>(code<span class="sc">:</span>region, <span class="at">.after =</span> country)</span>
+<span id="cb11-7"><a href="#cb11-7" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb11-8"><a href="#cb11-8" aria-hidden="true" tabindex="-1"></a>suicidedata_cln_region</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code># A tibble: 330,480 × 13
+   country    code  region sex_n…¹ age_n…² cause…³  year suici…⁴ suici…⁵ suici…⁶
+   &lt;chr&gt;      &lt;chr&gt; &lt;chr&gt;  &lt;chr&gt;   &lt;chr&gt;   &lt;chr&gt;   &lt;dbl&gt;   &lt;dbl&gt;   &lt;dbl&gt;   &lt;dbl&gt;
+ 1 Afghanist… AFG   South… Male    10-14 … Self-h…  1991   10.5  0.00830   1.43 
+ 2 Afghanist… AFG   South… Female  10-14 … Self-h…  1991    1.97 0.00174   0.281
+ 3 Afghanist… AFG   South… Both    10-14 … Self-h…  1991   12.4  0.00519   0.866
+ 4 Afghanist… AFG   South… Male    15-19 … Self-h…  1991   43.4  0.0194    5.49 
+ 5 Afghanist… AFG   South… Female  15-19 … Self-h…  1991   36.2  0.0216    4.87 
+ 6 Afghanist… AFG   South… Both    15-19 … Self-h…  1991   79.6  0.0203    5.19 
+ 7 Afghanist… AFG   South… Male    20-24 … Self-h…  1991   60.9  0.0250    9.58 
+ 8 Afghanist… AFG   South… Female  20-24 … Self-h…  1991   68.4  0.0320   10.7  
+ 9 Afghanist… AFG   South… Both    20-24 … Self-h…  1991  129.   0.0283   10.1  
+10 Afghanist… AFG   South… Male    25-29 … Self-h…  1991   34.8  0.0246    9.57 
+# … with 330,470 more rows, 3 more variables: population_size &lt;dbl&gt;,
+#   death_number &lt;dbl&gt;, death_rate &lt;dbl&gt;, and abbreviated variable names
+#   ¹​sex_name, ²​age_name, ³​cause_name, ⁴​suicide_Number, ⁵​suicide_Percent,
+#   ⁶​suicide_Rate</code></pre>
+</div>
+</div>
+</section>
+</section>
+<section id="matching-countrys-name-with-world_map" class="level3">
+<h3 class="anchored" data-anchor-id="matching-countrys-name-with-world_map">5. Matching country’s name with world_map</h3>
+<p>rworldmap - Example code below</p>
+<p>https://cran.r-project.org/web/packages/rworldmap/vignettes/rworldmap.pdf</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb13"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb13-1"><a href="#cb13-1" aria-hidden="true" tabindex="-1"></a>suicidedata_cln_map <span class="ot">&lt;-</span> <span class="fu">joinCountryData2Map</span>(suicidedata_cln_region,</span>
+<span id="cb13-2"><a href="#cb13-2" aria-hidden="true" tabindex="-1"></a>                                 <span class="at">joinCode =</span> <span class="st">"ISO3"</span>,</span>
+<span id="cb13-3"><a href="#cb13-3" aria-hidden="true" tabindex="-1"></a>                                 <span class="at">nameJoinColumn =</span> <span class="st">"code"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>327240 codes from your data successfully matched countries in the map
+3240 codes from your data failed to match with a country code in the map
+41 codes from the map weren't represented in your data</code></pre>
+</div>
+</div>
+<p>Other References using typical world map - https://rpubs.com/Thom_JH/798825</p>
+
+
+</section>
+</section>
+
+</main> <!-- /main -->
+<script id="quarto-html-after-body" type="application/javascript">
+window.document.addEventListener("DOMContentLoaded", function (event) {
+  const toggleBodyColorMode = (bsSheetEl) => {
+    const mode = bsSheetEl.getAttribute("data-mode");
+    const bodyEl = window.document.querySelector("body");
+    if (mode === "dark") {
+      bodyEl.classList.add("quarto-dark");
+      bodyEl.classList.remove("quarto-light");
+    } else {
+      bodyEl.classList.add("quarto-light");
+      bodyEl.classList.remove("quarto-dark");
+    }
+  }
+  const toggleBodyColorPrimary = () => {
+    const bsSheetEl = window.document.querySelector("link#quarto-bootstrap");
+    if (bsSheetEl) {
+      toggleBodyColorMode(bsSheetEl);
+    }
+  }
+  toggleBodyColorPrimary();  
+  const icon = "";
+  const anchorJS = new window.AnchorJS();
+  anchorJS.options = {
+    placement: 'right',
+    icon: icon
+  };
+  anchorJS.add('.anchored');
+  const clipboard = new window.ClipboardJS('.code-copy-button', {
+    target: function(trigger) {
+      return trigger.previousElementSibling;
+    }
+  });
+  clipboard.on('success', function(e) {
+    // button target
+    const button = e.trigger;
+    // don't keep focus
+    button.blur();
+    // flash "checked"
+    button.classList.add('code-copy-button-checked');
+    var currentTitle = button.getAttribute("title");
+    button.setAttribute("title", "Copied!");
+    let tooltip;
+    if (window.bootstrap) {
+      button.setAttribute("data-bs-toggle", "tooltip");
+      button.setAttribute("data-bs-placement", "left");
+      button.setAttribute("data-bs-title", "Copied!");
+      tooltip = new bootstrap.Tooltip(button, 
+        { trigger: "manual", 
+          customClass: "code-copy-button-tooltip",
+          offset: [0, -8]});
+      tooltip.show();    
+    }
+    setTimeout(function() {
+      if (tooltip) {
+        tooltip.hide();
+        button.removeAttribute("data-bs-title");
+        button.removeAttribute("data-bs-toggle");
+        button.removeAttribute("data-bs-placement");
+      }
+      button.setAttribute("title", currentTitle);
+      button.classList.remove('code-copy-button-checked');
+    }, 1000);
+    // clear code selection
+    e.clearSelection();
+  });
+  function tippyHover(el, contentFn) {
+    const config = {
+      allowHTML: true,
+      content: contentFn,
+      maxWidth: 500,
+      delay: 100,
+      arrow: false,
+      appendTo: function(el) {
+          return el.parentElement;
+      },
+      interactive: true,
+      interactiveBorder: 10,
+      theme: 'quarto',
+      placement: 'bottom-start'
+    };
+    window.tippy(el, config); 
+  }
+  const noterefs = window.document.querySelectorAll('a[role="doc-noteref"]');
+  for (var i=0; i<noterefs.length; i++) {
+    const ref = noterefs[i];
+    tippyHover(ref, function() {
+      // use id or data attribute instead here
+      let href = ref.getAttribute('data-footnote-href') || ref.getAttribute('href');
+      try { href = new URL(href).hash; } catch {}
+      const id = href.replace(/^#\/?/, "");
+      const note = window.document.getElementById(id);
+      return note.innerHTML;
+    });
+  }
+  const findCites = (el) => {
+    const parentEl = el.parentElement;
+    if (parentEl) {
+      const cites = parentEl.dataset.cites;
+      if (cites) {
+        return {
+          el,
+          cites: cites.split(' ')
+        };
+      } else {
+        return findCites(el.parentElement)
+      }
+    } else {
+      return undefined;
+    }
+  };
+  var bibliorefs = window.document.querySelectorAll('a[role="doc-biblioref"]');
+  for (var i=0; i<bibliorefs.length; i++) {
+    const ref = bibliorefs[i];
+    const citeInfo = findCites(ref);
+    if (citeInfo) {
+      tippyHover(citeInfo.el, function() {
+        var popup = window.document.createElement('div');
+        citeInfo.cites.forEach(function(cite) {
+          var citeDiv = window.document.createElement('div');
+          citeDiv.classList.add('hanging-indent');
+          citeDiv.classList.add('csl-entry');
+          var biblioDiv = window.document.getElementById('ref-' + cite);
+          if (biblioDiv) {
+            citeDiv.innerHTML = biblioDiv.innerHTML;
+          }
+          popup.appendChild(citeDiv);
+        });
+        return popup.innerHTML;
+      });
+    }
+  }
+});
+</script>
+</div> <!-- /content -->
+
+
+
+</body></html>

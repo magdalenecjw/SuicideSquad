@@ -1,0 +1,144 @@
+---
+title: "Data Preparation"
+author: "Suicide Squad"
+date: 14 Feb 2023
+date-modified: "`r Sys.Date()`"
+execute: 
+  echo: true
+  eval: true
+  warning: false
+format: html
+editor: visual
+---
+
+## Step-by-Step Data Preparation
+
+### 1. Installing and launching required R packages
+
+```{r}
+pacman::p_load("rworldmap", "tidyverse")
+```
+
+### 2. Loading the data
+
+```{r}
+suicidedata <- list.files(path = "data",
+                          pattern = "IHME-GBD_2019_DATA",
+                          full.names = TRUE) %>%
+  lapply(read_csv) %>%
+  bind_rows
+
+world_region <- read_csv("data/world-regions-according-to-the-world-bank.csv")
+```
+
+```{r}
+str(suicidedata)
+```
+
+### 3. Data wrangling
+
+-   Filter for "Self=harm"
+
+-   Select relevant columns and arrange rows based on location_name
+
+-   Pivot_wider by metric_name (number, percent, and rate)
+
+-   Calculate the population size, death number and death rate
+
+```{r}
+suicidedata_cln <- suicidedata %>%
+  filter(cause_name == "Self-harm") %>%
+  arrange(location_name) %>%
+  select(4,6,8,10,(12:14)) %>%
+  pivot_wider(names_from = metric_name, values_from = val, names_glue = "suicide_{metric_name}") %>%
+  mutate(population_size = suicide_Number/(suicide_Rate/100000),
+         death_number = suicide_Number/suicide_Percent,
+         death_rate = death_number/population_size*100000)
+```
+
+### 4. Matching country's name with region (ISO3 data)
+
+Identify key differences
+
+```{r}
+suicide_vs_region <- setdiff(suicidedata_cln$location_name, world_region$Entity) %>%
+  enframe(name = NULL, value = "desn") %>% 
+  arrange(desn)
+```
+
+```{r}
+unique(suicidedata_cln$location_name)
+```
+
+```{r}
+#the list of countries in suicidedata_clean but not in world_map
+suicide_vs_region  %>% 
+  knitr::kable(caption = "Countries in suicide dataset vs. ISO3 regions: Coverage diff",
+               row.names = TRUE)
+```
+
+#### 4.1 Changing the names of countries
+
+Change the names of countries to match the two datasets
+
+```{r}
+suicidedata_cln_ctry <- suicidedata_cln %>%
+  rename(country = location_name) %>%
+  mutate(country = case_when(country == "Bolivia (Plurinational State of)" ~ "Bolivia",
+                             country == "Brunei Darussalam" ~ "Brunei",
+                             country == "Cabo Verde" ~ "Cape Verde",
+                             country == "Côte d'Ivoire" ~ "Cote d'Ivoire",
+                             country == "Democratic People's Republic of Korea" ~ "North Korea",
+                             country == "Democratic Republic of the Congo" ~ "Democratic Republic of Congo",
+                             country == "Iran (Islamic Republic of)" ~ "Iran",
+                             country == "Lao People's Democratic Republic" ~ "Laos",
+                             country == "Micronesia (Federated States of)" ~ "Micronesia",
+                             country == "Republic of Korea" ~ "South Korea",
+                             country == "Republic of Moldova" ~ "Moldova",
+                             country == "Russian Federation" ~ "Russia",
+                             country == "Syrian Arab Republic" ~ "Syria",
+                             country == "Taiwan (Province of China)" ~ "Taiwan",
+                             country == "United Republic of Tanzania" ~ "Tanzania",
+                             country == "Venezuela (Bolivarian Republic of)" ~ "Venezuela",
+                             country == "Viet Nam" ~ "Vietnam",
+                             TRUE ~ country))
+
+world_region_cln <- world_region %>%
+  rename(country = Entity) %>%
+  mutate(country = case_when(country == "Timor" ~ "Timor-Leste",
+                             country == "United States" ~ "United States of America",
+                             TRUE~country))
+
+### Progress check
+setdiff(suicidedata_cln_ctry$country, world_region_cln$country)  %>% 
+  enframe(name = NULL, value = "diff") %>% 
+  knitr::kable(caption = "Remaining Cases", 
+               row.names = TRUE)
+```
+
+Joining the two datasets
+
+```{r}
+suicidedata_cln_region = suicidedata_cln_ctry %>%
+  left_join(world_region_cln, by = c('country' = 'country')) %>%
+  select(!Year) %>%
+  rename(code = Code,
+         region = World_RegionbyWorld_Bank) %>%
+  relocate(code:region, .after = country)
+
+suicidedata_cln_region
+```
+
+### 5. Matching country's name with world_map
+
+rworldmap - Example code below
+
+https://cran.r-project.org/web/packages/rworldmap/vignettes/rworldmap.pdf
+
+```{r}
+suicidedata_cln_map <- joinCountryData2Map(suicidedata_cln_region,
+                                 joinCode = "ISO3",
+                                 nameJoinColumn = "code")
+```
+
+Other References using typical world map - https://rpubs.com/Thom_JH/798825
