@@ -16,7 +16,7 @@ editor: visual
 ### 1. Installing and launching required R packages
 
 ```{r}
-pacman::p_load("rworldmap", "tidyverse")
+pacman::p_load("tmap", "tidyverse")
 ```
 
 ### 2. Loading the data
@@ -37,7 +37,7 @@ str(suicidedata)
 
 ### 3. Data wrangling
 
--   Filter for "Self=harm"
+-   Filter for "Self-harm"
 
 -   Select relevant columns and arrange rows based on location_name
 
@@ -46,7 +46,7 @@ str(suicidedata)
 -   Calculate the population size, death number and death rate
 
 ```{r}
-suicidedata_cln <- suicidedata %>%
+suicidedata_mod <- suicidedata %>%
   filter(cause_name == "Self-harm") %>%
   arrange(location_name) %>%
   select(4,6,8,10,(12:14)) %>%
@@ -56,18 +56,20 @@ suicidedata_cln <- suicidedata %>%
          death_rate = death_number/population_size*100000)
 ```
 
-### 4. Matching country's name with region (ISO3 data)
+### 4. Matching country's name with region (*ISO 3166-1 alpha-3* country code
+
+data)
 
 Identify key differences
 
 ```{r}
-suicide_vs_region <- setdiff(suicidedata_cln$location_name, world_region$Entity) %>%
+suicide_vs_region <- setdiff(suicidedata_mod$location_name, world_region$Entity) %>%
   enframe(name = NULL, value = "desn") %>% 
   arrange(desn)
 ```
 
 ```{r}
-unique(suicidedata_cln$location_name)
+unique(suicidedata_mod$location_name)
 ```
 
 ```{r}
@@ -82,7 +84,7 @@ suicide_vs_region  %>%
 Change the names of countries to match the two datasets
 
 ```{r}
-suicidedata_cln_ctry <- suicidedata_cln %>%
+suicidedata_cln_ctry <- suicidedata_mod %>%
   rename(country = location_name) %>%
   mutate(country = case_when(country == "Bolivia (Plurinational State of)" ~ "Bolivia",
                              country == "Brunei Darussalam" ~ "Brunei",
@@ -119,26 +121,226 @@ setdiff(suicidedata_cln_ctry$country, world_region_cln$country)  %>%
 Joining the two datasets
 
 ```{r}
-suicidedata_cln_region = suicidedata_cln_ctry %>%
+suicidedata_cln = suicidedata_cln_ctry %>%
   left_join(world_region_cln, by = c('country' = 'country')) %>%
   select(!Year) %>%
   rename(code = Code,
          region = World_RegionbyWorld_Bank) %>%
   relocate(code:region, .after = country)
 
-suicidedata_cln_region
+suicidedata_cln
 ```
 
-### 5. Matching country's name with world_map
+### 5. Preparing data for analysis
 
-rworldmap - Example code below
-
-https://cran.r-project.org/web/packages/rworldmap/vignettes/rworldmap.pdf
+#### 5.1 Age-Standardized Rate (Total and Gender) - Anchor
 
 ```{r}
-suicidedata_cln_map <- joinCountryData2Map(suicidedata_cln_region,
-                                 joinCode = "ISO3",
-                                 nameJoinColumn = "code")
+suicidedata_age_std <- suicidedata_cln %>%
+  filter(age_name == "Age-standardized") %>%
+  pivot_wider(names_from = sex_name,
+              values_from = suicide_Rate) %>%
+  select(c(1,2,3,6,12,13,14)) %>%
+  rename("AS_SR" = "Both",
+         "AS_SR_M" = "Male",
+         "AS_SR_F" = "Female")
 ```
 
-Other References using typical world map - https://rpubs.com/Thom_JH/798825
+#### 5.2 Age-Group (Total)
+
+-   young: age group 0 to 4 until age group 20 to 24,
+
+-   econ_active: age group 25-29 until age group 60-64,
+
+-   aged: age group 65 and above,
+
+```{r}
+suicide_number_age <- suicidedata_cln %>%
+  filter(sex_name == "Both",
+         !age_name %in% c("All ages", "Age-standardized")) %>%
+  select(c(2,5,7,8)) %>%
+  pivot_wider(names_from = age_name,
+              values_from = suicide_Number) %>%
+  mutate(young_SN = rowSums(.[3:5]),
+         econ_active_SN = rowSums(.[6:13]),
+         aged_SN = rowSums(.[14:18]),
+         total_SN = young_SN+econ_active_SN+aged_SN) %>%
+  select(c(1,2,19,20,21,22))
+```
+
+#### 5.3 Population Size Age-Group
+
+```{r}
+pop_size_age <- suicidedata_cln %>%
+  filter(sex_name == "Both",
+         !age_name %in% c("All ages", "Age-standardized")) %>%
+  select(c(2,5,7,11)) %>%
+  pivot_wider(names_from = age_name,
+              values_from = population_size) %>%
+  mutate(young_pop = rowSums(.[3:5]),
+         econ_active_pop = rowSums(.[6:13]),
+         aged_pop = rowSums(.[14:18]),
+         total_pop = young_pop+econ_active_pop+aged_pop) %>%
+  select(c(1,2,19,20,21,22))
+```
+
+From above, we can calculate suicide rate for young, econ_active, and aged by dividing SN by population \* 100,000
+
+Do we need to do per gender as well?
+
+#### 5.4 GDP per capita
+
+Reference - https://ourworldindata.org/grapher/gdp-per-capita-worldbank?tab=chart
+
+```{r}
+gdp_per_capita <- read_csv("data/gdp-per-capita-worldbank.csv")
+```
+
+```{r}
+gdp_per_capita <- gdp_per_capita %>%
+  select(2,3,4) %>%
+  rename("code" = "Code",
+         "year" = "Year",
+         "gdp_per_capita" = "GDP per capita, PPP (constant 2017 international $)") %>%
+  na.omit()
+```
+
+#### 5.5 Human Development Index
+
+Reference - https://ourworldindata.org/grapher/human-development-index
+
+```{r}
+hdi <- read_csv("data/human-development-index.csv")
+```
+
+```{r}
+hdi <- hdi %>%
+  select(2,3,4) %>%
+  rename("code" = "Code",
+         "year" = "Year",
+         "hdi" = "Human Development Index") %>%
+  na.omit()
+```
+
+#### 5.6 Depression Prevalence
+
+Reference - https://ourworldindata.org/grapher/suicide-rates-vs-prevalence-of-depression
+
+```{r}
+depr <- read_csv("data/suicide-rates-vs-prevalence-of-depression.csv")
+```
+
+```{r}
+depr <- depr %>%
+  select(2,3,5) %>%
+  rename("code" = "Code",
+         "year" = "Year",
+         "depr_rate" = "Prevalence - Depressive disorders - Sex: Both - Age: Age-standardized (Rate)") %>%
+  filter(year %in% (1990:2019)) %>%
+  na.omit()
+```
+
+#### 5.7 Income Inequality
+
+Reference - https://ourworldindata.org/grapher/suicide-rate-vs-income-inequality
+
+```{r}
+gini <- read_csv("data/suicide-rate-vs-income-inequality.csv")
+```
+
+```{r}
+gini <- gini %>%
+  select(2,3,5) %>%
+  rename("code" = "Code",
+         "year" = "Year",
+         "gini" = "Gini coefficient") %>%
+  filter(year %in% (1990:2019)) %>%
+  na.omit()
+```
+
+#### 5.8 Violent Death
+
+Reference - https://ourworldindata.org/grapher/suicide-vs-violent-deaths
+
+```{r}
+violent <- read_csv("data/suicide-vs-violent-deaths.csv")
+```
+
+```{r}
+violent <- violent %>%
+  select(2,3,5) %>%
+  rename("code" = "Code",
+         "year" = "Year",
+         "violent_death_rate" = "Deaths - All forms of violence - OWID - Sex: Both - Age: Age-standardized (Rate)") %>%
+  filter(year %in% (1990:2019)) %>%
+  na.omit()
+```
+
+FEEL FREE TO ADD SOMEMORE
+
+#### 5.8 Joining
+
+```{r}
+
+suicidedata_complete <- left_join(suicidedata_age_std, suicide_number_age, by = c('code' = 'code', 'year' = 'year')) %>% 
+  
+  left_join(., pop_size_age, by = c('code' = 'code', 'year' = 'year')) %>%
+  
+  mutate(young_SR = young_SN*100000/young_pop,
+         econ_active_SR = econ_active_SN*100000/econ_active_pop,
+         aged_SR = aged_SN*100000/aged_pop) %>%
+  
+  left_join(., gdp_per_capita, by = c('code' = 'code', 'year' = 'year')) %>%
+  
+  left_join(., hdi, by = c('code' = 'code', 'year' = 'year')) %>%
+  
+  left_join(., depr, by = c('code' = 'code', 'year' = 'year')) %>%
+  
+  left_join(., gini, by = c('code' = 'code', 'year' = 'year')) %>%
+  
+  left_join(., violent, by = c('code' = 'code', 'year' = 'year')) 
+
+knitr::kable(head(suicidedata_complete))
+```
+
+### 6. Joining with world map
+
+The object `World` is a spatial object of class `sf` from the [sf package](https://cran.r-project.org/package=sf); it is a `data.frame` with a special column that contains a geometry for each row, in this case polygons
+
+Reference - https://cran.r-project.org/web/packages/tmap/vignettes/tmap-getstarted.html
+
+```{r}
+#data("World")
+```
+
+Joining the two dataframes together
+
+```{r}
+#suicidedata_join_map <- right_join(World, suicidedata_cln,
+#                          by = c("iso_a3" = "code")) 
+
+#suicidedata_cln_map <-  suicidedata_join_map %>%
+#  select(!c(2,3,4,6,7,8,9,10,11,12,13,14,15)) %>%
+#  mutate(area = as.numeric(str_remove(`area`, 
+#                                " \\[km\\^2\\]")), 
+#         .after = region)
+```
+
+```{r}
+#tm_shape(suicidedata_cln_map) +
+#    tm_polygons("area")
+```
+
+Ignore below
+
+#rworldmap - Example code below
+
+#https://cran.r-project.org/web/packages/rworldmap/vignettes/rworldmap.pdf
+
+```{r}
+#suicidedata_cln_map <- joinCountryData2Map(suicidedata_cln_region,
+#                                 joinCode = "ISO3",
+#                                 nameJoinColumn = "code")
+```
+
+#Other References using typical world map - https://rpubs.com/Thom_JH/798825
