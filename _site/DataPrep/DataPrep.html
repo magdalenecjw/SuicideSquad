@@ -225,7 +225,7 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
     <div>
     <div class="quarto-title-meta-heading">Modified</div>
     <div class="quarto-title-meta-contents">
-      <p class="date-modified">February 24, 2023</p>
+      <p class="date-modified">February 25, 2023</p>
     </div>
   </div>
     
@@ -312,7 +312,29 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <span id="cb5-5"><a href="#cb5-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">pivot_wider</span>(<span class="at">names_from =</span> metric_name, <span class="at">values_from =</span> val, <span class="at">names_glue =</span> <span class="st">"suicide_{metric_name}"</span>) <span class="sc">%&gt;%</span></span>
 <span id="cb5-6"><a href="#cb5-6" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">population_size =</span> suicide_Number<span class="sc">/</span>(suicide_Rate<span class="sc">/</span><span class="dv">100000</span>),</span>
 <span id="cb5-7"><a href="#cb5-7" aria-hidden="true" tabindex="-1"></a>         <span class="at">death_number =</span> suicide_Number<span class="sc">/</span>suicide_Percent,</span>
-<span id="cb5-8"><a href="#cb5-8" aria-hidden="true" tabindex="-1"></a>         <span class="at">death_rate =</span> death_number<span class="sc">/</span>population_size<span class="sc">*</span><span class="dv">100000</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<span id="cb5-8"><a href="#cb5-8" aria-hidden="true" tabindex="-1"></a>         <span class="at">death_rate =</span> death_number<span class="sc">/</span>population_size<span class="sc">*</span><span class="dv">100000</span>,</span>
+<span id="cb5-9"><a href="#cb5-9" aria-hidden="true" tabindex="-1"></a>         <span class="at">year =</span> <span class="fu">as.integer</span>(year))</span>
+<span id="cb5-10"><a href="#cb5-10" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb5-11"><a href="#cb5-11" aria-hidden="true" tabindex="-1"></a>suicidedata_mod</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code># A tibble: 330,480 × 11
+   locat…¹ sex_n…² age_n…³ cause…⁴  year suici…⁵ suici…⁶ suici…⁷ popul…⁸ death…⁹
+   &lt;chr&gt;   &lt;chr&gt;   &lt;chr&gt;   &lt;chr&gt;   &lt;int&gt;   &lt;dbl&gt;   &lt;dbl&gt;   &lt;dbl&gt;   &lt;dbl&gt;   &lt;dbl&gt;
+ 1 Afghan… Male    10-14 … Self-h…  1991   10.5  0.00830   1.43   7.33e5   1260.
+ 2 Afghan… Female  10-14 … Self-h…  1991    1.97 0.00174   0.281  7.02e5   1135.
+ 3 Afghan… Both    10-14 … Self-h…  1991   12.4  0.00519   0.866  1.43e6   2395.
+ 4 Afghan… Male    15-19 … Self-h…  1991   43.4  0.0194    5.49   7.91e5   2243.
+ 5 Afghan… Female  15-19 … Self-h…  1991   36.2  0.0216    4.87   7.43e5   1675.
+ 6 Afghan… Both    15-19 … Self-h…  1991   79.6  0.0203    5.19   1.53e6   3917.
+ 7 Afghan… Male    20-24 … Self-h…  1991   60.9  0.0250    9.58   6.36e5   2432.
+ 8 Afghan… Female  20-24 … Self-h…  1991   68.4  0.0320   10.7    6.41e5   2136.
+ 9 Afghan… Both    20-24 … Self-h…  1991  129.   0.0283   10.1    1.28e6   4567.
+10 Afghan… Male    25-29 … Self-h…  1991   34.8  0.0246    9.57   3.64e5   1414.
+# … with 330,470 more rows, 1 more variable: death_rate &lt;dbl&gt;, and abbreviated
+#   variable names ¹​location_name, ²​sex_name, ³​age_name, ⁴​cause_name,
+#   ⁵​suicide_Number, ⁶​suicide_Percent, ⁷​suicide_Rate, ⁸​population_size,
+#   ⁹​death_number</code></pre>
+</div>
 </div>
 </section>
 <section id="matching-countrys-name-with-region-iso-3166-1-alpha-3-country-code" class="level3">
@@ -320,224 +342,15 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <p>data)</p>
 <p>Identify key differences</p>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb6"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a>suicide_vs_region <span class="ot">&lt;-</span> <span class="fu">setdiff</span>(suicidedata_mod<span class="sc">$</span>location_name, world_region<span class="sc">$</span>Entity) <span class="sc">%&gt;%</span></span>
-<span id="cb6-2"><a href="#cb6-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">enframe</span>(<span class="at">name =</span> <span class="cn">NULL</span>, <span class="at">value =</span> <span class="st">"desn"</span>) <span class="sc">%&gt;%</span> </span>
-<span id="cb6-3"><a href="#cb6-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">arrange</span>(desn)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb7"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a>suicide_vs_region <span class="ot">&lt;-</span> <span class="fu">setdiff</span>(suicidedata_mod<span class="sc">$</span>location_name, world_region<span class="sc">$</span>Entity) <span class="sc">%&gt;%</span></span>
+<span id="cb7-2"><a href="#cb7-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">enframe</span>(<span class="at">name =</span> <span class="cn">NULL</span>, <span class="at">value =</span> <span class="st">"desn"</span>) <span class="sc">%&gt;%</span> </span>
+<span id="cb7-3"><a href="#cb7-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">arrange</span>(desn)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb7"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a><span class="fu">unique</span>(suicidedata_mod<span class="sc">$</span>location_name)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-<div class="cell-output cell-output-stdout">
-<pre><code>  [1] "Afghanistan"                          
-  [2] "Albania"                              
-  [3] "Algeria"                              
-  [4] "American Samoa"                       
-  [5] "Andorra"                              
-  [6] "Angola"                               
-  [7] "Antigua and Barbuda"                  
-  [8] "Argentina"                            
-  [9] "Armenia"                              
- [10] "Australia"                            
- [11] "Austria"                              
- [12] "Azerbaijan"                           
- [13] "Bahamas"                              
- [14] "Bahrain"                              
- [15] "Bangladesh"                           
- [16] "Barbados"                             
- [17] "Belarus"                              
- [18] "Belgium"                              
- [19] "Belize"                               
- [20] "Benin"                                
- [21] "Bermuda"                              
- [22] "Bhutan"                               
- [23] "Bolivia (Plurinational State of)"     
- [24] "Bosnia and Herzegovina"               
- [25] "Botswana"                             
- [26] "Brazil"                               
- [27] "Brunei Darussalam"                    
- [28] "Bulgaria"                             
- [29] "Burkina Faso"                         
- [30] "Burundi"                              
- [31] "Cabo Verde"                           
- [32] "Cambodia"                             
- [33] "Cameroon"                             
- [34] "Canada"                               
- [35] "Central African Republic"             
- [36] "Chad"                                 
- [37] "Chile"                                
- [38] "China"                                
- [39] "Colombia"                             
- [40] "Comoros"                              
- [41] "Congo"                                
- [42] "Cook Islands"                         
- [43] "Costa Rica"                           
- [44] "Côte d'Ivoire"                        
- [45] "Croatia"                              
- [46] "Cuba"                                 
- [47] "Cyprus"                               
- [48] "Czechia"                              
- [49] "Democratic People's Republic of Korea"
- [50] "Democratic Republic of the Congo"     
- [51] "Denmark"                              
- [52] "Djibouti"                             
- [53] "Dominica"                             
- [54] "Dominican Republic"                   
- [55] "Ecuador"                              
- [56] "Egypt"                                
- [57] "El Salvador"                          
- [58] "Equatorial Guinea"                    
- [59] "Eritrea"                              
- [60] "Estonia"                              
- [61] "Eswatini"                             
- [62] "Ethiopia"                             
- [63] "Fiji"                                 
- [64] "Finland"                              
- [65] "France"                               
- [66] "Gabon"                                
- [67] "Gambia"                               
- [68] "Georgia"                              
- [69] "Germany"                              
- [70] "Ghana"                                
- [71] "Greece"                               
- [72] "Greenland"                            
- [73] "Grenada"                              
- [74] "Guam"                                 
- [75] "Guatemala"                            
- [76] "Guinea"                               
- [77] "Guinea-Bissau"                        
- [78] "Guyana"                               
- [79] "Haiti"                                
- [80] "Honduras"                             
- [81] "Hungary"                              
- [82] "Iceland"                              
- [83] "India"                                
- [84] "Indonesia"                            
- [85] "Iran (Islamic Republic of)"           
- [86] "Iraq"                                 
- [87] "Ireland"                              
- [88] "Israel"                               
- [89] "Italy"                                
- [90] "Jamaica"                              
- [91] "Japan"                                
- [92] "Jordan"                               
- [93] "Kazakhstan"                           
- [94] "Kenya"                                
- [95] "Kiribati"                             
- [96] "Kuwait"                               
- [97] "Kyrgyzstan"                           
- [98] "Lao People's Democratic Republic"     
- [99] "Latvia"                               
-[100] "Lebanon"                              
-[101] "Lesotho"                              
-[102] "Liberia"                              
-[103] "Libya"                                
-[104] "Lithuania"                            
-[105] "Luxembourg"                           
-[106] "Madagascar"                           
-[107] "Malawi"                               
-[108] "Malaysia"                             
-[109] "Maldives"                             
-[110] "Mali"                                 
-[111] "Malta"                                
-[112] "Marshall Islands"                     
-[113] "Mauritania"                           
-[114] "Mauritius"                            
-[115] "Mexico"                               
-[116] "Micronesia (Federated States of)"     
-[117] "Monaco"                               
-[118] "Mongolia"                             
-[119] "Montenegro"                           
-[120] "Morocco"                              
-[121] "Mozambique"                           
-[122] "Myanmar"                              
-[123] "Namibia"                              
-[124] "Nauru"                                
-[125] "Nepal"                                
-[126] "Netherlands"                          
-[127] "New Zealand"                          
-[128] "Nicaragua"                            
-[129] "Niger"                                
-[130] "Nigeria"                              
-[131] "Niue"                                 
-[132] "North Macedonia"                      
-[133] "Northern Mariana Islands"             
-[134] "Norway"                               
-[135] "Oman"                                 
-[136] "Pakistan"                             
-[137] "Palau"                                
-[138] "Palestine"                            
-[139] "Panama"                               
-[140] "Papua New Guinea"                     
-[141] "Paraguay"                             
-[142] "Peru"                                 
-[143] "Philippines"                          
-[144] "Poland"                               
-[145] "Portugal"                             
-[146] "Puerto Rico"                          
-[147] "Qatar"                                
-[148] "Republic of Korea"                    
-[149] "Republic of Moldova"                  
-[150] "Romania"                              
-[151] "Russian Federation"                   
-[152] "Rwanda"                               
-[153] "Saint Kitts and Nevis"                
-[154] "Saint Lucia"                          
-[155] "Saint Vincent and the Grenadines"     
-[156] "Samoa"                                
-[157] "San Marino"                           
-[158] "Sao Tome and Principe"                
-[159] "Saudi Arabia"                         
-[160] "Senegal"                              
-[161] "Serbia"                               
-[162] "Seychelles"                           
-[163] "Sierra Leone"                         
-[164] "Singapore"                            
-[165] "Slovakia"                             
-[166] "Slovenia"                             
-[167] "Solomon Islands"                      
-[168] "Somalia"                              
-[169] "South Africa"                         
-[170] "South Sudan"                          
-[171] "Spain"                                
-[172] "Sri Lanka"                            
-[173] "Sudan"                                
-[174] "Suriname"                             
-[175] "Sweden"                               
-[176] "Switzerland"                          
-[177] "Syrian Arab Republic"                 
-[178] "Taiwan (Province of China)"           
-[179] "Tajikistan"                           
-[180] "Thailand"                             
-[181] "Timor-Leste"                          
-[182] "Togo"                                 
-[183] "Tokelau"                              
-[184] "Tonga"                                
-[185] "Trinidad and Tobago"                  
-[186] "Tunisia"                              
-[187] "Turkey"                               
-[188] "Turkmenistan"                         
-[189] "Tuvalu"                               
-[190] "Uganda"                               
-[191] "Ukraine"                              
-[192] "United Arab Emirates"                 
-[193] "United Kingdom"                       
-[194] "United Republic of Tanzania"          
-[195] "United States of America"             
-[196] "United States Virgin Islands"         
-[197] "Uruguay"                              
-[198] "Uzbekistan"                           
-[199] "Vanuatu"                              
-[200] "Venezuela (Bolivarian Republic of)"   
-[201] "Viet Nam"                             
-[202] "Yemen"                                
-[203] "Zambia"                               
-[204] "Zimbabwe"                             </code></pre>
-</div>
-</div>
-<div class="cell">
-<div class="sourceCode cell-code" id="cb9"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a><span class="co">#the list of countries in suicidedata_clean but not in world_map</span></span>
-<span id="cb9-2"><a href="#cb9-2" aria-hidden="true" tabindex="-1"></a>suicide_vs_region  <span class="sc">%&gt;%</span> </span>
-<span id="cb9-3"><a href="#cb9-3" aria-hidden="true" tabindex="-1"></a>  knitr<span class="sc">::</span><span class="fu">kable</span>(<span class="at">caption =</span> <span class="st">"Countries in suicide dataset vs. ISO3 regions: Coverage diff"</span>,</span>
-<span id="cb9-4"><a href="#cb9-4" aria-hidden="true" tabindex="-1"></a>               <span class="at">row.names =</span> <span class="cn">TRUE</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb8"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a><span class="co">#the list of countries in suicidedata_clean but not in world_map</span></span>
+<span id="cb8-2"><a href="#cb8-2" aria-hidden="true" tabindex="-1"></a>suicide_vs_region  <span class="sc">%&gt;%</span> </span>
+<span id="cb8-3"><a href="#cb8-3" aria-hidden="true" tabindex="-1"></a>  knitr<span class="sc">::</span><span class="fu">kable</span>(<span class="at">caption =</span> <span class="st">"Countries in suicide dataset vs. ISO3 regions: Coverage diff"</span>,</span>
+<span id="cb8-4"><a href="#cb8-4" aria-hidden="true" tabindex="-1"></a>               <span class="at">row.names =</span> <span class="cn">TRUE</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output-display">
 <table class="table table-sm table-striped">
 <caption>Countries in suicide dataset vs.&nbsp;ISO3 regions: Coverage diff</caption>
@@ -632,38 +445,38 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <h4 class="anchored" data-anchor-id="changing-the-names-of-countries">4.1 Changing the names of countries</h4>
 <p>Change the names of countries to match the two datasets</p>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb10"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb10-1"><a href="#cb10-1" aria-hidden="true" tabindex="-1"></a>suicidedata_cln_ctry <span class="ot">&lt;-</span> suicidedata_mod <span class="sc">%&gt;%</span></span>
-<span id="cb10-2"><a href="#cb10-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">rename</span>(<span class="at">country =</span> location_name) <span class="sc">%&gt;%</span></span>
-<span id="cb10-3"><a href="#cb10-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">country =</span> <span class="fu">case_when</span>(country <span class="sc">==</span> <span class="st">"Bolivia (Plurinational State of)"</span> <span class="sc">~</span> <span class="st">"Bolivia"</span>,</span>
-<span id="cb10-4"><a href="#cb10-4" aria-hidden="true" tabindex="-1"></a>                             country <span class="sc">==</span> <span class="st">"Brunei Darussalam"</span> <span class="sc">~</span> <span class="st">"Brunei"</span>,</span>
-<span id="cb10-5"><a href="#cb10-5" aria-hidden="true" tabindex="-1"></a>                             country <span class="sc">==</span> <span class="st">"Cabo Verde"</span> <span class="sc">~</span> <span class="st">"Cape Verde"</span>,</span>
-<span id="cb10-6"><a href="#cb10-6" aria-hidden="true" tabindex="-1"></a>                             country <span class="sc">==</span> <span class="st">"Côte d'Ivoire"</span> <span class="sc">~</span> <span class="st">"Cote d'Ivoire"</span>,</span>
-<span id="cb10-7"><a href="#cb10-7" aria-hidden="true" tabindex="-1"></a>                             country <span class="sc">==</span> <span class="st">"Democratic People's Republic of Korea"</span> <span class="sc">~</span> <span class="st">"North Korea"</span>,</span>
-<span id="cb10-8"><a href="#cb10-8" aria-hidden="true" tabindex="-1"></a>                             country <span class="sc">==</span> <span class="st">"Democratic Republic of the Congo"</span> <span class="sc">~</span> <span class="st">"Democratic Republic of Congo"</span>,</span>
-<span id="cb10-9"><a href="#cb10-9" aria-hidden="true" tabindex="-1"></a>                             country <span class="sc">==</span> <span class="st">"Iran (Islamic Republic of)"</span> <span class="sc">~</span> <span class="st">"Iran"</span>,</span>
-<span id="cb10-10"><a href="#cb10-10" aria-hidden="true" tabindex="-1"></a>                             country <span class="sc">==</span> <span class="st">"Lao People's Democratic Republic"</span> <span class="sc">~</span> <span class="st">"Laos"</span>,</span>
-<span id="cb10-11"><a href="#cb10-11" aria-hidden="true" tabindex="-1"></a>                             country <span class="sc">==</span> <span class="st">"Micronesia (Federated States of)"</span> <span class="sc">~</span> <span class="st">"Micronesia"</span>,</span>
-<span id="cb10-12"><a href="#cb10-12" aria-hidden="true" tabindex="-1"></a>                             country <span class="sc">==</span> <span class="st">"Republic of Korea"</span> <span class="sc">~</span> <span class="st">"South Korea"</span>,</span>
-<span id="cb10-13"><a href="#cb10-13" aria-hidden="true" tabindex="-1"></a>                             country <span class="sc">==</span> <span class="st">"Republic of Moldova"</span> <span class="sc">~</span> <span class="st">"Moldova"</span>,</span>
-<span id="cb10-14"><a href="#cb10-14" aria-hidden="true" tabindex="-1"></a>                             country <span class="sc">==</span> <span class="st">"Russian Federation"</span> <span class="sc">~</span> <span class="st">"Russia"</span>,</span>
-<span id="cb10-15"><a href="#cb10-15" aria-hidden="true" tabindex="-1"></a>                             country <span class="sc">==</span> <span class="st">"Syrian Arab Republic"</span> <span class="sc">~</span> <span class="st">"Syria"</span>,</span>
-<span id="cb10-16"><a href="#cb10-16" aria-hidden="true" tabindex="-1"></a>                             country <span class="sc">==</span> <span class="st">"Taiwan (Province of China)"</span> <span class="sc">~</span> <span class="st">"Taiwan"</span>,</span>
-<span id="cb10-17"><a href="#cb10-17" aria-hidden="true" tabindex="-1"></a>                             country <span class="sc">==</span> <span class="st">"United Republic of Tanzania"</span> <span class="sc">~</span> <span class="st">"Tanzania"</span>,</span>
-<span id="cb10-18"><a href="#cb10-18" aria-hidden="true" tabindex="-1"></a>                             country <span class="sc">==</span> <span class="st">"Venezuela (Bolivarian Republic of)"</span> <span class="sc">~</span> <span class="st">"Venezuela"</span>,</span>
-<span id="cb10-19"><a href="#cb10-19" aria-hidden="true" tabindex="-1"></a>                             country <span class="sc">==</span> <span class="st">"Viet Nam"</span> <span class="sc">~</span> <span class="st">"Vietnam"</span>,</span>
-<span id="cb10-20"><a href="#cb10-20" aria-hidden="true" tabindex="-1"></a>                             <span class="cn">TRUE</span> <span class="sc">~</span> country))</span>
-<span id="cb10-21"><a href="#cb10-21" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb10-22"><a href="#cb10-22" aria-hidden="true" tabindex="-1"></a>world_region_cln <span class="ot">&lt;-</span> world_region <span class="sc">%&gt;%</span></span>
-<span id="cb10-23"><a href="#cb10-23" aria-hidden="true" tabindex="-1"></a>  <span class="fu">rename</span>(<span class="at">country =</span> Entity) <span class="sc">%&gt;%</span></span>
-<span id="cb10-24"><a href="#cb10-24" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">country =</span> <span class="fu">case_when</span>(country <span class="sc">==</span> <span class="st">"Timor"</span> <span class="sc">~</span> <span class="st">"Timor-Leste"</span>,</span>
-<span id="cb10-25"><a href="#cb10-25" aria-hidden="true" tabindex="-1"></a>                             country <span class="sc">==</span> <span class="st">"United States"</span> <span class="sc">~</span> <span class="st">"United States of America"</span>,</span>
-<span id="cb10-26"><a href="#cb10-26" aria-hidden="true" tabindex="-1"></a>                             <span class="cn">TRUE</span><span class="sc">~</span>country))</span>
-<span id="cb10-27"><a href="#cb10-27" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb10-28"><a href="#cb10-28" aria-hidden="true" tabindex="-1"></a><span class="do">### Progress check</span></span>
-<span id="cb10-29"><a href="#cb10-29" aria-hidden="true" tabindex="-1"></a><span class="fu">setdiff</span>(suicidedata_cln_ctry<span class="sc">$</span>country, world_region_cln<span class="sc">$</span>country)  <span class="sc">%&gt;%</span> </span>
-<span id="cb10-30"><a href="#cb10-30" aria-hidden="true" tabindex="-1"></a>  <span class="fu">enframe</span>(<span class="at">name =</span> <span class="cn">NULL</span>, <span class="at">value =</span> <span class="st">"diff"</span>) <span class="sc">%&gt;%</span> </span>
-<span id="cb10-31"><a href="#cb10-31" aria-hidden="true" tabindex="-1"></a>  knitr<span class="sc">::</span><span class="fu">kable</span>(<span class="at">caption =</span> <span class="st">"Remaining Cases"</span>, </span>
-<span id="cb10-32"><a href="#cb10-32" aria-hidden="true" tabindex="-1"></a>               <span class="at">row.names =</span> <span class="cn">TRUE</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb9"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a>suicidedata_cln_ctry <span class="ot">&lt;-</span> suicidedata_mod <span class="sc">%&gt;%</span></span>
+<span id="cb9-2"><a href="#cb9-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">rename</span>(<span class="at">country =</span> location_name) <span class="sc">%&gt;%</span></span>
+<span id="cb9-3"><a href="#cb9-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">country =</span> <span class="fu">case_when</span>(country <span class="sc">==</span> <span class="st">"Bolivia (Plurinational State of)"</span> <span class="sc">~</span> <span class="st">"Bolivia"</span>,</span>
+<span id="cb9-4"><a href="#cb9-4" aria-hidden="true" tabindex="-1"></a>                             country <span class="sc">==</span> <span class="st">"Brunei Darussalam"</span> <span class="sc">~</span> <span class="st">"Brunei"</span>,</span>
+<span id="cb9-5"><a href="#cb9-5" aria-hidden="true" tabindex="-1"></a>                             country <span class="sc">==</span> <span class="st">"Cabo Verde"</span> <span class="sc">~</span> <span class="st">"Cape Verde"</span>,</span>
+<span id="cb9-6"><a href="#cb9-6" aria-hidden="true" tabindex="-1"></a>                             country <span class="sc">==</span> <span class="st">"Côte d'Ivoire"</span> <span class="sc">~</span> <span class="st">"Cote d'Ivoire"</span>,</span>
+<span id="cb9-7"><a href="#cb9-7" aria-hidden="true" tabindex="-1"></a>                             country <span class="sc">==</span> <span class="st">"Democratic People's Republic of Korea"</span> <span class="sc">~</span> <span class="st">"North Korea"</span>,</span>
+<span id="cb9-8"><a href="#cb9-8" aria-hidden="true" tabindex="-1"></a>                             country <span class="sc">==</span> <span class="st">"Democratic Republic of the Congo"</span> <span class="sc">~</span> <span class="st">"Democratic Republic of Congo"</span>,</span>
+<span id="cb9-9"><a href="#cb9-9" aria-hidden="true" tabindex="-1"></a>                             country <span class="sc">==</span> <span class="st">"Iran (Islamic Republic of)"</span> <span class="sc">~</span> <span class="st">"Iran"</span>,</span>
+<span id="cb9-10"><a href="#cb9-10" aria-hidden="true" tabindex="-1"></a>                             country <span class="sc">==</span> <span class="st">"Lao People's Democratic Republic"</span> <span class="sc">~</span> <span class="st">"Laos"</span>,</span>
+<span id="cb9-11"><a href="#cb9-11" aria-hidden="true" tabindex="-1"></a>                             country <span class="sc">==</span> <span class="st">"Micronesia (Federated States of)"</span> <span class="sc">~</span> <span class="st">"Micronesia"</span>,</span>
+<span id="cb9-12"><a href="#cb9-12" aria-hidden="true" tabindex="-1"></a>                             country <span class="sc">==</span> <span class="st">"Republic of Korea"</span> <span class="sc">~</span> <span class="st">"South Korea"</span>,</span>
+<span id="cb9-13"><a href="#cb9-13" aria-hidden="true" tabindex="-1"></a>                             country <span class="sc">==</span> <span class="st">"Republic of Moldova"</span> <span class="sc">~</span> <span class="st">"Moldova"</span>,</span>
+<span id="cb9-14"><a href="#cb9-14" aria-hidden="true" tabindex="-1"></a>                             country <span class="sc">==</span> <span class="st">"Russian Federation"</span> <span class="sc">~</span> <span class="st">"Russia"</span>,</span>
+<span id="cb9-15"><a href="#cb9-15" aria-hidden="true" tabindex="-1"></a>                             country <span class="sc">==</span> <span class="st">"Syrian Arab Republic"</span> <span class="sc">~</span> <span class="st">"Syria"</span>,</span>
+<span id="cb9-16"><a href="#cb9-16" aria-hidden="true" tabindex="-1"></a>                             country <span class="sc">==</span> <span class="st">"Taiwan (Province of China)"</span> <span class="sc">~</span> <span class="st">"Taiwan"</span>,</span>
+<span id="cb9-17"><a href="#cb9-17" aria-hidden="true" tabindex="-1"></a>                             country <span class="sc">==</span> <span class="st">"United Republic of Tanzania"</span> <span class="sc">~</span> <span class="st">"Tanzania"</span>,</span>
+<span id="cb9-18"><a href="#cb9-18" aria-hidden="true" tabindex="-1"></a>                             country <span class="sc">==</span> <span class="st">"Venezuela (Bolivarian Republic of)"</span> <span class="sc">~</span> <span class="st">"Venezuela"</span>,</span>
+<span id="cb9-19"><a href="#cb9-19" aria-hidden="true" tabindex="-1"></a>                             country <span class="sc">==</span> <span class="st">"Viet Nam"</span> <span class="sc">~</span> <span class="st">"Vietnam"</span>,</span>
+<span id="cb9-20"><a href="#cb9-20" aria-hidden="true" tabindex="-1"></a>                             <span class="cn">TRUE</span> <span class="sc">~</span> country))</span>
+<span id="cb9-21"><a href="#cb9-21" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb9-22"><a href="#cb9-22" aria-hidden="true" tabindex="-1"></a>world_region_cln <span class="ot">&lt;-</span> world_region <span class="sc">%&gt;%</span></span>
+<span id="cb9-23"><a href="#cb9-23" aria-hidden="true" tabindex="-1"></a>  <span class="fu">rename</span>(<span class="at">country =</span> Entity) <span class="sc">%&gt;%</span></span>
+<span id="cb9-24"><a href="#cb9-24" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">country =</span> <span class="fu">case_when</span>(country <span class="sc">==</span> <span class="st">"Timor"</span> <span class="sc">~</span> <span class="st">"Timor-Leste"</span>,</span>
+<span id="cb9-25"><a href="#cb9-25" aria-hidden="true" tabindex="-1"></a>                             country <span class="sc">==</span> <span class="st">"United States"</span> <span class="sc">~</span> <span class="st">"United States of America"</span>,</span>
+<span id="cb9-26"><a href="#cb9-26" aria-hidden="true" tabindex="-1"></a>                             <span class="cn">TRUE</span><span class="sc">~</span>country))</span>
+<span id="cb9-27"><a href="#cb9-27" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb9-28"><a href="#cb9-28" aria-hidden="true" tabindex="-1"></a><span class="do">### Progress check</span></span>
+<span id="cb9-29"><a href="#cb9-29" aria-hidden="true" tabindex="-1"></a><span class="fu">setdiff</span>(suicidedata_cln_ctry<span class="sc">$</span>country, world_region_cln<span class="sc">$</span>country)  <span class="sc">%&gt;%</span> </span>
+<span id="cb9-30"><a href="#cb9-30" aria-hidden="true" tabindex="-1"></a>  <span class="fu">enframe</span>(<span class="at">name =</span> <span class="cn">NULL</span>, <span class="at">value =</span> <span class="st">"diff"</span>) <span class="sc">%&gt;%</span> </span>
+<span id="cb9-31"><a href="#cb9-31" aria-hidden="true" tabindex="-1"></a>  knitr<span class="sc">::</span><span class="fu">kable</span>(<span class="at">caption =</span> <span class="st">"Remaining Cases"</span>, </span>
+<span id="cb9-32"><a href="#cb9-32" aria-hidden="true" tabindex="-1"></a>               <span class="at">row.names =</span> <span class="cn">TRUE</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output-display">
 <table>
 <caption>Remaining Cases</caption>
@@ -680,18 +493,18 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 </div>
 <p>Joining the two datasets</p>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb11"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb11-1"><a href="#cb11-1" aria-hidden="true" tabindex="-1"></a>suicidedata_cln <span class="ot">=</span> suicidedata_cln_ctry <span class="sc">%&gt;%</span></span>
-<span id="cb11-2"><a href="#cb11-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">left_join</span>(world_region_cln, <span class="at">by =</span> <span class="fu">c</span>(<span class="st">'country'</span> <span class="ot">=</span> <span class="st">'country'</span>)) <span class="sc">%&gt;%</span></span>
-<span id="cb11-3"><a href="#cb11-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">select</span>(<span class="sc">!</span>Year) <span class="sc">%&gt;%</span></span>
-<span id="cb11-4"><a href="#cb11-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">rename</span>(<span class="at">code =</span> Code,</span>
-<span id="cb11-5"><a href="#cb11-5" aria-hidden="true" tabindex="-1"></a>         <span class="at">region =</span> World_RegionbyWorld_Bank) <span class="sc">%&gt;%</span></span>
-<span id="cb11-6"><a href="#cb11-6" aria-hidden="true" tabindex="-1"></a>  <span class="fu">relocate</span>(code<span class="sc">:</span>region, <span class="at">.after =</span> country)</span>
-<span id="cb11-7"><a href="#cb11-7" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb11-8"><a href="#cb11-8" aria-hidden="true" tabindex="-1"></a>suicidedata_cln</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb10"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb10-1"><a href="#cb10-1" aria-hidden="true" tabindex="-1"></a>suicidedata_cln <span class="ot">=</span> suicidedata_cln_ctry <span class="sc">%&gt;%</span></span>
+<span id="cb10-2"><a href="#cb10-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">left_join</span>(world_region_cln, <span class="at">by =</span> <span class="fu">c</span>(<span class="st">'country'</span> <span class="ot">=</span> <span class="st">'country'</span>)) <span class="sc">%&gt;%</span></span>
+<span id="cb10-3"><a href="#cb10-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">select</span>(<span class="sc">!</span>Year) <span class="sc">%&gt;%</span></span>
+<span id="cb10-4"><a href="#cb10-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">rename</span>(<span class="at">code =</span> Code,</span>
+<span id="cb10-5"><a href="#cb10-5" aria-hidden="true" tabindex="-1"></a>         <span class="at">region =</span> World_RegionbyWorld_Bank) <span class="sc">%&gt;%</span></span>
+<span id="cb10-6"><a href="#cb10-6" aria-hidden="true" tabindex="-1"></a>  <span class="fu">relocate</span>(code<span class="sc">:</span>region, <span class="at">.after =</span> country)</span>
+<span id="cb10-7"><a href="#cb10-7" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb10-8"><a href="#cb10-8" aria-hidden="true" tabindex="-1"></a>suicidedata_cln</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code># A tibble: 330,480 × 13
    country    code  region sex_n…¹ age_n…² cause…³  year suici…⁴ suici…⁵ suici…⁶
-   &lt;chr&gt;      &lt;chr&gt; &lt;chr&gt;  &lt;chr&gt;   &lt;chr&gt;   &lt;chr&gt;   &lt;dbl&gt;   &lt;dbl&gt;   &lt;dbl&gt;   &lt;dbl&gt;
+   &lt;chr&gt;      &lt;chr&gt; &lt;chr&gt;  &lt;chr&gt;   &lt;chr&gt;   &lt;chr&gt;   &lt;int&gt;   &lt;dbl&gt;   &lt;dbl&gt;   &lt;dbl&gt;
  1 Afghanist… AFG   South… Male    10-14 … Self-h…  1991   10.5  0.00830   1.43 
  2 Afghanist… AFG   South… Female  10-14 … Self-h…  1991    1.97 0.00174   0.281
  3 Afghanist… AFG   South… Both    10-14 … Self-h…  1991   12.4  0.00519   0.866
@@ -715,14 +528,14 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <section id="age-standardized-rate-total-and-gender---anchor" class="level4">
 <h4 class="anchored" data-anchor-id="age-standardized-rate-total-and-gender---anchor">5.1 Age-Standardized Rate (Total and Gender) - Anchor</h4>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb13"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb13-1"><a href="#cb13-1" aria-hidden="true" tabindex="-1"></a>suicidedata_age_std <span class="ot">&lt;-</span> suicidedata_cln <span class="sc">%&gt;%</span></span>
-<span id="cb13-2"><a href="#cb13-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">filter</span>(age_name <span class="sc">==</span> <span class="st">"Age-standardized"</span>) <span class="sc">%&gt;%</span></span>
-<span id="cb13-3"><a href="#cb13-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">pivot_wider</span>(<span class="at">names_from =</span> sex_name,</span>
-<span id="cb13-4"><a href="#cb13-4" aria-hidden="true" tabindex="-1"></a>              <span class="at">values_from =</span> suicide_Rate) <span class="sc">%&gt;%</span></span>
-<span id="cb13-5"><a href="#cb13-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">select</span>(<span class="fu">c</span>(<span class="dv">1</span>,<span class="dv">2</span>,<span class="dv">3</span>,<span class="dv">6</span>,<span class="dv">12</span>,<span class="dv">13</span>,<span class="dv">14</span>)) <span class="sc">%&gt;%</span></span>
-<span id="cb13-6"><a href="#cb13-6" aria-hidden="true" tabindex="-1"></a>  <span class="fu">rename</span>(<span class="st">"AS_SR"</span> <span class="ot">=</span> <span class="st">"Both"</span>,</span>
-<span id="cb13-7"><a href="#cb13-7" aria-hidden="true" tabindex="-1"></a>         <span class="st">"AS_SR_M"</span> <span class="ot">=</span> <span class="st">"Male"</span>,</span>
-<span id="cb13-8"><a href="#cb13-8" aria-hidden="true" tabindex="-1"></a>         <span class="st">"AS_SR_F"</span> <span class="ot">=</span> <span class="st">"Female"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb12"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb12-1"><a href="#cb12-1" aria-hidden="true" tabindex="-1"></a>suicidedata_age_std <span class="ot">&lt;-</span> suicidedata_cln <span class="sc">%&gt;%</span></span>
+<span id="cb12-2"><a href="#cb12-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">filter</span>(age_name <span class="sc">==</span> <span class="st">"Age-standardized"</span>) <span class="sc">%&gt;%</span></span>
+<span id="cb12-3"><a href="#cb12-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">pivot_wider</span>(<span class="at">names_from =</span> sex_name,</span>
+<span id="cb12-4"><a href="#cb12-4" aria-hidden="true" tabindex="-1"></a>              <span class="at">values_from =</span> suicide_Rate) <span class="sc">%&gt;%</span></span>
+<span id="cb12-5"><a href="#cb12-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">select</span>(<span class="fu">c</span>(<span class="dv">1</span>,<span class="dv">2</span>,<span class="dv">3</span>,<span class="dv">6</span>,<span class="dv">12</span>,<span class="dv">13</span>,<span class="dv">14</span>)) <span class="sc">%&gt;%</span></span>
+<span id="cb12-6"><a href="#cb12-6" aria-hidden="true" tabindex="-1"></a>  <span class="fu">rename</span>(<span class="st">"AS_SR"</span> <span class="ot">=</span> <span class="st">"Both"</span>,</span>
+<span id="cb12-7"><a href="#cb12-7" aria-hidden="true" tabindex="-1"></a>         <span class="st">"AS_SR_M"</span> <span class="ot">=</span> <span class="st">"Male"</span>,</span>
+<span id="cb12-8"><a href="#cb12-8" aria-hidden="true" tabindex="-1"></a>         <span class="st">"AS_SR_F"</span> <span class="ot">=</span> <span class="st">"Female"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 </section>
 <section id="age-group-total" class="level4">
@@ -733,33 +546,33 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <li><p>aged: age group 65 and above,</p></li>
 </ul>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb14"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb14-1"><a href="#cb14-1" aria-hidden="true" tabindex="-1"></a>suicide_number_age <span class="ot">&lt;-</span> suicidedata_cln <span class="sc">%&gt;%</span></span>
-<span id="cb14-2"><a href="#cb14-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">filter</span>(sex_name <span class="sc">==</span> <span class="st">"Both"</span>,</span>
-<span id="cb14-3"><a href="#cb14-3" aria-hidden="true" tabindex="-1"></a>         <span class="sc">!</span>age_name <span class="sc">%in%</span> <span class="fu">c</span>(<span class="st">"All ages"</span>, <span class="st">"Age-standardized"</span>)) <span class="sc">%&gt;%</span></span>
-<span id="cb14-4"><a href="#cb14-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">select</span>(<span class="fu">c</span>(<span class="dv">2</span>,<span class="dv">5</span>,<span class="dv">7</span>,<span class="dv">8</span>)) <span class="sc">%&gt;%</span></span>
-<span id="cb14-5"><a href="#cb14-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">pivot_wider</span>(<span class="at">names_from =</span> age_name,</span>
-<span id="cb14-6"><a href="#cb14-6" aria-hidden="true" tabindex="-1"></a>              <span class="at">values_from =</span> suicide_Number) <span class="sc">%&gt;%</span></span>
-<span id="cb14-7"><a href="#cb14-7" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">young_SN =</span> <span class="fu">rowSums</span>(.[<span class="dv">3</span><span class="sc">:</span><span class="dv">5</span>]),</span>
-<span id="cb14-8"><a href="#cb14-8" aria-hidden="true" tabindex="-1"></a>         <span class="at">econ_active_SN =</span> <span class="fu">rowSums</span>(.[<span class="dv">6</span><span class="sc">:</span><span class="dv">13</span>]),</span>
-<span id="cb14-9"><a href="#cb14-9" aria-hidden="true" tabindex="-1"></a>         <span class="at">aged_SN =</span> <span class="fu">rowSums</span>(.[<span class="dv">14</span><span class="sc">:</span><span class="dv">18</span>]),</span>
-<span id="cb14-10"><a href="#cb14-10" aria-hidden="true" tabindex="-1"></a>         <span class="at">total_SN =</span> young_SN<span class="sc">+</span>econ_active_SN<span class="sc">+</span>aged_SN) <span class="sc">%&gt;%</span></span>
-<span id="cb14-11"><a href="#cb14-11" aria-hidden="true" tabindex="-1"></a>  <span class="fu">select</span>(<span class="fu">c</span>(<span class="dv">1</span>,<span class="dv">2</span>,<span class="dv">19</span>,<span class="dv">20</span>,<span class="dv">21</span>,<span class="dv">22</span>))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb13"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb13-1"><a href="#cb13-1" aria-hidden="true" tabindex="-1"></a>suicide_number_age <span class="ot">&lt;-</span> suicidedata_cln <span class="sc">%&gt;%</span></span>
+<span id="cb13-2"><a href="#cb13-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">filter</span>(sex_name <span class="sc">==</span> <span class="st">"Both"</span>,</span>
+<span id="cb13-3"><a href="#cb13-3" aria-hidden="true" tabindex="-1"></a>         <span class="sc">!</span>age_name <span class="sc">%in%</span> <span class="fu">c</span>(<span class="st">"All ages"</span>, <span class="st">"Age-standardized"</span>)) <span class="sc">%&gt;%</span></span>
+<span id="cb13-4"><a href="#cb13-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">select</span>(<span class="fu">c</span>(<span class="dv">2</span>,<span class="dv">5</span>,<span class="dv">7</span>,<span class="dv">8</span>)) <span class="sc">%&gt;%</span></span>
+<span id="cb13-5"><a href="#cb13-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">pivot_wider</span>(<span class="at">names_from =</span> age_name,</span>
+<span id="cb13-6"><a href="#cb13-6" aria-hidden="true" tabindex="-1"></a>              <span class="at">values_from =</span> suicide_Number) <span class="sc">%&gt;%</span></span>
+<span id="cb13-7"><a href="#cb13-7" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">young_SN =</span> <span class="fu">rowSums</span>(.[<span class="dv">3</span><span class="sc">:</span><span class="dv">5</span>]),</span>
+<span id="cb13-8"><a href="#cb13-8" aria-hidden="true" tabindex="-1"></a>         <span class="at">econ_active_SN =</span> <span class="fu">rowSums</span>(.[<span class="dv">6</span><span class="sc">:</span><span class="dv">13</span>]),</span>
+<span id="cb13-9"><a href="#cb13-9" aria-hidden="true" tabindex="-1"></a>         <span class="at">aged_SN =</span> <span class="fu">rowSums</span>(.[<span class="dv">14</span><span class="sc">:</span><span class="dv">18</span>]),</span>
+<span id="cb13-10"><a href="#cb13-10" aria-hidden="true" tabindex="-1"></a>         <span class="at">total_SN =</span> young_SN<span class="sc">+</span>econ_active_SN<span class="sc">+</span>aged_SN) <span class="sc">%&gt;%</span></span>
+<span id="cb13-11"><a href="#cb13-11" aria-hidden="true" tabindex="-1"></a>  <span class="fu">select</span>(<span class="fu">c</span>(<span class="dv">1</span>,<span class="dv">2</span>,<span class="dv">19</span>,<span class="dv">20</span>,<span class="dv">21</span>,<span class="dv">22</span>))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 </section>
 <section id="population-size-age-group" class="level4">
 <h4 class="anchored" data-anchor-id="population-size-age-group">5.3 Population Size Age-Group</h4>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb15"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb15-1"><a href="#cb15-1" aria-hidden="true" tabindex="-1"></a>pop_size_age <span class="ot">&lt;-</span> suicidedata_cln <span class="sc">%&gt;%</span></span>
-<span id="cb15-2"><a href="#cb15-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">filter</span>(sex_name <span class="sc">==</span> <span class="st">"Both"</span>,</span>
-<span id="cb15-3"><a href="#cb15-3" aria-hidden="true" tabindex="-1"></a>         <span class="sc">!</span>age_name <span class="sc">%in%</span> <span class="fu">c</span>(<span class="st">"All ages"</span>, <span class="st">"Age-standardized"</span>)) <span class="sc">%&gt;%</span></span>
-<span id="cb15-4"><a href="#cb15-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">select</span>(<span class="fu">c</span>(<span class="dv">2</span>,<span class="dv">5</span>,<span class="dv">7</span>,<span class="dv">11</span>)) <span class="sc">%&gt;%</span></span>
-<span id="cb15-5"><a href="#cb15-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">pivot_wider</span>(<span class="at">names_from =</span> age_name,</span>
-<span id="cb15-6"><a href="#cb15-6" aria-hidden="true" tabindex="-1"></a>              <span class="at">values_from =</span> population_size) <span class="sc">%&gt;%</span></span>
-<span id="cb15-7"><a href="#cb15-7" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">young_pop =</span> <span class="fu">rowSums</span>(.[<span class="dv">3</span><span class="sc">:</span><span class="dv">5</span>]),</span>
-<span id="cb15-8"><a href="#cb15-8" aria-hidden="true" tabindex="-1"></a>         <span class="at">econ_active_pop =</span> <span class="fu">rowSums</span>(.[<span class="dv">6</span><span class="sc">:</span><span class="dv">13</span>]),</span>
-<span id="cb15-9"><a href="#cb15-9" aria-hidden="true" tabindex="-1"></a>         <span class="at">aged_pop =</span> <span class="fu">rowSums</span>(.[<span class="dv">14</span><span class="sc">:</span><span class="dv">18</span>]),</span>
-<span id="cb15-10"><a href="#cb15-10" aria-hidden="true" tabindex="-1"></a>         <span class="at">total_pop =</span> young_pop<span class="sc">+</span>econ_active_pop<span class="sc">+</span>aged_pop) <span class="sc">%&gt;%</span></span>
-<span id="cb15-11"><a href="#cb15-11" aria-hidden="true" tabindex="-1"></a>  <span class="fu">select</span>(<span class="fu">c</span>(<span class="dv">1</span>,<span class="dv">2</span>,<span class="dv">19</span>,<span class="dv">20</span>,<span class="dv">21</span>,<span class="dv">22</span>))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb14"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb14-1"><a href="#cb14-1" aria-hidden="true" tabindex="-1"></a>pop_size_age <span class="ot">&lt;-</span> suicidedata_cln <span class="sc">%&gt;%</span></span>
+<span id="cb14-2"><a href="#cb14-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">filter</span>(sex_name <span class="sc">==</span> <span class="st">"Both"</span>,</span>
+<span id="cb14-3"><a href="#cb14-3" aria-hidden="true" tabindex="-1"></a>         <span class="sc">!</span>age_name <span class="sc">%in%</span> <span class="fu">c</span>(<span class="st">"All ages"</span>, <span class="st">"Age-standardized"</span>)) <span class="sc">%&gt;%</span></span>
+<span id="cb14-4"><a href="#cb14-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">select</span>(<span class="fu">c</span>(<span class="dv">2</span>,<span class="dv">5</span>,<span class="dv">7</span>,<span class="dv">11</span>)) <span class="sc">%&gt;%</span></span>
+<span id="cb14-5"><a href="#cb14-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">pivot_wider</span>(<span class="at">names_from =</span> age_name,</span>
+<span id="cb14-6"><a href="#cb14-6" aria-hidden="true" tabindex="-1"></a>              <span class="at">values_from =</span> population_size) <span class="sc">%&gt;%</span></span>
+<span id="cb14-7"><a href="#cb14-7" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">young_pop =</span> <span class="fu">rowSums</span>(.[<span class="dv">3</span><span class="sc">:</span><span class="dv">5</span>]),</span>
+<span id="cb14-8"><a href="#cb14-8" aria-hidden="true" tabindex="-1"></a>         <span class="at">econ_active_pop =</span> <span class="fu">rowSums</span>(.[<span class="dv">6</span><span class="sc">:</span><span class="dv">13</span>]),</span>
+<span id="cb14-9"><a href="#cb14-9" aria-hidden="true" tabindex="-1"></a>         <span class="at">aged_pop =</span> <span class="fu">rowSums</span>(.[<span class="dv">14</span><span class="sc">:</span><span class="dv">18</span>]),</span>
+<span id="cb14-10"><a href="#cb14-10" aria-hidden="true" tabindex="-1"></a>         <span class="at">total_pop =</span> young_pop<span class="sc">+</span>econ_active_pop<span class="sc">+</span>aged_pop) <span class="sc">%&gt;%</span></span>
+<span id="cb14-11"><a href="#cb14-11" aria-hidden="true" tabindex="-1"></a>  <span class="fu">select</span>(<span class="fu">c</span>(<span class="dv">1</span>,<span class="dv">2</span>,<span class="dv">19</span>,<span class="dv">20</span>,<span class="dv">21</span>,<span class="dv">22</span>))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 <p>From above, we can calculate suicide rate for young, econ_active, and aged by dividing SN by population * 100,000</p>
 <p>Do we need to do per gender as well?</p>
@@ -768,103 +581,103 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <h4 class="anchored" data-anchor-id="gdp-per-capita">5.4 GDP per capita</h4>
 <p>Reference - https://ourworldindata.org/grapher/gdp-per-capita-worldbank?tab=chart</p>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb16"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb16-1"><a href="#cb16-1" aria-hidden="true" tabindex="-1"></a>gdp_per_capita <span class="ot">&lt;-</span> <span class="fu">read_csv</span>(<span class="st">"data/gdp-per-capita-worldbank.csv"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb15"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb15-1"><a href="#cb15-1" aria-hidden="true" tabindex="-1"></a>gdp_per_capita <span class="ot">&lt;-</span> <span class="fu">read_csv</span>(<span class="st">"data/gdp-per-capita-worldbank.csv"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb17"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb17-1"><a href="#cb17-1" aria-hidden="true" tabindex="-1"></a>gdp_per_capita <span class="ot">&lt;-</span> gdp_per_capita <span class="sc">%&gt;%</span></span>
-<span id="cb17-2"><a href="#cb17-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">select</span>(<span class="dv">2</span>,<span class="dv">3</span>,<span class="dv">4</span>) <span class="sc">%&gt;%</span></span>
-<span id="cb17-3"><a href="#cb17-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">rename</span>(<span class="st">"code"</span> <span class="ot">=</span> <span class="st">"Code"</span>,</span>
-<span id="cb17-4"><a href="#cb17-4" aria-hidden="true" tabindex="-1"></a>         <span class="st">"year"</span> <span class="ot">=</span> <span class="st">"Year"</span>,</span>
-<span id="cb17-5"><a href="#cb17-5" aria-hidden="true" tabindex="-1"></a>         <span class="st">"gdp_per_capita"</span> <span class="ot">=</span> <span class="st">"GDP per capita, PPP (constant 2017 international $)"</span>) <span class="sc">%&gt;%</span></span>
-<span id="cb17-6"><a href="#cb17-6" aria-hidden="true" tabindex="-1"></a>  <span class="fu">na.omit</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb16"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb16-1"><a href="#cb16-1" aria-hidden="true" tabindex="-1"></a>gdp_per_capita <span class="ot">&lt;-</span> gdp_per_capita <span class="sc">%&gt;%</span></span>
+<span id="cb16-2"><a href="#cb16-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">select</span>(<span class="dv">2</span>,<span class="dv">3</span>,<span class="dv">4</span>) <span class="sc">%&gt;%</span></span>
+<span id="cb16-3"><a href="#cb16-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">rename</span>(<span class="st">"code"</span> <span class="ot">=</span> <span class="st">"Code"</span>,</span>
+<span id="cb16-4"><a href="#cb16-4" aria-hidden="true" tabindex="-1"></a>         <span class="st">"year"</span> <span class="ot">=</span> <span class="st">"Year"</span>,</span>
+<span id="cb16-5"><a href="#cb16-5" aria-hidden="true" tabindex="-1"></a>         <span class="st">"gdp_per_capita"</span> <span class="ot">=</span> <span class="st">"GDP per capita, PPP (constant 2017 international $)"</span>) <span class="sc">%&gt;%</span></span>
+<span id="cb16-6"><a href="#cb16-6" aria-hidden="true" tabindex="-1"></a>  <span class="fu">na.omit</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 </section>
 <section id="human-development-index" class="level4">
 <h4 class="anchored" data-anchor-id="human-development-index">5.5 Human Development Index</h4>
 <p>Reference - https://ourworldindata.org/grapher/human-development-index</p>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb18"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb18-1"><a href="#cb18-1" aria-hidden="true" tabindex="-1"></a>hdi <span class="ot">&lt;-</span> <span class="fu">read_csv</span>(<span class="st">"data/human-development-index.csv"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb17"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb17-1"><a href="#cb17-1" aria-hidden="true" tabindex="-1"></a>hdi <span class="ot">&lt;-</span> <span class="fu">read_csv</span>(<span class="st">"data/human-development-index.csv"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb19"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb19-1"><a href="#cb19-1" aria-hidden="true" tabindex="-1"></a>hdi <span class="ot">&lt;-</span> hdi <span class="sc">%&gt;%</span></span>
-<span id="cb19-2"><a href="#cb19-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">select</span>(<span class="dv">2</span>,<span class="dv">3</span>,<span class="dv">4</span>) <span class="sc">%&gt;%</span></span>
-<span id="cb19-3"><a href="#cb19-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">rename</span>(<span class="st">"code"</span> <span class="ot">=</span> <span class="st">"Code"</span>,</span>
-<span id="cb19-4"><a href="#cb19-4" aria-hidden="true" tabindex="-1"></a>         <span class="st">"year"</span> <span class="ot">=</span> <span class="st">"Year"</span>,</span>
-<span id="cb19-5"><a href="#cb19-5" aria-hidden="true" tabindex="-1"></a>         <span class="st">"hdi"</span> <span class="ot">=</span> <span class="st">"Human Development Index"</span>) <span class="sc">%&gt;%</span></span>
-<span id="cb19-6"><a href="#cb19-6" aria-hidden="true" tabindex="-1"></a>  <span class="fu">na.omit</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb18"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb18-1"><a href="#cb18-1" aria-hidden="true" tabindex="-1"></a>hdi <span class="ot">&lt;-</span> hdi <span class="sc">%&gt;%</span></span>
+<span id="cb18-2"><a href="#cb18-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">select</span>(<span class="dv">2</span>,<span class="dv">3</span>,<span class="dv">4</span>) <span class="sc">%&gt;%</span></span>
+<span id="cb18-3"><a href="#cb18-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">rename</span>(<span class="st">"code"</span> <span class="ot">=</span> <span class="st">"Code"</span>,</span>
+<span id="cb18-4"><a href="#cb18-4" aria-hidden="true" tabindex="-1"></a>         <span class="st">"year"</span> <span class="ot">=</span> <span class="st">"Year"</span>,</span>
+<span id="cb18-5"><a href="#cb18-5" aria-hidden="true" tabindex="-1"></a>         <span class="st">"hdi"</span> <span class="ot">=</span> <span class="st">"Human Development Index"</span>) <span class="sc">%&gt;%</span></span>
+<span id="cb18-6"><a href="#cb18-6" aria-hidden="true" tabindex="-1"></a>  <span class="fu">na.omit</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 </section>
 <section id="depression-prevalence" class="level4">
 <h4 class="anchored" data-anchor-id="depression-prevalence">5.6 Depression Prevalence</h4>
 <p>Reference - https://ourworldindata.org/grapher/suicide-rates-vs-prevalence-of-depression</p>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb20"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb20-1"><a href="#cb20-1" aria-hidden="true" tabindex="-1"></a>depr <span class="ot">&lt;-</span> <span class="fu">read_csv</span>(<span class="st">"data/suicide-rates-vs-prevalence-of-depression.csv"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb19"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb19-1"><a href="#cb19-1" aria-hidden="true" tabindex="-1"></a>depr <span class="ot">&lt;-</span> <span class="fu">read_csv</span>(<span class="st">"data/suicide-rates-vs-prevalence-of-depression.csv"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb21"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb21-1"><a href="#cb21-1" aria-hidden="true" tabindex="-1"></a>depr <span class="ot">&lt;-</span> depr <span class="sc">%&gt;%</span></span>
-<span id="cb21-2"><a href="#cb21-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">select</span>(<span class="dv">2</span>,<span class="dv">3</span>,<span class="dv">5</span>) <span class="sc">%&gt;%</span></span>
-<span id="cb21-3"><a href="#cb21-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">rename</span>(<span class="st">"code"</span> <span class="ot">=</span> <span class="st">"Code"</span>,</span>
-<span id="cb21-4"><a href="#cb21-4" aria-hidden="true" tabindex="-1"></a>         <span class="st">"year"</span> <span class="ot">=</span> <span class="st">"Year"</span>,</span>
-<span id="cb21-5"><a href="#cb21-5" aria-hidden="true" tabindex="-1"></a>         <span class="st">"depr_rate"</span> <span class="ot">=</span> <span class="st">"Prevalence - Depressive disorders - Sex: Both - Age: Age-standardized (Rate)"</span>) <span class="sc">%&gt;%</span></span>
-<span id="cb21-6"><a href="#cb21-6" aria-hidden="true" tabindex="-1"></a>  <span class="fu">filter</span>(year <span class="sc">%in%</span> (<span class="dv">1990</span><span class="sc">:</span><span class="dv">2019</span>)) <span class="sc">%&gt;%</span></span>
-<span id="cb21-7"><a href="#cb21-7" aria-hidden="true" tabindex="-1"></a>  <span class="fu">na.omit</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb20"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb20-1"><a href="#cb20-1" aria-hidden="true" tabindex="-1"></a>depr <span class="ot">&lt;-</span> depr <span class="sc">%&gt;%</span></span>
+<span id="cb20-2"><a href="#cb20-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">select</span>(<span class="dv">2</span>,<span class="dv">3</span>,<span class="dv">5</span>) <span class="sc">%&gt;%</span></span>
+<span id="cb20-3"><a href="#cb20-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">rename</span>(<span class="st">"code"</span> <span class="ot">=</span> <span class="st">"Code"</span>,</span>
+<span id="cb20-4"><a href="#cb20-4" aria-hidden="true" tabindex="-1"></a>         <span class="st">"year"</span> <span class="ot">=</span> <span class="st">"Year"</span>,</span>
+<span id="cb20-5"><a href="#cb20-5" aria-hidden="true" tabindex="-1"></a>         <span class="st">"depr_rate"</span> <span class="ot">=</span> <span class="st">"Prevalence - Depressive disorders - Sex: Both - Age: Age-standardized (Rate)"</span>) <span class="sc">%&gt;%</span></span>
+<span id="cb20-6"><a href="#cb20-6" aria-hidden="true" tabindex="-1"></a>  <span class="fu">filter</span>(year <span class="sc">%in%</span> (<span class="dv">1990</span><span class="sc">:</span><span class="dv">2019</span>)) <span class="sc">%&gt;%</span></span>
+<span id="cb20-7"><a href="#cb20-7" aria-hidden="true" tabindex="-1"></a>  <span class="fu">na.omit</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 </section>
 <section id="income-inequality" class="level4">
 <h4 class="anchored" data-anchor-id="income-inequality">5.7 Income Inequality</h4>
 <p>Reference - https://ourworldindata.org/grapher/suicide-rate-vs-income-inequality</p>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb22"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb22-1"><a href="#cb22-1" aria-hidden="true" tabindex="-1"></a>gini <span class="ot">&lt;-</span> <span class="fu">read_csv</span>(<span class="st">"data/suicide-rate-vs-income-inequality.csv"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb21"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb21-1"><a href="#cb21-1" aria-hidden="true" tabindex="-1"></a>gini <span class="ot">&lt;-</span> <span class="fu">read_csv</span>(<span class="st">"data/suicide-rate-vs-income-inequality.csv"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb23"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb23-1"><a href="#cb23-1" aria-hidden="true" tabindex="-1"></a>gini <span class="ot">&lt;-</span> gini <span class="sc">%&gt;%</span></span>
-<span id="cb23-2"><a href="#cb23-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">select</span>(<span class="dv">2</span>,<span class="dv">3</span>,<span class="dv">5</span>) <span class="sc">%&gt;%</span></span>
-<span id="cb23-3"><a href="#cb23-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">rename</span>(<span class="st">"code"</span> <span class="ot">=</span> <span class="st">"Code"</span>,</span>
-<span id="cb23-4"><a href="#cb23-4" aria-hidden="true" tabindex="-1"></a>         <span class="st">"year"</span> <span class="ot">=</span> <span class="st">"Year"</span>,</span>
-<span id="cb23-5"><a href="#cb23-5" aria-hidden="true" tabindex="-1"></a>         <span class="st">"gini"</span> <span class="ot">=</span> <span class="st">"Gini coefficient"</span>) <span class="sc">%&gt;%</span></span>
-<span id="cb23-6"><a href="#cb23-6" aria-hidden="true" tabindex="-1"></a>  <span class="fu">filter</span>(year <span class="sc">%in%</span> (<span class="dv">1990</span><span class="sc">:</span><span class="dv">2019</span>)) <span class="sc">%&gt;%</span></span>
-<span id="cb23-7"><a href="#cb23-7" aria-hidden="true" tabindex="-1"></a>  <span class="fu">na.omit</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb22"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb22-1"><a href="#cb22-1" aria-hidden="true" tabindex="-1"></a>gini <span class="ot">&lt;-</span> gini <span class="sc">%&gt;%</span></span>
+<span id="cb22-2"><a href="#cb22-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">select</span>(<span class="dv">2</span>,<span class="dv">3</span>,<span class="dv">5</span>) <span class="sc">%&gt;%</span></span>
+<span id="cb22-3"><a href="#cb22-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">rename</span>(<span class="st">"code"</span> <span class="ot">=</span> <span class="st">"Code"</span>,</span>
+<span id="cb22-4"><a href="#cb22-4" aria-hidden="true" tabindex="-1"></a>         <span class="st">"year"</span> <span class="ot">=</span> <span class="st">"Year"</span>,</span>
+<span id="cb22-5"><a href="#cb22-5" aria-hidden="true" tabindex="-1"></a>         <span class="st">"gini"</span> <span class="ot">=</span> <span class="st">"Gini coefficient"</span>) <span class="sc">%&gt;%</span></span>
+<span id="cb22-6"><a href="#cb22-6" aria-hidden="true" tabindex="-1"></a>  <span class="fu">filter</span>(year <span class="sc">%in%</span> (<span class="dv">1990</span><span class="sc">:</span><span class="dv">2019</span>)) <span class="sc">%&gt;%</span></span>
+<span id="cb22-7"><a href="#cb22-7" aria-hidden="true" tabindex="-1"></a>  <span class="fu">na.omit</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 </section>
 <section id="violent-death" class="level4">
 <h4 class="anchored" data-anchor-id="violent-death">5.8 Violent Death</h4>
 <p>Reference - https://ourworldindata.org/grapher/suicide-vs-violent-deaths</p>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb24"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb24-1"><a href="#cb24-1" aria-hidden="true" tabindex="-1"></a>violent <span class="ot">&lt;-</span> <span class="fu">read_csv</span>(<span class="st">"data/suicide-vs-violent-deaths.csv"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb23"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb23-1"><a href="#cb23-1" aria-hidden="true" tabindex="-1"></a>violent <span class="ot">&lt;-</span> <span class="fu">read_csv</span>(<span class="st">"data/suicide-vs-violent-deaths.csv"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb25"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb25-1"><a href="#cb25-1" aria-hidden="true" tabindex="-1"></a>violent <span class="ot">&lt;-</span> violent <span class="sc">%&gt;%</span></span>
-<span id="cb25-2"><a href="#cb25-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">select</span>(<span class="dv">2</span>,<span class="dv">3</span>,<span class="dv">5</span>) <span class="sc">%&gt;%</span></span>
-<span id="cb25-3"><a href="#cb25-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">rename</span>(<span class="st">"code"</span> <span class="ot">=</span> <span class="st">"Code"</span>,</span>
-<span id="cb25-4"><a href="#cb25-4" aria-hidden="true" tabindex="-1"></a>         <span class="st">"year"</span> <span class="ot">=</span> <span class="st">"Year"</span>,</span>
-<span id="cb25-5"><a href="#cb25-5" aria-hidden="true" tabindex="-1"></a>         <span class="st">"violent_death_rate"</span> <span class="ot">=</span> <span class="st">"Deaths - All forms of violence - OWID - Sex: Both - Age: Age-standardized (Rate)"</span>) <span class="sc">%&gt;%</span></span>
-<span id="cb25-6"><a href="#cb25-6" aria-hidden="true" tabindex="-1"></a>  <span class="fu">filter</span>(year <span class="sc">%in%</span> (<span class="dv">1990</span><span class="sc">:</span><span class="dv">2019</span>)) <span class="sc">%&gt;%</span></span>
-<span id="cb25-7"><a href="#cb25-7" aria-hidden="true" tabindex="-1"></a>  <span class="fu">na.omit</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb24"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb24-1"><a href="#cb24-1" aria-hidden="true" tabindex="-1"></a>violent <span class="ot">&lt;-</span> violent <span class="sc">%&gt;%</span></span>
+<span id="cb24-2"><a href="#cb24-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">select</span>(<span class="dv">2</span>,<span class="dv">3</span>,<span class="dv">5</span>) <span class="sc">%&gt;%</span></span>
+<span id="cb24-3"><a href="#cb24-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">rename</span>(<span class="st">"code"</span> <span class="ot">=</span> <span class="st">"Code"</span>,</span>
+<span id="cb24-4"><a href="#cb24-4" aria-hidden="true" tabindex="-1"></a>         <span class="st">"year"</span> <span class="ot">=</span> <span class="st">"Year"</span>,</span>
+<span id="cb24-5"><a href="#cb24-5" aria-hidden="true" tabindex="-1"></a>         <span class="st">"violent_death_rate"</span> <span class="ot">=</span> <span class="st">"Deaths - All forms of violence - OWID - Sex: Both - Age: Age-standardized (Rate)"</span>) <span class="sc">%&gt;%</span></span>
+<span id="cb24-6"><a href="#cb24-6" aria-hidden="true" tabindex="-1"></a>  <span class="fu">filter</span>(year <span class="sc">%in%</span> (<span class="dv">1990</span><span class="sc">:</span><span class="dv">2019</span>)) <span class="sc">%&gt;%</span></span>
+<span id="cb24-7"><a href="#cb24-7" aria-hidden="true" tabindex="-1"></a>  <span class="fu">na.omit</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 <p>FEEL FREE TO ADD SOMEMORE</p>
 </section>
 <section id="joining" class="level4">
 <h4 class="anchored" data-anchor-id="joining">5.8 Joining</h4>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb26"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb26-1"><a href="#cb26-1" aria-hidden="true" tabindex="-1"></a>suicidedata_complete <span class="ot">&lt;-</span> <span class="fu">left_join</span>(suicidedata_age_std, suicide_number_age, <span class="at">by =</span> <span class="fu">c</span>(<span class="st">'code'</span> <span class="ot">=</span> <span class="st">'code'</span>, <span class="st">'year'</span> <span class="ot">=</span> <span class="st">'year'</span>)) <span class="sc">%&gt;%</span> </span>
-<span id="cb26-2"><a href="#cb26-2" aria-hidden="true" tabindex="-1"></a>  </span>
-<span id="cb26-3"><a href="#cb26-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">left_join</span>(., pop_size_age, <span class="at">by =</span> <span class="fu">c</span>(<span class="st">'code'</span> <span class="ot">=</span> <span class="st">'code'</span>, <span class="st">'year'</span> <span class="ot">=</span> <span class="st">'year'</span>)) <span class="sc">%&gt;%</span></span>
-<span id="cb26-4"><a href="#cb26-4" aria-hidden="true" tabindex="-1"></a>  </span>
-<span id="cb26-5"><a href="#cb26-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">young_SR =</span> young_SN<span class="sc">*</span><span class="dv">100000</span><span class="sc">/</span>young_pop,</span>
-<span id="cb26-6"><a href="#cb26-6" aria-hidden="true" tabindex="-1"></a>         <span class="at">econ_active_SR =</span> econ_active_SN<span class="sc">*</span><span class="dv">100000</span><span class="sc">/</span>econ_active_pop,</span>
-<span id="cb26-7"><a href="#cb26-7" aria-hidden="true" tabindex="-1"></a>         <span class="at">aged_SR =</span> aged_SN<span class="sc">*</span><span class="dv">100000</span><span class="sc">/</span>aged_pop) <span class="sc">%&gt;%</span></span>
-<span id="cb26-8"><a href="#cb26-8" aria-hidden="true" tabindex="-1"></a>  </span>
-<span id="cb26-9"><a href="#cb26-9" aria-hidden="true" tabindex="-1"></a>  <span class="fu">left_join</span>(., gdp_per_capita, <span class="at">by =</span> <span class="fu">c</span>(<span class="st">'code'</span> <span class="ot">=</span> <span class="st">'code'</span>, <span class="st">'year'</span> <span class="ot">=</span> <span class="st">'year'</span>)) <span class="sc">%&gt;%</span></span>
-<span id="cb26-10"><a href="#cb26-10" aria-hidden="true" tabindex="-1"></a>  </span>
-<span id="cb26-11"><a href="#cb26-11" aria-hidden="true" tabindex="-1"></a>  <span class="fu">left_join</span>(., hdi, <span class="at">by =</span> <span class="fu">c</span>(<span class="st">'code'</span> <span class="ot">=</span> <span class="st">'code'</span>, <span class="st">'year'</span> <span class="ot">=</span> <span class="st">'year'</span>)) <span class="sc">%&gt;%</span></span>
-<span id="cb26-12"><a href="#cb26-12" aria-hidden="true" tabindex="-1"></a>  </span>
-<span id="cb26-13"><a href="#cb26-13" aria-hidden="true" tabindex="-1"></a>  <span class="fu">left_join</span>(., depr, <span class="at">by =</span> <span class="fu">c</span>(<span class="st">'code'</span> <span class="ot">=</span> <span class="st">'code'</span>, <span class="st">'year'</span> <span class="ot">=</span> <span class="st">'year'</span>)) <span class="sc">%&gt;%</span></span>
-<span id="cb26-14"><a href="#cb26-14" aria-hidden="true" tabindex="-1"></a>  </span>
-<span id="cb26-15"><a href="#cb26-15" aria-hidden="true" tabindex="-1"></a>  <span class="fu">left_join</span>(., gini, <span class="at">by =</span> <span class="fu">c</span>(<span class="st">'code'</span> <span class="ot">=</span> <span class="st">'code'</span>, <span class="st">'year'</span> <span class="ot">=</span> <span class="st">'year'</span>)) <span class="sc">%&gt;%</span></span>
-<span id="cb26-16"><a href="#cb26-16" aria-hidden="true" tabindex="-1"></a>  </span>
-<span id="cb26-17"><a href="#cb26-17" aria-hidden="true" tabindex="-1"></a>  <span class="fu">left_join</span>(., violent, <span class="at">by =</span> <span class="fu">c</span>(<span class="st">'code'</span> <span class="ot">=</span> <span class="st">'code'</span>, <span class="st">'year'</span> <span class="ot">=</span> <span class="st">'year'</span>)) </span>
-<span id="cb26-18"><a href="#cb26-18" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb26-19"><a href="#cb26-19" aria-hidden="true" tabindex="-1"></a>knitr<span class="sc">::</span><span class="fu">kable</span>(<span class="fu">head</span>(suicidedata_complete))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb25"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb25-1"><a href="#cb25-1" aria-hidden="true" tabindex="-1"></a>suicidedata_complete <span class="ot">&lt;-</span> <span class="fu">left_join</span>(suicidedata_age_std, suicide_number_age, <span class="at">by =</span> <span class="fu">c</span>(<span class="st">'code'</span> <span class="ot">=</span> <span class="st">'code'</span>, <span class="st">'year'</span> <span class="ot">=</span> <span class="st">'year'</span>)) <span class="sc">%&gt;%</span> </span>
+<span id="cb25-2"><a href="#cb25-2" aria-hidden="true" tabindex="-1"></a>  </span>
+<span id="cb25-3"><a href="#cb25-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">left_join</span>(., pop_size_age, <span class="at">by =</span> <span class="fu">c</span>(<span class="st">'code'</span> <span class="ot">=</span> <span class="st">'code'</span>, <span class="st">'year'</span> <span class="ot">=</span> <span class="st">'year'</span>)) <span class="sc">%&gt;%</span></span>
+<span id="cb25-4"><a href="#cb25-4" aria-hidden="true" tabindex="-1"></a>  </span>
+<span id="cb25-5"><a href="#cb25-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">young_SR =</span> young_SN<span class="sc">*</span><span class="dv">100000</span><span class="sc">/</span>young_pop,</span>
+<span id="cb25-6"><a href="#cb25-6" aria-hidden="true" tabindex="-1"></a>         <span class="at">econ_active_SR =</span> econ_active_SN<span class="sc">*</span><span class="dv">100000</span><span class="sc">/</span>econ_active_pop,</span>
+<span id="cb25-7"><a href="#cb25-7" aria-hidden="true" tabindex="-1"></a>         <span class="at">aged_SR =</span> aged_SN<span class="sc">*</span><span class="dv">100000</span><span class="sc">/</span>aged_pop) <span class="sc">%&gt;%</span></span>
+<span id="cb25-8"><a href="#cb25-8" aria-hidden="true" tabindex="-1"></a>  </span>
+<span id="cb25-9"><a href="#cb25-9" aria-hidden="true" tabindex="-1"></a>  <span class="fu">left_join</span>(., gdp_per_capita, <span class="at">by =</span> <span class="fu">c</span>(<span class="st">'code'</span> <span class="ot">=</span> <span class="st">'code'</span>, <span class="st">'year'</span> <span class="ot">=</span> <span class="st">'year'</span>)) <span class="sc">%&gt;%</span></span>
+<span id="cb25-10"><a href="#cb25-10" aria-hidden="true" tabindex="-1"></a>  </span>
+<span id="cb25-11"><a href="#cb25-11" aria-hidden="true" tabindex="-1"></a>  <span class="fu">left_join</span>(., hdi, <span class="at">by =</span> <span class="fu">c</span>(<span class="st">'code'</span> <span class="ot">=</span> <span class="st">'code'</span>, <span class="st">'year'</span> <span class="ot">=</span> <span class="st">'year'</span>)) <span class="sc">%&gt;%</span></span>
+<span id="cb25-12"><a href="#cb25-12" aria-hidden="true" tabindex="-1"></a>  </span>
+<span id="cb25-13"><a href="#cb25-13" aria-hidden="true" tabindex="-1"></a>  <span class="fu">left_join</span>(., depr, <span class="at">by =</span> <span class="fu">c</span>(<span class="st">'code'</span> <span class="ot">=</span> <span class="st">'code'</span>, <span class="st">'year'</span> <span class="ot">=</span> <span class="st">'year'</span>)) <span class="sc">%&gt;%</span></span>
+<span id="cb25-14"><a href="#cb25-14" aria-hidden="true" tabindex="-1"></a>  </span>
+<span id="cb25-15"><a href="#cb25-15" aria-hidden="true" tabindex="-1"></a>  <span class="fu">left_join</span>(., gini, <span class="at">by =</span> <span class="fu">c</span>(<span class="st">'code'</span> <span class="ot">=</span> <span class="st">'code'</span>, <span class="st">'year'</span> <span class="ot">=</span> <span class="st">'year'</span>)) <span class="sc">%&gt;%</span></span>
+<span id="cb25-16"><a href="#cb25-16" aria-hidden="true" tabindex="-1"></a>  </span>
+<span id="cb25-17"><a href="#cb25-17" aria-hidden="true" tabindex="-1"></a>  <span class="fu">left_join</span>(., violent, <span class="at">by =</span> <span class="fu">c</span>(<span class="st">'code'</span> <span class="ot">=</span> <span class="st">'code'</span>, <span class="st">'year'</span> <span class="ot">=</span> <span class="st">'year'</span>)) </span>
+<span id="cb25-18"><a href="#cb25-18" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb25-19"><a href="#cb25-19" aria-hidden="true" tabindex="-1"></a>knitr<span class="sc">::</span><span class="fu">kable</span>(<span class="fu">head</span>(suicidedata_complete))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output-display">
 <table class="table table-sm table-striped">
 <colgroup>
@@ -1081,30 +894,30 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <p>The object <code>World</code> is a spatial object of class <code>sf</code> from the <a href="https://cran.r-project.org/package=sf">sf package</a>; it is a <code>data.frame</code> with a special column that contains a geometry for each row, in this case polygons</p>
 <p>Reference - https://cran.r-project.org/web/packages/tmap/vignettes/tmap-getstarted.html</p>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb27"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb27-1"><a href="#cb27-1" aria-hidden="true" tabindex="-1"></a><span class="co">#data("World")</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb26"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb26-1"><a href="#cb26-1" aria-hidden="true" tabindex="-1"></a><span class="co">#data("World")</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 <p>Joining the two dataframes together</p>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb28"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb28-1"><a href="#cb28-1" aria-hidden="true" tabindex="-1"></a><span class="co">#suicidedata_join_map &lt;- right_join(World, suicidedata_cln,</span></span>
-<span id="cb28-2"><a href="#cb28-2" aria-hidden="true" tabindex="-1"></a><span class="co">#                          by = c("iso_a3" = "code")) </span></span>
-<span id="cb28-3"><a href="#cb28-3" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb28-4"><a href="#cb28-4" aria-hidden="true" tabindex="-1"></a><span class="co">#suicidedata_cln_map &lt;-  suicidedata_join_map %&gt;%</span></span>
-<span id="cb28-5"><a href="#cb28-5" aria-hidden="true" tabindex="-1"></a><span class="co">#  select(!c(2,3,4,6,7,8,9,10,11,12,13,14,15)) %&gt;%</span></span>
-<span id="cb28-6"><a href="#cb28-6" aria-hidden="true" tabindex="-1"></a><span class="co">#  mutate(area = as.numeric(str_remove(`area`, </span></span>
-<span id="cb28-7"><a href="#cb28-7" aria-hidden="true" tabindex="-1"></a><span class="co">#                                " \\[km\\^2\\]")), </span></span>
-<span id="cb28-8"><a href="#cb28-8" aria-hidden="true" tabindex="-1"></a><span class="co">#         .after = region)</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb27"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb27-1"><a href="#cb27-1" aria-hidden="true" tabindex="-1"></a><span class="co">#suicidedata_join_map &lt;- right_join(World, suicidedata_cln,</span></span>
+<span id="cb27-2"><a href="#cb27-2" aria-hidden="true" tabindex="-1"></a><span class="co">#                          by = c("iso_a3" = "code")) </span></span>
+<span id="cb27-3"><a href="#cb27-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb27-4"><a href="#cb27-4" aria-hidden="true" tabindex="-1"></a><span class="co">#suicidedata_cln_map &lt;-  suicidedata_join_map %&gt;%</span></span>
+<span id="cb27-5"><a href="#cb27-5" aria-hidden="true" tabindex="-1"></a><span class="co">#  select(!c(2,3,4,6,7,8,9,10,11,12,13,14,15)) %&gt;%</span></span>
+<span id="cb27-6"><a href="#cb27-6" aria-hidden="true" tabindex="-1"></a><span class="co">#  mutate(area = as.numeric(str_remove(`area`, </span></span>
+<span id="cb27-7"><a href="#cb27-7" aria-hidden="true" tabindex="-1"></a><span class="co">#                                " \\[km\\^2\\]")), </span></span>
+<span id="cb27-8"><a href="#cb27-8" aria-hidden="true" tabindex="-1"></a><span class="co">#         .after = region)</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb29"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb29-1"><a href="#cb29-1" aria-hidden="true" tabindex="-1"></a><span class="co">#tm_shape(suicidedata_cln_map) +</span></span>
-<span id="cb29-2"><a href="#cb29-2" aria-hidden="true" tabindex="-1"></a><span class="co">#    tm_polygons("area")</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb28"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb28-1"><a href="#cb28-1" aria-hidden="true" tabindex="-1"></a><span class="co">#tm_shape(suicidedata_cln_map) +</span></span>
+<span id="cb28-2"><a href="#cb28-2" aria-hidden="true" tabindex="-1"></a><span class="co">#    tm_polygons("area")</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 <p>Ignore below</p>
 <p>#rworldmap - Example code below</p>
 <p>#https://cran.r-project.org/web/packages/rworldmap/vignettes/rworldmap.pdf</p>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb30"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb30-1"><a href="#cb30-1" aria-hidden="true" tabindex="-1"></a><span class="co">#suicidedata_cln_map &lt;- joinCountryData2Map(suicidedata_cln_region,</span></span>
-<span id="cb30-2"><a href="#cb30-2" aria-hidden="true" tabindex="-1"></a><span class="co">#                                 joinCode = "ISO3",</span></span>
-<span id="cb30-3"><a href="#cb30-3" aria-hidden="true" tabindex="-1"></a><span class="co">#                                 nameJoinColumn = "code")</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb29"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb29-1"><a href="#cb29-1" aria-hidden="true" tabindex="-1"></a><span class="co">#suicidedata_cln_map &lt;- joinCountryData2Map(suicidedata_cln_region,</span></span>
+<span id="cb29-2"><a href="#cb29-2" aria-hidden="true" tabindex="-1"></a><span class="co">#                                 joinCode = "ISO3",</span></span>
+<span id="cb29-3"><a href="#cb29-3" aria-hidden="true" tabindex="-1"></a><span class="co">#                                 nameJoinColumn = "code")</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 <p>#Other References using typical world map - https://rpubs.com/Thom_JH/798825</p>
 
