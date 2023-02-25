@@ -309,25 +309,29 @@ The object `World` is a spatial object of class `sf` from the [sf package](https
 Reference - https://cran.r-project.org/web/packages/tmap/vignettes/tmap-getstarted.html
 
 ```{r}
-#data("World")
+data("World")
 ```
 
 Joining the two dataframes together
 
 ```{r}
-#suicidedata_join_map <- right_join(World, suicidedata_cln,
-#                          by = c("iso_a3" = "code")) 
+suicidedata_join_map <- left_join(World, 
+                                  
+                                  #filter year 2015 for illustration
+                                   suicidedata_complete %>% filter(year==2015),
+                          by = c("iso_a3" = "code")) 
 
-#suicidedata_cln_map <-  suicidedata_join_map %>%
-#  select(!c(2,3,4,6,7,8,9,10,11,12,13,14,15)) %>%
-#  mutate(area = as.numeric(str_remove(`area`, 
-#                                " \\[km\\^2\\]")), 
-#         .after = region)
+suicidedata_cln_map <-  suicidedata_join_map %>%
+  select(!c(2,3,4,6,7,8,9,10,11,12,13,14,15)) %>%
+  mutate(area = as.numeric(str_remove(`area`, 
+                                " \\[km\\^2\\]")), 
+         .after = region)
 ```
 
+To illustrate mapping age-standardised suicide rate (AS_SR)
 ```{r}
-#tm_shape(suicidedata_cln_map) +
-#    tm_polygons("area")
+tm_shape(suicidedata_cln_map) +
+    tm_polygons("AS_SR")
 ```
 
 Ignore below
