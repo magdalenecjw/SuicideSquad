@@ -140,54 +140,155 @@ suicidedata_age_std <- suicidedata_cln %>%
   pivot_wider(names_from = sex_name,
               values_from = suicide_Rate) %>%
   select(c(1,2,3,6,12,13,14)) %>%
-  rename("AS_SR" = "Both",
-         "AS_SR_M" = "Male",
-         "AS_SR_F" = "Female")
+  rename("SR_AS_T" = "Both",
+         "SR_AS_M" = "Male",
+         "SR_AS_F" = "Female")
 ```
 
-#### 5.2 Age-Group (Total)
+#### 5.2 Age-Group
 
--   young: age group 0 to 4 until age group 20 to 24,
+##### 5.2.1 Suicide Number
 
--   econ_active: age group 25-29 until age group 60-64,
+Source for division https://www.ncbi.nlm.nih.gov/books/NBK470850/figure/SR-240_RB-3370.fig08/
 
--   aged: age group 65 and above,
+-   10 to 14
+
+-   15 to 24
+
+-   25 to 44
+
+-   45 to 64
+
+-   65 to 74
+
+-   75+
 
 ```{r}
 suicide_number_age <- suicidedata_cln %>%
-  filter(sex_name == "Both",
-         !age_name %in% c("All ages", "Age-standardized")) %>%
-  select(c(2,5,7,8)) %>%
-  pivot_wider(names_from = age_name,
+  filter(!age_name %in% c("Age-standardized")) %>%
+  select(c(2,4,5,7,8)) %>%
+  mutate(age_name = str_remove(age_name, " years"),
+         age_name = str_remove(age_name, " ages"),
+         sex_name = case_when(sex_name == "Male" ~ "M",
+                              sex_name == "Female" ~ "F",
+                              sex_name == "Both" ~ "T",
+                              TRUE ~ sex_name)) %>%
+  pivot_wider(names_from = c(age_name, sex_name),
+              names_prefix = "SN_",
               values_from = suicide_Number) %>%
-  mutate(young_SN = rowSums(.[3:5]),
-         econ_active_SN = rowSums(.[6:13]),
-         aged_SN = rowSums(.[14:18]),
-         total_SN = young_SN+econ_active_SN+aged_SN) %>%
-  select(c(1,2,19,20,21,22))
+  mutate(`SN_15-24_M` = `SN_15-19_M`+`SN_20-24_M`,
+         `SN_15-24_F` = `SN_15-19_F`+`SN_20-24_F`,
+         `SN_15-24_T` = `SN_15-19_T`+`SN_20-24_T`,
+         `SN_25-44_M` = `SN_25-29_M`+`SN_30-34_M`+`SN_35-39_M`+`SN_40-44_M`,
+         `SN_25-44_F` = `SN_25-29_F`+`SN_30-34_F`+`SN_35-39_F`+`SN_40-44_F`,
+         `SN_25-44_T` = `SN_25-29_T`+`SN_30-34_T`+`SN_35-39_T`+`SN_40-44_T`,
+         `SN_45-64_M` = `SN_45-49_M`+`SN_50-54_M`+`SN_55-59_M`+`SN_60-64_M`,
+         `SN_45-64_F` = `SN_45-49_F`+`SN_50-54_F`+`SN_55-59_F`+`SN_60-64_F`,
+         `SN_45-64_T` = `SN_45-49_T`+`SN_50-54_T`+`SN_55-59_T`+`SN_60-64_T`,
+         `SN_65-74_M` = `SN_65-69_M`+`SN_70-74_M`,
+         `SN_65-74_F` = `SN_65-69_F`+`SN_70-74_F`,
+         `SN_65-74_T` = `SN_65-69_T`+`SN_70-74_T`,
+         `SN_75+_M` = `SN_75-79_M`+`SN_80-84_M`+`SN_85+_M`,
+         `SN_75+_F` = `SN_75-79_F`+`SN_80-84_F`+`SN_85+_F`,
+         `SN_75+_T` = `SN_75-79_T`+`SN_80-84_T`+`SN_85+_T`) %>%
+  select(code:`SN_10-14_T`, `SN_15-24_M`:`SN_75+_T`, `SN_All_M`:`SN_All_T`)
 ```
 
-#### 5.3 Population Size Age-Group
+```{r}
+#suicide_number_age <- suicidedata_cln %>%
+#  filter(sex_name == "Both",
+#         !age_name %in% c("All ages", "Age-standardized")) %>%
+#  select(c(2,5,7,8)) %>%
+#  pivot_wider(names_from = age_name,
+#              values_from = suicide_Number) %>%
+#  mutate(young_SN = rowSums(.[3:5]),
+#         econ_active_SN = rowSums(.[6:13]),
+#         aged_SN = rowSums(.[14:18]),
+#         total_SN = young_SN+econ_active_SN+aged_SN) %>%
+#  select(c(1,2,19,20,21,22))
+```
+
+##### 5.2.2 Population Size
 
 ```{r}
 pop_size_age <- suicidedata_cln %>%
-  filter(sex_name == "Both",
-         !age_name %in% c("All ages", "Age-standardized")) %>%
-  select(c(2,5,7,11)) %>%
-  pivot_wider(names_from = age_name,
+  filter(!age_name %in% c("Age-standardized")) %>%
+  select(c(2,4,5,7,11)) %>%
+  mutate(age_name = str_remove(age_name, " years"),
+         age_name = str_remove(age_name, " ages"),
+         sex_name = case_when(sex_name == "Male" ~ "M",
+                              sex_name == "Female" ~ "F",
+                              sex_name == "Both" ~ "T",
+                              TRUE ~ sex_name)) %>%
+  pivot_wider(names_from = c(age_name, sex_name),
+              names_prefix = "POP_",
               values_from = population_size) %>%
-  mutate(young_pop = rowSums(.[3:5]),
-         econ_active_pop = rowSums(.[6:13]),
-         aged_pop = rowSums(.[14:18]),
-         total_pop = young_pop+econ_active_pop+aged_pop) %>%
-  select(c(1,2,19,20,21,22))
+  mutate(`POP_15-24_M` = `POP_15-19_M`+`POP_20-24_M`,
+         `POP_15-24_F` = `POP_15-19_F`+`POP_20-24_F`,
+         `POP_15-24_T` = `POP_15-19_T`+`POP_20-24_T`,
+         `POP_25-44_M` = `POP_25-29_M`+`POP_30-34_M`+`POP_35-39_M`+`POP_40-44_M`,
+         `POP_25-44_F` = `POP_25-29_F`+`POP_30-34_F`+`POP_35-39_F`+`POP_40-44_F`,
+         `POP_25-44_T` = `POP_25-29_T`+`POP_30-34_T`+`POP_35-39_T`+`POP_40-44_T`,
+         `POP_45-64_M` = `POP_45-49_M`+`POP_50-54_M`+`POP_55-59_M`+`POP_60-64_M`,
+         `POP_45-64_F` = `POP_45-49_F`+`POP_50-54_F`+`POP_55-59_F`+`POP_60-64_F`,
+         `POP_45-64_T` = `POP_45-49_T`+`POP_50-54_T`+`POP_55-59_T`+`POP_60-64_T`,
+         `POP_65-74_M` = `POP_65-69_M`+`POP_70-74_M`,
+         `POP_65-74_F` = `POP_65-69_F`+`POP_70-74_F`,
+         `POP_65-74_T` = `POP_65-69_T`+`POP_70-74_T`,
+         `POP_75+_M` = `POP_75-79_M`+`POP_80-84_M`+`POP_85+_M`,
+         `POP_75+_F` = `POP_75-79_F`+`POP_80-84_F`+`POP_85+_F`,
+         `POP_75+_T` = `POP_75-79_T`+`POP_80-84_T`+`POP_85+_T`) %>%
+  select(code:`POP_10-14_T`, `POP_15-24_M`:`POP_75+_T`, `POP_All_M`:`POP_All_T`)
 ```
 
-From above, we can calculate suicide rate for young, econ_active, and aged by dividing SN by population \* 100,000
+```{r}
+#pop_size_age <- suicidedata_cln %>%
+#  filter(sex_name == "Both",
+#         !age_name %in% c("All ages", "Age-standardized")) %>%
+#  select(c(2,5,7,11)) %>%
+#  pivot_wider(names_from = age_name,
+#              values_from = population_size) %>%
+#  mutate(young_pop = rowSums(.[3:5]),
+#         econ_active_pop = rowSums(.[6:13]),
+#         aged_pop = rowSums(.[14:18]),
+#         total_pop = young_pop+econ_active_pop+aged_pop) %>%
+#  select(c(1,2,19,20,21,22))
+```
 
-Do we need to do per gender as well?
+##### 5.2.3 Death Number
 
-#### 5.4 GDP per capita
+```{r}
+death_number_age <- suicidedata_cln %>%
+  filter(!age_name %in% c("Age-standardized")) %>%
+  select(c(2,4,5,7,12)) %>%
+  mutate(age_name = str_remove(age_name, " years"),
+         age_name = str_remove(age_name, " ages"),
+         sex_name = case_when(sex_name == "Male" ~ "M",
+                              sex_name == "Female" ~ "F",
+                              sex_name == "Both" ~ "T",
+                              TRUE ~ sex_name)) %>%
+  pivot_wider(names_from = c(age_name, sex_name),
+              names_prefix = "DN_",
+              values_from = death_number) %>%
+  mutate(`DN_15-24_M` = `DN_15-19_M`+`DN_20-24_M`,
+         `DN_15-24_F` = `DN_15-19_F`+`DN_20-24_F`,
+         `DN_15-24_T` = `DN_15-19_T`+`DN_20-24_T`,
+         `DN_25-44_M` = `DN_25-29_M`+`DN_30-34_M`+`DN_35-39_M`+`DN_40-44_M`,
+         `DN_25-44_F` = `DN_25-29_F`+`DN_30-34_F`+`DN_35-39_F`+`DN_40-44_F`,
+         `DN_25-44_T` = `DN_25-29_T`+`DN_30-34_T`+`DN_35-39_T`+`DN_40-44_T`,
+         `DN_45-64_M` = `DN_45-49_M`+`DN_50-54_M`+`DN_55-59_M`+`DN_60-64_M`,
+         `DN_45-64_F` = `DN_45-49_F`+`DN_50-54_F`+`DN_55-59_F`+`DN_60-64_F`,
+         `DN_45-64_T` = `DN_45-49_T`+`DN_50-54_T`+`DN_55-59_T`+`DN_60-64_T`,
+         `DN_65-74_M` = `DN_65-69_M`+`DN_70-74_M`,
+         `DN_65-74_F` = `DN_65-69_F`+`DN_70-74_F`,
+         `DN_65-74_T` = `DN_65-69_T`+`DN_70-74_T`,
+         `DN_75+_M` = `DN_75-79_M`+`DN_80-84_M`+`DN_85+_M`,
+         `DN_75+_F` = `DN_75-79_F`+`DN_80-84_F`+`DN_85+_F`,
+         `DN_75+_T` = `DN_75-79_T`+`DN_80-84_T`+`DN_85+_T`) %>%
+  select(code:`DN_10-14_T`, `DN_15-24_M`:`DN_75+_T`, `DN_All_M`:`DN_All_T`)
+```
+
+#### 5.3 GDP per capita
 
 Reference - https://ourworldindata.org/grapher/gdp-per-capita-worldbank?tab=chart
 
@@ -204,7 +305,7 @@ gdp_per_capita <- gdp_per_capita %>%
   na.omit()
 ```
 
-#### 5.5 Human Development Index
+#### 5.4 Human Development Index
 
 Reference - https://ourworldindata.org/grapher/human-development-index
 
@@ -221,7 +322,7 @@ hdi <- hdi %>%
   na.omit()
 ```
 
-#### 5.6 Depression Prevalence
+#### 5.5 Depression Prevalence
 
 Reference - https://ourworldindata.org/grapher/suicide-rates-vs-prevalence-of-depression
 
@@ -239,7 +340,7 @@ depr <- depr %>%
   na.omit()
 ```
 
-#### 5.7 Income Inequality
+#### 5.6 Income Inequality
 
 Reference - https://ourworldindata.org/grapher/suicide-rate-vs-income-inequality
 
@@ -257,7 +358,7 @@ gini <- gini %>%
   na.omit()
 ```
 
-#### 5.8 Violent Death
+#### 5.7 Violent Death
 
 Reference - https://ourworldindata.org/grapher/suicide-vs-violent-deaths
 
@@ -277,19 +378,69 @@ violent <- violent %>%
 
 FEEL FREE TO ADD SOMEMORE
 
-#### 5.8 Joining
+#### Joining for EDA of Suicide Parameters
 
 ```{r}
-
-suicidedata_complete <- left_join(suicidedata_age_std, suicide_number_age, by = c('code' = 'code', 'year' = 'year')) %>% 
+suicidedata_eda <- left_join(suicidedata_age_std, suicide_number_age, by = c('code' = 'code', 'year' = 'year')) %>% 
   
   left_join(., pop_size_age, by = c('code' = 'code', 'year' = 'year')) %>%
   
-  mutate(young_SR = young_SN*100000/young_pop,
-         econ_active_SR = econ_active_SN*100000/econ_active_pop,
-         aged_SR = aged_SN*100000/aged_pop) %>%
+  left_join(., death_number_age, by = c('code' = 'code', 'year' = 'year')) %>%
   
-  left_join(., gdp_per_capita, by = c('code' = 'code', 'year' = 'year')) %>%
+  #calculate suicide rate for each age group and gender
+  #Use Age Standardised for all age metrics
+  mutate(`SR_10-14_M` = `SN_10-14_M`*100000/`POP_10-14_M`,
+         `SR_10-14_F` = `SN_10-14_F`*100000/`POP_10-14_F`,
+         `SR_10-14_T` = `SN_10-14_T`*100000/`POP_10-14_T`,
+         `SR_15-24_M` = `SN_15-24_M`*100000/`POP_15-24_M`,
+         `SR_15-24_F` = `SN_15-24_F`*100000/`POP_15-24_F`,
+         `SR_15-24_T` = `SN_15-24_T`*100000/`POP_15-24_T`,
+         `SR_25-44_M` = `SN_25-44_M`*100000/`POP_25-44_M`,
+         `SR_25-44_F` = `SN_25-44_F`*100000/`POP_25-44_F`,
+         `SR_25-44_T` = `SN_25-44_T`*100000/`POP_25-44_T`,
+         `SR_45-64_M` = `SN_45-64_M`*100000/`POP_45-64_M`,
+         `SR_45-64_F` = `SN_45-64_F`*100000/`POP_45-64_F`,
+         `SR_45-64_T` = `SN_45-64_T`*100000/`POP_45-64_T`,
+         `SR_65-74_M` = `SN_65-74_M`*100000/`POP_65-74_M`,
+         `SR_65-74_F` = `SN_65-74_F`*100000/`POP_65-74_F`,
+         `SR_65-74_T` = `SN_65-74_T`*100000/`POP_65-74_T`,
+         `SR_75+_M` = `SN_75+_M`*100000/`POP_75+_M`,
+         `SR_75+_F` = `SN_75+_F`*100000/`POP_75+_F`,
+         `SR_75+_T` = `SN_75+_T`*100000/`POP_75+_T`) %>%
+    
+  #calculate suicide percent for each age group and gender
+    mutate(`SP_10-14_M` = `SN_10-14_M`*100/`DN_10-14_M`,
+         `SP_10-14_F` = `SN_10-14_F`*100/`DN_10-14_F`,
+         `SP_10-14_T` = `SN_10-14_T`*100/`DN_10-14_T`,
+         `SP_15-24_M` = `SN_15-24_M`*100/`DN_15-24_M`,
+         `SP_15-24_F` = `SN_15-24_F`*100/`DN_15-24_F`,
+         `SP_15-24_T` = `SN_15-24_T`*100/`DN_15-24_T`,
+         `SP_25-44_M` = `SN_25-44_M`*100/`DN_25-44_M`,
+         `SP_25-44_F` = `SN_25-44_F`*100/`DN_25-44_F`,
+         `SP_25-44_T` = `SN_25-44_T`*100/`DN_25-44_T`,
+         `SP_45-64_M` = `SN_45-64_M`*100/`DN_45-64_M`,
+         `SP_45-64_F` = `SN_45-64_F`*100/`DN_45-64_F`,
+         `SP_45-64_T` = `SN_45-64_T`*100/`DN_45-64_T`,
+         `SP_65-74_M` = `SN_65-74_M`*100/`DN_65-74_M`,
+         `SP_65-74_F` = `SN_65-74_F`*100/`DN_65-74_F`,
+         `SP_65-74_T` = `SN_65-74_T`*100/`DN_65-74_T`,
+         `SP_75+_M` = `SN_75+_M`*100/`DN_75+_M`,
+         `SP_75+_F` = `SN_75+_F`*100/`DN_75+_F`,
+         `SP_75+_T` = `SN_75+_T`*100/`DN_75+_T`,
+         `SP_All_M` = `SN_All_M`*100/`DN_All_M`,
+         `SP_All_F` = `SN_All_F`*100/`DN_All_F`,
+         `SP_All_T` = `SN_All_T`*100/`DN_All_T`)
+
+```
+
+#### Joining for Analysis (with other parameters)
+
+For analysis, we will only use suicide rate (SR)
+
+```{r}
+suicidedata_analysis <- left_join(suicidedata_eda %>%
+                                    select(country:`SR_AS_T`, `SR_10-14_M`:`SR_75+_T`)
+                                    , gdp_per_capita, by = c('code' = 'code', 'year' = 'year')) %>%
   
   left_join(., hdi, by = c('code' = 'code', 'year' = 'year')) %>%
   
@@ -299,7 +450,7 @@ suicidedata_complete <- left_join(suicidedata_age_std, suicide_number_age, by = 
   
   left_join(., violent, by = c('code' = 'code', 'year' = 'year')) 
 
-knitr::kable(head(suicidedata_complete))
+knitr::kable(head(suicidedata_analysis))
 ```
 
 ### 6. Joining with world map
@@ -315,23 +466,22 @@ data("World")
 Joining the two dataframes together
 
 ```{r}
-suicidedata_join_map <- left_join(World, 
+suicidedata_eda_map <- left_join(World, 
                                   
                                   #filter year 2015 for illustration
-                                   suicidedata_complete %>% filter(year==2015),
-                          by = c("iso_a3" = "code")) 
-
-suicidedata_cln_map <-  suicidedata_join_map %>%
+                                   suicidedata_eda %>% filter(year==2015),
+                          by = c("iso_a3" = "code")) %>%
   select(!c(2,3,4,6,7,8,9,10,11,12,13,14,15)) %>%
   mutate(area = as.numeric(str_remove(`area`, 
                                 " \\[km\\^2\\]")), 
          .after = region)
 ```
 
-To illustrate mapping age-standardised suicide rate (AS_SR)
+To illustrate mapping age-standardised suicide rate for both genders (SR_AS_T)
+
 ```{r}
-tm_shape(suicidedata_cln_map) +
-    tm_polygons("AS_SR")
+tm_shape(suicidedata_eda_map) +
+    tm_polygons("SR_AS_T")
 ```
 
 Ignore below
