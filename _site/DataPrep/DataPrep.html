@@ -225,7 +225,7 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
     <div>
     <div class="quarto-title-meta-heading">Modified</div>
     <div class="quarto-title-meta-contents">
-      <p class="date-modified">February 26, 2023</p>
+      <p class="date-modified">February 28, 2023</p>
     </div>
   </div>
     
@@ -525,6 +525,13 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 </section>
 <section id="preparing-data-for-analysis" class="level3">
 <h3 class="anchored" data-anchor-id="preparing-data-for-analysis">5. Preparing data for analysis</h3>
+<p>Risk Factors of Suicide</p>
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><a href="https://www.who.int/publications/i/item/9789241564779"><img src="image/ourworldindata_risk-factors-and-interventions.png" class="img-fluid figure-img"></a></p>
+<p></p><figcaption class="figure-caption">Risk Factors of Suicide</figcaption><p></p>
+</figure>
+</div>
 <section id="age-standardized-rate-total-and-gender---anchor" class="level4">
 <h4 class="anchored" data-anchor-id="age-standardized-rate-total-and-gender---anchor">5.1 Age-Standardized Rate (Total and Gender) - Anchor</h4>
 <div class="cell">
@@ -752,112 +759,219 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <span id="cb27-6"><a href="#cb27-6" aria-hidden="true" tabindex="-1"></a>  <span class="fu">filter</span>(year <span class="sc">%in%</span> (<span class="dv">1990</span><span class="sc">:</span><span class="dv">2019</span>)) <span class="sc">%&gt;%</span></span>
 <span id="cb27-7"><a href="#cb27-7" aria-hidden="true" tabindex="-1"></a>  <span class="fu">na.omit</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
+</section>
+<section id="share-of-population-in-extreme-proverty" class="level4">
+<h4 class="anchored" data-anchor-id="share-of-population-in-extreme-proverty">5.8 Share of Population in Extreme Proverty</h4>
+<p>Reference - https://ourworldindata.org/grapher/share-of-population-in-extreme-poverty?country=BGD~BOL~MDG~IND~CHN~ETH</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb28"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb28-1"><a href="#cb28-1" aria-hidden="true" tabindex="-1"></a>poverty <span class="ot">&lt;-</span> <span class="fu">read_csv</span>(<span class="st">"data/share-of-population-in-extreme-poverty.csv"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb29"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb29-1"><a href="#cb29-1" aria-hidden="true" tabindex="-1"></a>poverty <span class="ot">&lt;-</span> poverty <span class="sc">%&gt;%</span></span>
+<span id="cb29-2"><a href="#cb29-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">select</span>(<span class="dv">2</span>,<span class="dv">3</span>,<span class="dv">4</span>) <span class="sc">%&gt;%</span></span>
+<span id="cb29-3"><a href="#cb29-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">rename</span>(<span class="st">"code"</span> <span class="ot">=</span> <span class="st">"Code"</span>,</span>
+<span id="cb29-4"><a href="#cb29-4" aria-hidden="true" tabindex="-1"></a>         <span class="st">"year"</span> <span class="ot">=</span> <span class="st">"Year"</span>,</span>
+<span id="cb29-5"><a href="#cb29-5" aria-hidden="true" tabindex="-1"></a>         <span class="st">"pop%extreme_poverty"</span> <span class="ot">=</span> <span class="st">"$2.15 a day - share of population below poverty line"</span>) <span class="sc">%&gt;%</span></span>
+<span id="cb29-6"><a href="#cb29-6" aria-hidden="true" tabindex="-1"></a>  <span class="fu">filter</span>(year <span class="sc">%in%</span> (<span class="dv">1990</span><span class="sc">:</span><span class="dv">2019</span>)) <span class="sc">%&gt;%</span></span>
+<span id="cb29-7"><a href="#cb29-7" aria-hidden="true" tabindex="-1"></a>  <span class="fu">na.omit</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+</section>
+<section id="unemployment-rate" class="level4">
+<h4 class="anchored" data-anchor-id="unemployment-rate">5.9 Unemployment Rate</h4>
+<p>Reference - https://ourworldindata.org/grapher/unemployment-rate?time=latest</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb30"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb30-1"><a href="#cb30-1" aria-hidden="true" tabindex="-1"></a>unemployment <span class="ot">&lt;-</span> <span class="fu">read_csv</span>(<span class="st">"data/unemployment-rate.csv"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb31"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb31-1"><a href="#cb31-1" aria-hidden="true" tabindex="-1"></a>unemployment <span class="ot">&lt;-</span> unemployment <span class="sc">%&gt;%</span></span>
+<span id="cb31-2"><a href="#cb31-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">select</span>(<span class="dv">2</span>,<span class="dv">3</span>,<span class="dv">4</span>) <span class="sc">%&gt;%</span></span>
+<span id="cb31-3"><a href="#cb31-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">rename</span>(<span class="st">"code"</span> <span class="ot">=</span> <span class="st">"Code"</span>,</span>
+<span id="cb31-4"><a href="#cb31-4" aria-hidden="true" tabindex="-1"></a>         <span class="st">"year"</span> <span class="ot">=</span> <span class="st">"Year"</span>,</span>
+<span id="cb31-5"><a href="#cb31-5" aria-hidden="true" tabindex="-1"></a>         <span class="st">"unemployment_rate"</span> <span class="ot">=</span> <span class="st">"Unemployment, total (% of total labor force) (modeled ILO estimate)"</span>) <span class="sc">%&gt;%</span></span>
+<span id="cb31-6"><a href="#cb31-6" aria-hidden="true" tabindex="-1"></a>  <span class="fu">filter</span>(year <span class="sc">%in%</span> (<span class="dv">1990</span><span class="sc">:</span><span class="dv">2019</span>)) <span class="sc">%&gt;%</span></span>
+<span id="cb31-7"><a href="#cb31-7" aria-hidden="true" tabindex="-1"></a>  <span class="fu">na.omit</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+</section>
+<section id="healthcare-access-and-spending" class="level4">
+<h4 class="anchored" data-anchor-id="healthcare-access-and-spending">5.10 Healthcare Access and Spending</h4>
+<p>Reference - https://ourworldindata.org/grapher/haq-by-level-of-healthcare-spending-endpoints?time=earliest</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb32"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb32-1"><a href="#cb32-1" aria-hidden="true" tabindex="-1"></a>healthcare <span class="ot">&lt;-</span> <span class="fu">read_csv</span>(<span class="st">"data/HAQ-by-level-of-healthcare-spending-endpoints.csv"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb33"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb33-1"><a href="#cb33-1" aria-hidden="true" tabindex="-1"></a>healthcare <span class="ot">&lt;-</span> healthcare <span class="sc">%&gt;%</span></span>
+<span id="cb33-2"><a href="#cb33-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">select</span>(<span class="dv">2</span>,<span class="dv">3</span>,<span class="dv">4</span>,<span class="dv">5</span>) <span class="sc">%&gt;%</span></span>
+<span id="cb33-3"><a href="#cb33-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">rename</span>(<span class="st">"code"</span> <span class="ot">=</span> <span class="st">"Code"</span>,</span>
+<span id="cb33-4"><a href="#cb33-4" aria-hidden="true" tabindex="-1"></a>         <span class="st">"year"</span> <span class="ot">=</span> <span class="st">"Year"</span>,</span>
+<span id="cb33-5"><a href="#cb33-5" aria-hidden="true" tabindex="-1"></a>         <span class="st">"HAQ"</span> <span class="ot">=</span> <span class="st">"HAQ Index (IHME (2017))"</span>,</span>
+<span id="cb33-6"><a href="#cb33-6" aria-hidden="true" tabindex="-1"></a>         <span class="st">"healthcare_spend"</span> <span class="ot">=</span> <span class="st">"Current health expenditure per capita, PPP (current international $)"</span>) <span class="sc">%&gt;%</span></span>
+<span id="cb33-7"><a href="#cb33-7" aria-hidden="true" tabindex="-1"></a>  <span class="fu">filter</span>(year <span class="sc">%in%</span> (<span class="dv">1990</span><span class="sc">:</span><span class="dv">2019</span>)) <span class="sc">%&gt;%</span></span>
+<span id="cb33-8"><a href="#cb33-8" aria-hidden="true" tabindex="-1"></a>  <span class="fu">filter</span>(<span class="sc">!</span><span class="fu">is.na</span>(HAQ) <span class="sc">|</span> <span class="sc">!</span><span class="fu">is.na</span>(healthcare_spend))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+</section>
+<section id="life-satisfaction" class="level4">
+<h4 class="anchored" data-anchor-id="life-satisfaction">5.11 Life Satisfaction</h4>
+<p>Reference - https://ourworldindata.org/grapher/happiness-cantril-ladder?time=latest</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb34"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb34-1"><a href="#cb34-1" aria-hidden="true" tabindex="-1"></a>happiness <span class="ot">&lt;-</span> <span class="fu">read_csv</span>(<span class="st">"data/happiness-cantril-ladder.csv"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb35"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb35-1"><a href="#cb35-1" aria-hidden="true" tabindex="-1"></a>happiness <span class="ot">&lt;-</span> happiness <span class="sc">%&gt;%</span></span>
+<span id="cb35-2"><a href="#cb35-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">select</span>(<span class="dv">2</span>,<span class="dv">3</span>,<span class="dv">4</span>) <span class="sc">%&gt;%</span></span>
+<span id="cb35-3"><a href="#cb35-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">rename</span>(<span class="st">"code"</span> <span class="ot">=</span> <span class="st">"Code"</span>,</span>
+<span id="cb35-4"><a href="#cb35-4" aria-hidden="true" tabindex="-1"></a>         <span class="st">"year"</span> <span class="ot">=</span> <span class="st">"Year"</span>,</span>
+<span id="cb35-5"><a href="#cb35-5" aria-hidden="true" tabindex="-1"></a>         <span class="st">"happiness"</span> <span class="ot">=</span> <span class="st">"Life satisfaction in Cantril Ladder (World Happiness Report 2022)"</span>) <span class="sc">%&gt;%</span></span>
+<span id="cb35-6"><a href="#cb35-6" aria-hidden="true" tabindex="-1"></a>  <span class="fu">filter</span>(year <span class="sc">%in%</span> (<span class="dv">1990</span><span class="sc">:</span><span class="dv">2019</span>)) <span class="sc">%&gt;%</span></span>
+<span id="cb35-7"><a href="#cb35-7" aria-hidden="true" tabindex="-1"></a>  <span class="fu">na.omit</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+</section>
+<section id="mental-and-substance-use" class="level4">
+<h4 class="anchored" data-anchor-id="mental-and-substance-use">5.12 Mental and Substance Use</h4>
+<p>Reference - https://ourworldindata.org/grapher/suicide-rates-vs-prevalence-of-mental-and-substance-use-disorders?time=latest</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb36"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb36-1"><a href="#cb36-1" aria-hidden="true" tabindex="-1"></a>mental <span class="ot">&lt;-</span> <span class="fu">read_csv</span>(<span class="st">"data/suicide-rates-vs-prevalence-of-mental-and-substance-use-disorders.csv"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb37"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb37-1"><a href="#cb37-1" aria-hidden="true" tabindex="-1"></a>mental <span class="ot">&lt;-</span> mental <span class="sc">%&gt;%</span></span>
+<span id="cb37-2"><a href="#cb37-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">select</span>(<span class="dv">2</span>,<span class="dv">3</span>,<span class="dv">5</span>) <span class="sc">%&gt;%</span></span>
+<span id="cb37-3"><a href="#cb37-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">rename</span>(<span class="st">"code"</span> <span class="ot">=</span> <span class="st">"Code"</span>,</span>
+<span id="cb37-4"><a href="#cb37-4" aria-hidden="true" tabindex="-1"></a>         <span class="st">"year"</span> <span class="ot">=</span> <span class="st">"Year"</span>,</span>
+<span id="cb37-5"><a href="#cb37-5" aria-hidden="true" tabindex="-1"></a>         <span class="st">"mental_disorder"</span> <span class="ot">=</span> <span class="st">"Prevalence - Mental and substance use disorders - Sex: Both - Age: Age-standardized (Rate)"</span>) <span class="sc">%&gt;%</span></span>
+<span id="cb37-6"><a href="#cb37-6" aria-hidden="true" tabindex="-1"></a>  <span class="fu">filter</span>(year <span class="sc">%in%</span> (<span class="dv">1990</span><span class="sc">:</span><span class="dv">2019</span>)) <span class="sc">%&gt;%</span></span>
+<span id="cb37-7"><a href="#cb37-7" aria-hidden="true" tabindex="-1"></a>  <span class="fu">na.omit</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
 <p>FEEL FREE TO ADD SOMEMORE</p>
 </section>
 <section id="joining-for-eda-of-suicide-parameters" class="level4">
 <h4 class="anchored" data-anchor-id="joining-for-eda-of-suicide-parameters">Joining for EDA of Suicide Parameters</h4>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb28"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb28-1"><a href="#cb28-1" aria-hidden="true" tabindex="-1"></a>suicidedata_eda <span class="ot">&lt;-</span> <span class="fu">left_join</span>(suicidedata_age_std, suicide_number_age, <span class="at">by =</span> <span class="fu">c</span>(<span class="st">'code'</span> <span class="ot">=</span> <span class="st">'code'</span>, <span class="st">'year'</span> <span class="ot">=</span> <span class="st">'year'</span>)) <span class="sc">%&gt;%</span> </span>
-<span id="cb28-2"><a href="#cb28-2" aria-hidden="true" tabindex="-1"></a>  </span>
-<span id="cb28-3"><a href="#cb28-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">left_join</span>(., pop_size_age, <span class="at">by =</span> <span class="fu">c</span>(<span class="st">'code'</span> <span class="ot">=</span> <span class="st">'code'</span>, <span class="st">'year'</span> <span class="ot">=</span> <span class="st">'year'</span>)) <span class="sc">%&gt;%</span></span>
-<span id="cb28-4"><a href="#cb28-4" aria-hidden="true" tabindex="-1"></a>  </span>
-<span id="cb28-5"><a href="#cb28-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">left_join</span>(., death_number_age, <span class="at">by =</span> <span class="fu">c</span>(<span class="st">'code'</span> <span class="ot">=</span> <span class="st">'code'</span>, <span class="st">'year'</span> <span class="ot">=</span> <span class="st">'year'</span>)) <span class="sc">%&gt;%</span></span>
-<span id="cb28-6"><a href="#cb28-6" aria-hidden="true" tabindex="-1"></a>  </span>
-<span id="cb28-7"><a href="#cb28-7" aria-hidden="true" tabindex="-1"></a>  <span class="co">#calculate suicide rate for each age group and gender</span></span>
-<span id="cb28-8"><a href="#cb28-8" aria-hidden="true" tabindex="-1"></a>  <span class="co">#Use Age Standardised for all age metrics</span></span>
-<span id="cb28-9"><a href="#cb28-9" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="st">`</span><span class="at">SR_10-14_M</span><span class="st">`</span> <span class="ot">=</span> <span class="st">`</span><span class="at">SN_10-14_M</span><span class="st">`</span><span class="sc">*</span><span class="dv">100000</span><span class="sc">/</span><span class="st">`</span><span class="at">POP_10-14_M</span><span class="st">`</span>,</span>
-<span id="cb28-10"><a href="#cb28-10" aria-hidden="true" tabindex="-1"></a>         <span class="st">`</span><span class="at">SR_10-14_F</span><span class="st">`</span> <span class="ot">=</span> <span class="st">`</span><span class="at">SN_10-14_F</span><span class="st">`</span><span class="sc">*</span><span class="dv">100000</span><span class="sc">/</span><span class="st">`</span><span class="at">POP_10-14_F</span><span class="st">`</span>,</span>
-<span id="cb28-11"><a href="#cb28-11" aria-hidden="true" tabindex="-1"></a>         <span class="st">`</span><span class="at">SR_10-14_T</span><span class="st">`</span> <span class="ot">=</span> <span class="st">`</span><span class="at">SN_10-14_T</span><span class="st">`</span><span class="sc">*</span><span class="dv">100000</span><span class="sc">/</span><span class="st">`</span><span class="at">POP_10-14_T</span><span class="st">`</span>,</span>
-<span id="cb28-12"><a href="#cb28-12" aria-hidden="true" tabindex="-1"></a>         <span class="st">`</span><span class="at">SR_15-24_M</span><span class="st">`</span> <span class="ot">=</span> <span class="st">`</span><span class="at">SN_15-24_M</span><span class="st">`</span><span class="sc">*</span><span class="dv">100000</span><span class="sc">/</span><span class="st">`</span><span class="at">POP_15-24_M</span><span class="st">`</span>,</span>
-<span id="cb28-13"><a href="#cb28-13" aria-hidden="true" tabindex="-1"></a>         <span class="st">`</span><span class="at">SR_15-24_F</span><span class="st">`</span> <span class="ot">=</span> <span class="st">`</span><span class="at">SN_15-24_F</span><span class="st">`</span><span class="sc">*</span><span class="dv">100000</span><span class="sc">/</span><span class="st">`</span><span class="at">POP_15-24_F</span><span class="st">`</span>,</span>
-<span id="cb28-14"><a href="#cb28-14" aria-hidden="true" tabindex="-1"></a>         <span class="st">`</span><span class="at">SR_15-24_T</span><span class="st">`</span> <span class="ot">=</span> <span class="st">`</span><span class="at">SN_15-24_T</span><span class="st">`</span><span class="sc">*</span><span class="dv">100000</span><span class="sc">/</span><span class="st">`</span><span class="at">POP_15-24_T</span><span class="st">`</span>,</span>
-<span id="cb28-15"><a href="#cb28-15" aria-hidden="true" tabindex="-1"></a>         <span class="st">`</span><span class="at">SR_25-44_M</span><span class="st">`</span> <span class="ot">=</span> <span class="st">`</span><span class="at">SN_25-44_M</span><span class="st">`</span><span class="sc">*</span><span class="dv">100000</span><span class="sc">/</span><span class="st">`</span><span class="at">POP_25-44_M</span><span class="st">`</span>,</span>
-<span id="cb28-16"><a href="#cb28-16" aria-hidden="true" tabindex="-1"></a>         <span class="st">`</span><span class="at">SR_25-44_F</span><span class="st">`</span> <span class="ot">=</span> <span class="st">`</span><span class="at">SN_25-44_F</span><span class="st">`</span><span class="sc">*</span><span class="dv">100000</span><span class="sc">/</span><span class="st">`</span><span class="at">POP_25-44_F</span><span class="st">`</span>,</span>
-<span id="cb28-17"><a href="#cb28-17" aria-hidden="true" tabindex="-1"></a>         <span class="st">`</span><span class="at">SR_25-44_T</span><span class="st">`</span> <span class="ot">=</span> <span class="st">`</span><span class="at">SN_25-44_T</span><span class="st">`</span><span class="sc">*</span><span class="dv">100000</span><span class="sc">/</span><span class="st">`</span><span class="at">POP_25-44_T</span><span class="st">`</span>,</span>
-<span id="cb28-18"><a href="#cb28-18" aria-hidden="true" tabindex="-1"></a>         <span class="st">`</span><span class="at">SR_45-64_M</span><span class="st">`</span> <span class="ot">=</span> <span class="st">`</span><span class="at">SN_45-64_M</span><span class="st">`</span><span class="sc">*</span><span class="dv">100000</span><span class="sc">/</span><span class="st">`</span><span class="at">POP_45-64_M</span><span class="st">`</span>,</span>
-<span id="cb28-19"><a href="#cb28-19" aria-hidden="true" tabindex="-1"></a>         <span class="st">`</span><span class="at">SR_45-64_F</span><span class="st">`</span> <span class="ot">=</span> <span class="st">`</span><span class="at">SN_45-64_F</span><span class="st">`</span><span class="sc">*</span><span class="dv">100000</span><span class="sc">/</span><span class="st">`</span><span class="at">POP_45-64_F</span><span class="st">`</span>,</span>
-<span id="cb28-20"><a href="#cb28-20" aria-hidden="true" tabindex="-1"></a>         <span class="st">`</span><span class="at">SR_45-64_T</span><span class="st">`</span> <span class="ot">=</span> <span class="st">`</span><span class="at">SN_45-64_T</span><span class="st">`</span><span class="sc">*</span><span class="dv">100000</span><span class="sc">/</span><span class="st">`</span><span class="at">POP_45-64_T</span><span class="st">`</span>,</span>
-<span id="cb28-21"><a href="#cb28-21" aria-hidden="true" tabindex="-1"></a>         <span class="st">`</span><span class="at">SR_65-74_M</span><span class="st">`</span> <span class="ot">=</span> <span class="st">`</span><span class="at">SN_65-74_M</span><span class="st">`</span><span class="sc">*</span><span class="dv">100000</span><span class="sc">/</span><span class="st">`</span><span class="at">POP_65-74_M</span><span class="st">`</span>,</span>
-<span id="cb28-22"><a href="#cb28-22" aria-hidden="true" tabindex="-1"></a>         <span class="st">`</span><span class="at">SR_65-74_F</span><span class="st">`</span> <span class="ot">=</span> <span class="st">`</span><span class="at">SN_65-74_F</span><span class="st">`</span><span class="sc">*</span><span class="dv">100000</span><span class="sc">/</span><span class="st">`</span><span class="at">POP_65-74_F</span><span class="st">`</span>,</span>
-<span id="cb28-23"><a href="#cb28-23" aria-hidden="true" tabindex="-1"></a>         <span class="st">`</span><span class="at">SR_65-74_T</span><span class="st">`</span> <span class="ot">=</span> <span class="st">`</span><span class="at">SN_65-74_T</span><span class="st">`</span><span class="sc">*</span><span class="dv">100000</span><span class="sc">/</span><span class="st">`</span><span class="at">POP_65-74_T</span><span class="st">`</span>,</span>
-<span id="cb28-24"><a href="#cb28-24" aria-hidden="true" tabindex="-1"></a>         <span class="st">`</span><span class="at">SR_75+_M</span><span class="st">`</span> <span class="ot">=</span> <span class="st">`</span><span class="at">SN_75+_M</span><span class="st">`</span><span class="sc">*</span><span class="dv">100000</span><span class="sc">/</span><span class="st">`</span><span class="at">POP_75+_M</span><span class="st">`</span>,</span>
-<span id="cb28-25"><a href="#cb28-25" aria-hidden="true" tabindex="-1"></a>         <span class="st">`</span><span class="at">SR_75+_F</span><span class="st">`</span> <span class="ot">=</span> <span class="st">`</span><span class="at">SN_75+_F</span><span class="st">`</span><span class="sc">*</span><span class="dv">100000</span><span class="sc">/</span><span class="st">`</span><span class="at">POP_75+_F</span><span class="st">`</span>,</span>
-<span id="cb28-26"><a href="#cb28-26" aria-hidden="true" tabindex="-1"></a>         <span class="st">`</span><span class="at">SR_75+_T</span><span class="st">`</span> <span class="ot">=</span> <span class="st">`</span><span class="at">SN_75+_T</span><span class="st">`</span><span class="sc">*</span><span class="dv">100000</span><span class="sc">/</span><span class="st">`</span><span class="at">POP_75+_T</span><span class="st">`</span>) <span class="sc">%&gt;%</span></span>
-<span id="cb28-27"><a href="#cb28-27" aria-hidden="true" tabindex="-1"></a>    </span>
-<span id="cb28-28"><a href="#cb28-28" aria-hidden="true" tabindex="-1"></a>  <span class="co">#calculate suicide percent for each age group and gender</span></span>
-<span id="cb28-29"><a href="#cb28-29" aria-hidden="true" tabindex="-1"></a>    <span class="fu">mutate</span>(<span class="st">`</span><span class="at">SP_10-14_M</span><span class="st">`</span> <span class="ot">=</span> <span class="st">`</span><span class="at">SN_10-14_M</span><span class="st">`</span><span class="sc">*</span><span class="dv">100</span><span class="sc">/</span><span class="st">`</span><span class="at">DN_10-14_M</span><span class="st">`</span>,</span>
-<span id="cb28-30"><a href="#cb28-30" aria-hidden="true" tabindex="-1"></a>         <span class="st">`</span><span class="at">SP_10-14_F</span><span class="st">`</span> <span class="ot">=</span> <span class="st">`</span><span class="at">SN_10-14_F</span><span class="st">`</span><span class="sc">*</span><span class="dv">100</span><span class="sc">/</span><span class="st">`</span><span class="at">DN_10-14_F</span><span class="st">`</span>,</span>
-<span id="cb28-31"><a href="#cb28-31" aria-hidden="true" tabindex="-1"></a>         <span class="st">`</span><span class="at">SP_10-14_T</span><span class="st">`</span> <span class="ot">=</span> <span class="st">`</span><span class="at">SN_10-14_T</span><span class="st">`</span><span class="sc">*</span><span class="dv">100</span><span class="sc">/</span><span class="st">`</span><span class="at">DN_10-14_T</span><span class="st">`</span>,</span>
-<span id="cb28-32"><a href="#cb28-32" aria-hidden="true" tabindex="-1"></a>         <span class="st">`</span><span class="at">SP_15-24_M</span><span class="st">`</span> <span class="ot">=</span> <span class="st">`</span><span class="at">SN_15-24_M</span><span class="st">`</span><span class="sc">*</span><span class="dv">100</span><span class="sc">/</span><span class="st">`</span><span class="at">DN_15-24_M</span><span class="st">`</span>,</span>
-<span id="cb28-33"><a href="#cb28-33" aria-hidden="true" tabindex="-1"></a>         <span class="st">`</span><span class="at">SP_15-24_F</span><span class="st">`</span> <span class="ot">=</span> <span class="st">`</span><span class="at">SN_15-24_F</span><span class="st">`</span><span class="sc">*</span><span class="dv">100</span><span class="sc">/</span><span class="st">`</span><span class="at">DN_15-24_F</span><span class="st">`</span>,</span>
-<span id="cb28-34"><a href="#cb28-34" aria-hidden="true" tabindex="-1"></a>         <span class="st">`</span><span class="at">SP_15-24_T</span><span class="st">`</span> <span class="ot">=</span> <span class="st">`</span><span class="at">SN_15-24_T</span><span class="st">`</span><span class="sc">*</span><span class="dv">100</span><span class="sc">/</span><span class="st">`</span><span class="at">DN_15-24_T</span><span class="st">`</span>,</span>
-<span id="cb28-35"><a href="#cb28-35" aria-hidden="true" tabindex="-1"></a>         <span class="st">`</span><span class="at">SP_25-44_M</span><span class="st">`</span> <span class="ot">=</span> <span class="st">`</span><span class="at">SN_25-44_M</span><span class="st">`</span><span class="sc">*</span><span class="dv">100</span><span class="sc">/</span><span class="st">`</span><span class="at">DN_25-44_M</span><span class="st">`</span>,</span>
-<span id="cb28-36"><a href="#cb28-36" aria-hidden="true" tabindex="-1"></a>         <span class="st">`</span><span class="at">SP_25-44_F</span><span class="st">`</span> <span class="ot">=</span> <span class="st">`</span><span class="at">SN_25-44_F</span><span class="st">`</span><span class="sc">*</span><span class="dv">100</span><span class="sc">/</span><span class="st">`</span><span class="at">DN_25-44_F</span><span class="st">`</span>,</span>
-<span id="cb28-37"><a href="#cb28-37" aria-hidden="true" tabindex="-1"></a>         <span class="st">`</span><span class="at">SP_25-44_T</span><span class="st">`</span> <span class="ot">=</span> <span class="st">`</span><span class="at">SN_25-44_T</span><span class="st">`</span><span class="sc">*</span><span class="dv">100</span><span class="sc">/</span><span class="st">`</span><span class="at">DN_25-44_T</span><span class="st">`</span>,</span>
-<span id="cb28-38"><a href="#cb28-38" aria-hidden="true" tabindex="-1"></a>         <span class="st">`</span><span class="at">SP_45-64_M</span><span class="st">`</span> <span class="ot">=</span> <span class="st">`</span><span class="at">SN_45-64_M</span><span class="st">`</span><span class="sc">*</span><span class="dv">100</span><span class="sc">/</span><span class="st">`</span><span class="at">DN_45-64_M</span><span class="st">`</span>,</span>
-<span id="cb28-39"><a href="#cb28-39" aria-hidden="true" tabindex="-1"></a>         <span class="st">`</span><span class="at">SP_45-64_F</span><span class="st">`</span> <span class="ot">=</span> <span class="st">`</span><span class="at">SN_45-64_F</span><span class="st">`</span><span class="sc">*</span><span class="dv">100</span><span class="sc">/</span><span class="st">`</span><span class="at">DN_45-64_F</span><span class="st">`</span>,</span>
-<span id="cb28-40"><a href="#cb28-40" aria-hidden="true" tabindex="-1"></a>         <span class="st">`</span><span class="at">SP_45-64_T</span><span class="st">`</span> <span class="ot">=</span> <span class="st">`</span><span class="at">SN_45-64_T</span><span class="st">`</span><span class="sc">*</span><span class="dv">100</span><span class="sc">/</span><span class="st">`</span><span class="at">DN_45-64_T</span><span class="st">`</span>,</span>
-<span id="cb28-41"><a href="#cb28-41" aria-hidden="true" tabindex="-1"></a>         <span class="st">`</span><span class="at">SP_65-74_M</span><span class="st">`</span> <span class="ot">=</span> <span class="st">`</span><span class="at">SN_65-74_M</span><span class="st">`</span><span class="sc">*</span><span class="dv">100</span><span class="sc">/</span><span class="st">`</span><span class="at">DN_65-74_M</span><span class="st">`</span>,</span>
-<span id="cb28-42"><a href="#cb28-42" aria-hidden="true" tabindex="-1"></a>         <span class="st">`</span><span class="at">SP_65-74_F</span><span class="st">`</span> <span class="ot">=</span> <span class="st">`</span><span class="at">SN_65-74_F</span><span class="st">`</span><span class="sc">*</span><span class="dv">100</span><span class="sc">/</span><span class="st">`</span><span class="at">DN_65-74_F</span><span class="st">`</span>,</span>
-<span id="cb28-43"><a href="#cb28-43" aria-hidden="true" tabindex="-1"></a>         <span class="st">`</span><span class="at">SP_65-74_T</span><span class="st">`</span> <span class="ot">=</span> <span class="st">`</span><span class="at">SN_65-74_T</span><span class="st">`</span><span class="sc">*</span><span class="dv">100</span><span class="sc">/</span><span class="st">`</span><span class="at">DN_65-74_T</span><span class="st">`</span>,</span>
-<span id="cb28-44"><a href="#cb28-44" aria-hidden="true" tabindex="-1"></a>         <span class="st">`</span><span class="at">SP_75+_M</span><span class="st">`</span> <span class="ot">=</span> <span class="st">`</span><span class="at">SN_75+_M</span><span class="st">`</span><span class="sc">*</span><span class="dv">100</span><span class="sc">/</span><span class="st">`</span><span class="at">DN_75+_M</span><span class="st">`</span>,</span>
-<span id="cb28-45"><a href="#cb28-45" aria-hidden="true" tabindex="-1"></a>         <span class="st">`</span><span class="at">SP_75+_F</span><span class="st">`</span> <span class="ot">=</span> <span class="st">`</span><span class="at">SN_75+_F</span><span class="st">`</span><span class="sc">*</span><span class="dv">100</span><span class="sc">/</span><span class="st">`</span><span class="at">DN_75+_F</span><span class="st">`</span>,</span>
-<span id="cb28-46"><a href="#cb28-46" aria-hidden="true" tabindex="-1"></a>         <span class="st">`</span><span class="at">SP_75+_T</span><span class="st">`</span> <span class="ot">=</span> <span class="st">`</span><span class="at">SN_75+_T</span><span class="st">`</span><span class="sc">*</span><span class="dv">100</span><span class="sc">/</span><span class="st">`</span><span class="at">DN_75+_T</span><span class="st">`</span>,</span>
-<span id="cb28-47"><a href="#cb28-47" aria-hidden="true" tabindex="-1"></a>         <span class="st">`</span><span class="at">SP_All_M</span><span class="st">`</span> <span class="ot">=</span> <span class="st">`</span><span class="at">SN_All_M</span><span class="st">`</span><span class="sc">*</span><span class="dv">100</span><span class="sc">/</span><span class="st">`</span><span class="at">DN_All_M</span><span class="st">`</span>,</span>
-<span id="cb28-48"><a href="#cb28-48" aria-hidden="true" tabindex="-1"></a>         <span class="st">`</span><span class="at">SP_All_F</span><span class="st">`</span> <span class="ot">=</span> <span class="st">`</span><span class="at">SN_All_F</span><span class="st">`</span><span class="sc">*</span><span class="dv">100</span><span class="sc">/</span><span class="st">`</span><span class="at">DN_All_F</span><span class="st">`</span>,</span>
-<span id="cb28-49"><a href="#cb28-49" aria-hidden="true" tabindex="-1"></a>         <span class="st">`</span><span class="at">SP_All_T</span><span class="st">`</span> <span class="ot">=</span> <span class="st">`</span><span class="at">SN_All_T</span><span class="st">`</span><span class="sc">*</span><span class="dv">100</span><span class="sc">/</span><span class="st">`</span><span class="at">DN_All_T</span><span class="st">`</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb38"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb38-1"><a href="#cb38-1" aria-hidden="true" tabindex="-1"></a>suicidedata_eda <span class="ot">&lt;-</span> <span class="fu">left_join</span>(suicidedata_age_std, suicide_number_age, <span class="at">by =</span> <span class="fu">c</span>(<span class="st">'code'</span> <span class="ot">=</span> <span class="st">'code'</span>, <span class="st">'year'</span> <span class="ot">=</span> <span class="st">'year'</span>)) <span class="sc">%&gt;%</span> </span>
+<span id="cb38-2"><a href="#cb38-2" aria-hidden="true" tabindex="-1"></a>  </span>
+<span id="cb38-3"><a href="#cb38-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">left_join</span>(., pop_size_age, <span class="at">by =</span> <span class="fu">c</span>(<span class="st">'code'</span> <span class="ot">=</span> <span class="st">'code'</span>, <span class="st">'year'</span> <span class="ot">=</span> <span class="st">'year'</span>)) <span class="sc">%&gt;%</span></span>
+<span id="cb38-4"><a href="#cb38-4" aria-hidden="true" tabindex="-1"></a>  </span>
+<span id="cb38-5"><a href="#cb38-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">left_join</span>(., death_number_age, <span class="at">by =</span> <span class="fu">c</span>(<span class="st">'code'</span> <span class="ot">=</span> <span class="st">'code'</span>, <span class="st">'year'</span> <span class="ot">=</span> <span class="st">'year'</span>)) <span class="sc">%&gt;%</span></span>
+<span id="cb38-6"><a href="#cb38-6" aria-hidden="true" tabindex="-1"></a>  </span>
+<span id="cb38-7"><a href="#cb38-7" aria-hidden="true" tabindex="-1"></a>  <span class="co">#calculate suicide rate for each age group and gender</span></span>
+<span id="cb38-8"><a href="#cb38-8" aria-hidden="true" tabindex="-1"></a>  <span class="co">#Use Age Standardised for all age metrics</span></span>
+<span id="cb38-9"><a href="#cb38-9" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="st">`</span><span class="at">SR_10-14_M</span><span class="st">`</span> <span class="ot">=</span> <span class="st">`</span><span class="at">SN_10-14_M</span><span class="st">`</span><span class="sc">*</span><span class="dv">100000</span><span class="sc">/</span><span class="st">`</span><span class="at">POP_10-14_M</span><span class="st">`</span>,</span>
+<span id="cb38-10"><a href="#cb38-10" aria-hidden="true" tabindex="-1"></a>         <span class="st">`</span><span class="at">SR_10-14_F</span><span class="st">`</span> <span class="ot">=</span> <span class="st">`</span><span class="at">SN_10-14_F</span><span class="st">`</span><span class="sc">*</span><span class="dv">100000</span><span class="sc">/</span><span class="st">`</span><span class="at">POP_10-14_F</span><span class="st">`</span>,</span>
+<span id="cb38-11"><a href="#cb38-11" aria-hidden="true" tabindex="-1"></a>         <span class="st">`</span><span class="at">SR_10-14_T</span><span class="st">`</span> <span class="ot">=</span> <span class="st">`</span><span class="at">SN_10-14_T</span><span class="st">`</span><span class="sc">*</span><span class="dv">100000</span><span class="sc">/</span><span class="st">`</span><span class="at">POP_10-14_T</span><span class="st">`</span>,</span>
+<span id="cb38-12"><a href="#cb38-12" aria-hidden="true" tabindex="-1"></a>         <span class="st">`</span><span class="at">SR_15-24_M</span><span class="st">`</span> <span class="ot">=</span> <span class="st">`</span><span class="at">SN_15-24_M</span><span class="st">`</span><span class="sc">*</span><span class="dv">100000</span><span class="sc">/</span><span class="st">`</span><span class="at">POP_15-24_M</span><span class="st">`</span>,</span>
+<span id="cb38-13"><a href="#cb38-13" aria-hidden="true" tabindex="-1"></a>         <span class="st">`</span><span class="at">SR_15-24_F</span><span class="st">`</span> <span class="ot">=</span> <span class="st">`</span><span class="at">SN_15-24_F</span><span class="st">`</span><span class="sc">*</span><span class="dv">100000</span><span class="sc">/</span><span class="st">`</span><span class="at">POP_15-24_F</span><span class="st">`</span>,</span>
+<span id="cb38-14"><a href="#cb38-14" aria-hidden="true" tabindex="-1"></a>         <span class="st">`</span><span class="at">SR_15-24_T</span><span class="st">`</span> <span class="ot">=</span> <span class="st">`</span><span class="at">SN_15-24_T</span><span class="st">`</span><span class="sc">*</span><span class="dv">100000</span><span class="sc">/</span><span class="st">`</span><span class="at">POP_15-24_T</span><span class="st">`</span>,</span>
+<span id="cb38-15"><a href="#cb38-15" aria-hidden="true" tabindex="-1"></a>         <span class="st">`</span><span class="at">SR_25-44_M</span><span class="st">`</span> <span class="ot">=</span> <span class="st">`</span><span class="at">SN_25-44_M</span><span class="st">`</span><span class="sc">*</span><span class="dv">100000</span><span class="sc">/</span><span class="st">`</span><span class="at">POP_25-44_M</span><span class="st">`</span>,</span>
+<span id="cb38-16"><a href="#cb38-16" aria-hidden="true" tabindex="-1"></a>         <span class="st">`</span><span class="at">SR_25-44_F</span><span class="st">`</span> <span class="ot">=</span> <span class="st">`</span><span class="at">SN_25-44_F</span><span class="st">`</span><span class="sc">*</span><span class="dv">100000</span><span class="sc">/</span><span class="st">`</span><span class="at">POP_25-44_F</span><span class="st">`</span>,</span>
+<span id="cb38-17"><a href="#cb38-17" aria-hidden="true" tabindex="-1"></a>         <span class="st">`</span><span class="at">SR_25-44_T</span><span class="st">`</span> <span class="ot">=</span> <span class="st">`</span><span class="at">SN_25-44_T</span><span class="st">`</span><span class="sc">*</span><span class="dv">100000</span><span class="sc">/</span><span class="st">`</span><span class="at">POP_25-44_T</span><span class="st">`</span>,</span>
+<span id="cb38-18"><a href="#cb38-18" aria-hidden="true" tabindex="-1"></a>         <span class="st">`</span><span class="at">SR_45-64_M</span><span class="st">`</span> <span class="ot">=</span> <span class="st">`</span><span class="at">SN_45-64_M</span><span class="st">`</span><span class="sc">*</span><span class="dv">100000</span><span class="sc">/</span><span class="st">`</span><span class="at">POP_45-64_M</span><span class="st">`</span>,</span>
+<span id="cb38-19"><a href="#cb38-19" aria-hidden="true" tabindex="-1"></a>         <span class="st">`</span><span class="at">SR_45-64_F</span><span class="st">`</span> <span class="ot">=</span> <span class="st">`</span><span class="at">SN_45-64_F</span><span class="st">`</span><span class="sc">*</span><span class="dv">100000</span><span class="sc">/</span><span class="st">`</span><span class="at">POP_45-64_F</span><span class="st">`</span>,</span>
+<span id="cb38-20"><a href="#cb38-20" aria-hidden="true" tabindex="-1"></a>         <span class="st">`</span><span class="at">SR_45-64_T</span><span class="st">`</span> <span class="ot">=</span> <span class="st">`</span><span class="at">SN_45-64_T</span><span class="st">`</span><span class="sc">*</span><span class="dv">100000</span><span class="sc">/</span><span class="st">`</span><span class="at">POP_45-64_T</span><span class="st">`</span>,</span>
+<span id="cb38-21"><a href="#cb38-21" aria-hidden="true" tabindex="-1"></a>         <span class="st">`</span><span class="at">SR_65-74_M</span><span class="st">`</span> <span class="ot">=</span> <span class="st">`</span><span class="at">SN_65-74_M</span><span class="st">`</span><span class="sc">*</span><span class="dv">100000</span><span class="sc">/</span><span class="st">`</span><span class="at">POP_65-74_M</span><span class="st">`</span>,</span>
+<span id="cb38-22"><a href="#cb38-22" aria-hidden="true" tabindex="-1"></a>         <span class="st">`</span><span class="at">SR_65-74_F</span><span class="st">`</span> <span class="ot">=</span> <span class="st">`</span><span class="at">SN_65-74_F</span><span class="st">`</span><span class="sc">*</span><span class="dv">100000</span><span class="sc">/</span><span class="st">`</span><span class="at">POP_65-74_F</span><span class="st">`</span>,</span>
+<span id="cb38-23"><a href="#cb38-23" aria-hidden="true" tabindex="-1"></a>         <span class="st">`</span><span class="at">SR_65-74_T</span><span class="st">`</span> <span class="ot">=</span> <span class="st">`</span><span class="at">SN_65-74_T</span><span class="st">`</span><span class="sc">*</span><span class="dv">100000</span><span class="sc">/</span><span class="st">`</span><span class="at">POP_65-74_T</span><span class="st">`</span>,</span>
+<span id="cb38-24"><a href="#cb38-24" aria-hidden="true" tabindex="-1"></a>         <span class="st">`</span><span class="at">SR_75+_M</span><span class="st">`</span> <span class="ot">=</span> <span class="st">`</span><span class="at">SN_75+_M</span><span class="st">`</span><span class="sc">*</span><span class="dv">100000</span><span class="sc">/</span><span class="st">`</span><span class="at">POP_75+_M</span><span class="st">`</span>,</span>
+<span id="cb38-25"><a href="#cb38-25" aria-hidden="true" tabindex="-1"></a>         <span class="st">`</span><span class="at">SR_75+_F</span><span class="st">`</span> <span class="ot">=</span> <span class="st">`</span><span class="at">SN_75+_F</span><span class="st">`</span><span class="sc">*</span><span class="dv">100000</span><span class="sc">/</span><span class="st">`</span><span class="at">POP_75+_F</span><span class="st">`</span>,</span>
+<span id="cb38-26"><a href="#cb38-26" aria-hidden="true" tabindex="-1"></a>         <span class="st">`</span><span class="at">SR_75+_T</span><span class="st">`</span> <span class="ot">=</span> <span class="st">`</span><span class="at">SN_75+_T</span><span class="st">`</span><span class="sc">*</span><span class="dv">100000</span><span class="sc">/</span><span class="st">`</span><span class="at">POP_75+_T</span><span class="st">`</span>) <span class="sc">%&gt;%</span></span>
+<span id="cb38-27"><a href="#cb38-27" aria-hidden="true" tabindex="-1"></a>    </span>
+<span id="cb38-28"><a href="#cb38-28" aria-hidden="true" tabindex="-1"></a>  <span class="co">#calculate suicide percent for each age group and gender</span></span>
+<span id="cb38-29"><a href="#cb38-29" aria-hidden="true" tabindex="-1"></a>    <span class="fu">mutate</span>(<span class="st">`</span><span class="at">SP_10-14_M</span><span class="st">`</span> <span class="ot">=</span> <span class="st">`</span><span class="at">SN_10-14_M</span><span class="st">`</span><span class="sc">*</span><span class="dv">100</span><span class="sc">/</span><span class="st">`</span><span class="at">DN_10-14_M</span><span class="st">`</span>,</span>
+<span id="cb38-30"><a href="#cb38-30" aria-hidden="true" tabindex="-1"></a>         <span class="st">`</span><span class="at">SP_10-14_F</span><span class="st">`</span> <span class="ot">=</span> <span class="st">`</span><span class="at">SN_10-14_F</span><span class="st">`</span><span class="sc">*</span><span class="dv">100</span><span class="sc">/</span><span class="st">`</span><span class="at">DN_10-14_F</span><span class="st">`</span>,</span>
+<span id="cb38-31"><a href="#cb38-31" aria-hidden="true" tabindex="-1"></a>         <span class="st">`</span><span class="at">SP_10-14_T</span><span class="st">`</span> <span class="ot">=</span> <span class="st">`</span><span class="at">SN_10-14_T</span><span class="st">`</span><span class="sc">*</span><span class="dv">100</span><span class="sc">/</span><span class="st">`</span><span class="at">DN_10-14_T</span><span class="st">`</span>,</span>
+<span id="cb38-32"><a href="#cb38-32" aria-hidden="true" tabindex="-1"></a>         <span class="st">`</span><span class="at">SP_15-24_M</span><span class="st">`</span> <span class="ot">=</span> <span class="st">`</span><span class="at">SN_15-24_M</span><span class="st">`</span><span class="sc">*</span><span class="dv">100</span><span class="sc">/</span><span class="st">`</span><span class="at">DN_15-24_M</span><span class="st">`</span>,</span>
+<span id="cb38-33"><a href="#cb38-33" aria-hidden="true" tabindex="-1"></a>         <span class="st">`</span><span class="at">SP_15-24_F</span><span class="st">`</span> <span class="ot">=</span> <span class="st">`</span><span class="at">SN_15-24_F</span><span class="st">`</span><span class="sc">*</span><span class="dv">100</span><span class="sc">/</span><span class="st">`</span><span class="at">DN_15-24_F</span><span class="st">`</span>,</span>
+<span id="cb38-34"><a href="#cb38-34" aria-hidden="true" tabindex="-1"></a>         <span class="st">`</span><span class="at">SP_15-24_T</span><span class="st">`</span> <span class="ot">=</span> <span class="st">`</span><span class="at">SN_15-24_T</span><span class="st">`</span><span class="sc">*</span><span class="dv">100</span><span class="sc">/</span><span class="st">`</span><span class="at">DN_15-24_T</span><span class="st">`</span>,</span>
+<span id="cb38-35"><a href="#cb38-35" aria-hidden="true" tabindex="-1"></a>         <span class="st">`</span><span class="at">SP_25-44_M</span><span class="st">`</span> <span class="ot">=</span> <span class="st">`</span><span class="at">SN_25-44_M</span><span class="st">`</span><span class="sc">*</span><span class="dv">100</span><span class="sc">/</span><span class="st">`</span><span class="at">DN_25-44_M</span><span class="st">`</span>,</span>
+<span id="cb38-36"><a href="#cb38-36" aria-hidden="true" tabindex="-1"></a>         <span class="st">`</span><span class="at">SP_25-44_F</span><span class="st">`</span> <span class="ot">=</span> <span class="st">`</span><span class="at">SN_25-44_F</span><span class="st">`</span><span class="sc">*</span><span class="dv">100</span><span class="sc">/</span><span class="st">`</span><span class="at">DN_25-44_F</span><span class="st">`</span>,</span>
+<span id="cb38-37"><a href="#cb38-37" aria-hidden="true" tabindex="-1"></a>         <span class="st">`</span><span class="at">SP_25-44_T</span><span class="st">`</span> <span class="ot">=</span> <span class="st">`</span><span class="at">SN_25-44_T</span><span class="st">`</span><span class="sc">*</span><span class="dv">100</span><span class="sc">/</span><span class="st">`</span><span class="at">DN_25-44_T</span><span class="st">`</span>,</span>
+<span id="cb38-38"><a href="#cb38-38" aria-hidden="true" tabindex="-1"></a>         <span class="st">`</span><span class="at">SP_45-64_M</span><span class="st">`</span> <span class="ot">=</span> <span class="st">`</span><span class="at">SN_45-64_M</span><span class="st">`</span><span class="sc">*</span><span class="dv">100</span><span class="sc">/</span><span class="st">`</span><span class="at">DN_45-64_M</span><span class="st">`</span>,</span>
+<span id="cb38-39"><a href="#cb38-39" aria-hidden="true" tabindex="-1"></a>         <span class="st">`</span><span class="at">SP_45-64_F</span><span class="st">`</span> <span class="ot">=</span> <span class="st">`</span><span class="at">SN_45-64_F</span><span class="st">`</span><span class="sc">*</span><span class="dv">100</span><span class="sc">/</span><span class="st">`</span><span class="at">DN_45-64_F</span><span class="st">`</span>,</span>
+<span id="cb38-40"><a href="#cb38-40" aria-hidden="true" tabindex="-1"></a>         <span class="st">`</span><span class="at">SP_45-64_T</span><span class="st">`</span> <span class="ot">=</span> <span class="st">`</span><span class="at">SN_45-64_T</span><span class="st">`</span><span class="sc">*</span><span class="dv">100</span><span class="sc">/</span><span class="st">`</span><span class="at">DN_45-64_T</span><span class="st">`</span>,</span>
+<span id="cb38-41"><a href="#cb38-41" aria-hidden="true" tabindex="-1"></a>         <span class="st">`</span><span class="at">SP_65-74_M</span><span class="st">`</span> <span class="ot">=</span> <span class="st">`</span><span class="at">SN_65-74_M</span><span class="st">`</span><span class="sc">*</span><span class="dv">100</span><span class="sc">/</span><span class="st">`</span><span class="at">DN_65-74_M</span><span class="st">`</span>,</span>
+<span id="cb38-42"><a href="#cb38-42" aria-hidden="true" tabindex="-1"></a>         <span class="st">`</span><span class="at">SP_65-74_F</span><span class="st">`</span> <span class="ot">=</span> <span class="st">`</span><span class="at">SN_65-74_F</span><span class="st">`</span><span class="sc">*</span><span class="dv">100</span><span class="sc">/</span><span class="st">`</span><span class="at">DN_65-74_F</span><span class="st">`</span>,</span>
+<span id="cb38-43"><a href="#cb38-43" aria-hidden="true" tabindex="-1"></a>         <span class="st">`</span><span class="at">SP_65-74_T</span><span class="st">`</span> <span class="ot">=</span> <span class="st">`</span><span class="at">SN_65-74_T</span><span class="st">`</span><span class="sc">*</span><span class="dv">100</span><span class="sc">/</span><span class="st">`</span><span class="at">DN_65-74_T</span><span class="st">`</span>,</span>
+<span id="cb38-44"><a href="#cb38-44" aria-hidden="true" tabindex="-1"></a>         <span class="st">`</span><span class="at">SP_75+_M</span><span class="st">`</span> <span class="ot">=</span> <span class="st">`</span><span class="at">SN_75+_M</span><span class="st">`</span><span class="sc">*</span><span class="dv">100</span><span class="sc">/</span><span class="st">`</span><span class="at">DN_75+_M</span><span class="st">`</span>,</span>
+<span id="cb38-45"><a href="#cb38-45" aria-hidden="true" tabindex="-1"></a>         <span class="st">`</span><span class="at">SP_75+_F</span><span class="st">`</span> <span class="ot">=</span> <span class="st">`</span><span class="at">SN_75+_F</span><span class="st">`</span><span class="sc">*</span><span class="dv">100</span><span class="sc">/</span><span class="st">`</span><span class="at">DN_75+_F</span><span class="st">`</span>,</span>
+<span id="cb38-46"><a href="#cb38-46" aria-hidden="true" tabindex="-1"></a>         <span class="st">`</span><span class="at">SP_75+_T</span><span class="st">`</span> <span class="ot">=</span> <span class="st">`</span><span class="at">SN_75+_T</span><span class="st">`</span><span class="sc">*</span><span class="dv">100</span><span class="sc">/</span><span class="st">`</span><span class="at">DN_75+_T</span><span class="st">`</span>,</span>
+<span id="cb38-47"><a href="#cb38-47" aria-hidden="true" tabindex="-1"></a>         <span class="st">`</span><span class="at">SP_All_M</span><span class="st">`</span> <span class="ot">=</span> <span class="st">`</span><span class="at">SN_All_M</span><span class="st">`</span><span class="sc">*</span><span class="dv">100</span><span class="sc">/</span><span class="st">`</span><span class="at">DN_All_M</span><span class="st">`</span>,</span>
+<span id="cb38-48"><a href="#cb38-48" aria-hidden="true" tabindex="-1"></a>         <span class="st">`</span><span class="at">SP_All_F</span><span class="st">`</span> <span class="ot">=</span> <span class="st">`</span><span class="at">SN_All_F</span><span class="st">`</span><span class="sc">*</span><span class="dv">100</span><span class="sc">/</span><span class="st">`</span><span class="at">DN_All_F</span><span class="st">`</span>,</span>
+<span id="cb38-49"><a href="#cb38-49" aria-hidden="true" tabindex="-1"></a>         <span class="st">`</span><span class="at">SP_All_T</span><span class="st">`</span> <span class="ot">=</span> <span class="st">`</span><span class="at">SN_All_T</span><span class="st">`</span><span class="sc">*</span><span class="dv">100</span><span class="sc">/</span><span class="st">`</span><span class="at">DN_All_T</span><span class="st">`</span>) <span class="sc">%&gt;%</span></span>
+<span id="cb38-50"><a href="#cb38-50" aria-hidden="true" tabindex="-1"></a>  </span>
+<span id="cb38-51"><a href="#cb38-51" aria-hidden="true" tabindex="-1"></a>   <span class="fu">arrange</span>(code, year)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 </section>
 <section id="joining-for-analysis-with-other-parameters" class="level4">
 <h4 class="anchored" data-anchor-id="joining-for-analysis-with-other-parameters">Joining for Analysis (with other parameters)</h4>
 <p>For analysis, we will only use suicide rate (SR)</p>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb29"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb29-1"><a href="#cb29-1" aria-hidden="true" tabindex="-1"></a>suicidedata_analysis <span class="ot">&lt;-</span> <span class="fu">left_join</span>(suicidedata_eda <span class="sc">%&gt;%</span></span>
-<span id="cb29-2"><a href="#cb29-2" aria-hidden="true" tabindex="-1"></a>                                    <span class="fu">select</span>(country<span class="sc">:</span><span class="st">`</span><span class="at">SR_AS_T</span><span class="st">`</span>, <span class="st">`</span><span class="at">SR_10-14_M</span><span class="st">`</span><span class="sc">:</span><span class="st">`</span><span class="at">SR_75+_T</span><span class="st">`</span>)</span>
-<span id="cb29-3"><a href="#cb29-3" aria-hidden="true" tabindex="-1"></a>                                    , gdp_per_capita, <span class="at">by =</span> <span class="fu">c</span>(<span class="st">'code'</span> <span class="ot">=</span> <span class="st">'code'</span>, <span class="st">'year'</span> <span class="ot">=</span> <span class="st">'year'</span>)) <span class="sc">%&gt;%</span></span>
-<span id="cb29-4"><a href="#cb29-4" aria-hidden="true" tabindex="-1"></a>  </span>
-<span id="cb29-5"><a href="#cb29-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">left_join</span>(., hdi, <span class="at">by =</span> <span class="fu">c</span>(<span class="st">'code'</span> <span class="ot">=</span> <span class="st">'code'</span>, <span class="st">'year'</span> <span class="ot">=</span> <span class="st">'year'</span>)) <span class="sc">%&gt;%</span></span>
-<span id="cb29-6"><a href="#cb29-6" aria-hidden="true" tabindex="-1"></a>  </span>
-<span id="cb29-7"><a href="#cb29-7" aria-hidden="true" tabindex="-1"></a>  <span class="fu">left_join</span>(., depr, <span class="at">by =</span> <span class="fu">c</span>(<span class="st">'code'</span> <span class="ot">=</span> <span class="st">'code'</span>, <span class="st">'year'</span> <span class="ot">=</span> <span class="st">'year'</span>)) <span class="sc">%&gt;%</span></span>
-<span id="cb29-8"><a href="#cb29-8" aria-hidden="true" tabindex="-1"></a>  </span>
-<span id="cb29-9"><a href="#cb29-9" aria-hidden="true" tabindex="-1"></a>  <span class="fu">left_join</span>(., gini, <span class="at">by =</span> <span class="fu">c</span>(<span class="st">'code'</span> <span class="ot">=</span> <span class="st">'code'</span>, <span class="st">'year'</span> <span class="ot">=</span> <span class="st">'year'</span>)) <span class="sc">%&gt;%</span></span>
-<span id="cb29-10"><a href="#cb29-10" aria-hidden="true" tabindex="-1"></a>  </span>
-<span id="cb29-11"><a href="#cb29-11" aria-hidden="true" tabindex="-1"></a>  <span class="fu">left_join</span>(., violent, <span class="at">by =</span> <span class="fu">c</span>(<span class="st">'code'</span> <span class="ot">=</span> <span class="st">'code'</span>, <span class="st">'year'</span> <span class="ot">=</span> <span class="st">'year'</span>)) </span>
-<span id="cb29-12"><a href="#cb29-12" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb29-13"><a href="#cb29-13" aria-hidden="true" tabindex="-1"></a>knitr<span class="sc">::</span><span class="fu">kable</span>(<span class="fu">head</span>(suicidedata_analysis))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb39"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb39-1"><a href="#cb39-1" aria-hidden="true" tabindex="-1"></a>suicidedata_analysis <span class="ot">&lt;-</span> <span class="fu">left_join</span>(suicidedata_eda <span class="sc">%&gt;%</span></span>
+<span id="cb39-2"><a href="#cb39-2" aria-hidden="true" tabindex="-1"></a>                                    <span class="fu">select</span>(country<span class="sc">:</span><span class="st">`</span><span class="at">SR_AS_T</span><span class="st">`</span>, <span class="st">`</span><span class="at">SR_10-14_M</span><span class="st">`</span><span class="sc">:</span><span class="st">`</span><span class="at">SR_75+_T</span><span class="st">`</span>,<span class="st">`</span><span class="at">POP_All_T</span><span class="st">`</span>)</span>
+<span id="cb39-3"><a href="#cb39-3" aria-hidden="true" tabindex="-1"></a>                                    , gdp_per_capita, <span class="at">by =</span> <span class="fu">c</span>(<span class="st">'code'</span> <span class="ot">=</span> <span class="st">'code'</span>, <span class="st">'year'</span> <span class="ot">=</span> <span class="st">'year'</span>)) <span class="sc">%&gt;%</span></span>
+<span id="cb39-4"><a href="#cb39-4" aria-hidden="true" tabindex="-1"></a>  </span>
+<span id="cb39-5"><a href="#cb39-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">left_join</span>(., hdi, <span class="at">by =</span> <span class="fu">c</span>(<span class="st">'code'</span> <span class="ot">=</span> <span class="st">'code'</span>, <span class="st">'year'</span> <span class="ot">=</span> <span class="st">'year'</span>)) <span class="sc">%&gt;%</span></span>
+<span id="cb39-6"><a href="#cb39-6" aria-hidden="true" tabindex="-1"></a>  </span>
+<span id="cb39-7"><a href="#cb39-7" aria-hidden="true" tabindex="-1"></a>  <span class="fu">left_join</span>(., depr, <span class="at">by =</span> <span class="fu">c</span>(<span class="st">'code'</span> <span class="ot">=</span> <span class="st">'code'</span>, <span class="st">'year'</span> <span class="ot">=</span> <span class="st">'year'</span>)) <span class="sc">%&gt;%</span></span>
+<span id="cb39-8"><a href="#cb39-8" aria-hidden="true" tabindex="-1"></a>  </span>
+<span id="cb39-9"><a href="#cb39-9" aria-hidden="true" tabindex="-1"></a>  <span class="fu">left_join</span>(., gini, <span class="at">by =</span> <span class="fu">c</span>(<span class="st">'code'</span> <span class="ot">=</span> <span class="st">'code'</span>, <span class="st">'year'</span> <span class="ot">=</span> <span class="st">'year'</span>)) <span class="sc">%&gt;%</span></span>
+<span id="cb39-10"><a href="#cb39-10" aria-hidden="true" tabindex="-1"></a>  </span>
+<span id="cb39-11"><a href="#cb39-11" aria-hidden="true" tabindex="-1"></a>  <span class="fu">left_join</span>(., violent, <span class="at">by =</span> <span class="fu">c</span>(<span class="st">'code'</span> <span class="ot">=</span> <span class="st">'code'</span>, <span class="st">'year'</span> <span class="ot">=</span> <span class="st">'year'</span>)) <span class="sc">%&gt;%</span></span>
+<span id="cb39-12"><a href="#cb39-12" aria-hidden="true" tabindex="-1"></a>  </span>
+<span id="cb39-13"><a href="#cb39-13" aria-hidden="true" tabindex="-1"></a>  <span class="fu">left_join</span>(., poverty, <span class="at">by =</span> <span class="fu">c</span>(<span class="st">'code'</span> <span class="ot">=</span> <span class="st">'code'</span>, <span class="st">'year'</span> <span class="ot">=</span> <span class="st">'year'</span>)) <span class="sc">%&gt;%</span></span>
+<span id="cb39-14"><a href="#cb39-14" aria-hidden="true" tabindex="-1"></a>  </span>
+<span id="cb39-15"><a href="#cb39-15" aria-hidden="true" tabindex="-1"></a>  <span class="fu">left_join</span>(., unemployment, <span class="at">by =</span> <span class="fu">c</span>(<span class="st">'code'</span> <span class="ot">=</span> <span class="st">'code'</span>, <span class="st">'year'</span> <span class="ot">=</span> <span class="st">'year'</span>)) <span class="sc">%&gt;%</span></span>
+<span id="cb39-16"><a href="#cb39-16" aria-hidden="true" tabindex="-1"></a>  </span>
+<span id="cb39-17"><a href="#cb39-17" aria-hidden="true" tabindex="-1"></a>  <span class="fu">left_join</span>(., healthcare, <span class="at">by =</span> <span class="fu">c</span>(<span class="st">'code'</span> <span class="ot">=</span> <span class="st">'code'</span>, <span class="st">'year'</span> <span class="ot">=</span> <span class="st">'year'</span>)) <span class="sc">%&gt;%</span></span>
+<span id="cb39-18"><a href="#cb39-18" aria-hidden="true" tabindex="-1"></a>  </span>
+<span id="cb39-19"><a href="#cb39-19" aria-hidden="true" tabindex="-1"></a>  <span class="fu">left_join</span>(., happiness, <span class="at">by =</span> <span class="fu">c</span>(<span class="st">'code'</span> <span class="ot">=</span> <span class="st">'code'</span>, <span class="st">'year'</span> <span class="ot">=</span> <span class="st">'year'</span>)) <span class="sc">%&gt;%</span></span>
+<span id="cb39-20"><a href="#cb39-20" aria-hidden="true" tabindex="-1"></a>  </span>
+<span id="cb39-21"><a href="#cb39-21" aria-hidden="true" tabindex="-1"></a>  <span class="fu">left_join</span>(., mental, <span class="at">by =</span> <span class="fu">c</span>(<span class="st">'code'</span> <span class="ot">=</span> <span class="st">'code'</span>, <span class="st">'year'</span> <span class="ot">=</span> <span class="st">'year'</span>)) <span class="sc">%&gt;%</span></span>
+<span id="cb39-22"><a href="#cb39-22" aria-hidden="true" tabindex="-1"></a>  </span>
+<span id="cb39-23"><a href="#cb39-23" aria-hidden="true" tabindex="-1"></a>  <span class="fu">arrange</span>(code, year) <span class="sc">%&gt;%</span></span>
+<span id="cb39-24"><a href="#cb39-24" aria-hidden="true" tabindex="-1"></a>  </span>
+<span id="cb39-25"><a href="#cb39-25" aria-hidden="true" tabindex="-1"></a>  <span class="co">#infer HAQ data from previous survey year</span></span>
+<span id="cb39-26"><a href="#cb39-26" aria-hidden="true" tabindex="-1"></a>  <span class="fu">group_by</span>(code) <span class="sc">%&gt;%</span></span>
+<span id="cb39-27"><a href="#cb39-27" aria-hidden="true" tabindex="-1"></a>  <span class="fu">fill</span>(HAQ, <span class="at">.direction =</span> <span class="st">"down"</span>) <span class="sc">%&gt;%</span></span>
+<span id="cb39-28"><a href="#cb39-28" aria-hidden="true" tabindex="-1"></a>  <span class="fu">ungroup</span>()</span>
+<span id="cb39-29"><a href="#cb39-29" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb39-30"><a href="#cb39-30" aria-hidden="true" tabindex="-1"></a>knitr<span class="sc">::</span><span class="fu">kable</span>(<span class="fu">head</span>(suicidedata_analysis))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output-display">
 <table class="table table-sm table-striped">
 <colgroup>
-<col style="width: 3%">
-<col style="width: 1%">
-<col style="width: 3%">
+<col style="width: 2%">
 <col style="width: 1%">
 <col style="width: 2%">
+<col style="width: 1%">
+<col style="width: 2%">
+<col style="width: 2%">
+<col style="width: 2%">
+<col style="width: 2%">
+<col style="width: 2%">
+<col style="width: 2%">
+<col style="width: 2%">
+<col style="width: 2%">
+<col style="width: 2%">
+<col style="width: 2%">
+<col style="width: 2%">
+<col style="width: 2%">
+<col style="width: 2%">
+<col style="width: 2%">
+<col style="width: 2%">
+<col style="width: 2%">
+<col style="width: 2%">
+<col style="width: 2%">
+<col style="width: 2%">
+<col style="width: 2%">
 <col style="width: 2%">
 <col style="width: 2%">
 <col style="width: 3%">
-<col style="width: 3%">
-<col style="width: 3%">
-<col style="width: 3%">
-<col style="width: 3%">
-<col style="width: 3%">
-<col style="width: 3%">
-<col style="width: 3%">
-<col style="width: 3%">
-<col style="width: 3%">
-<col style="width: 3%">
-<col style="width: 3%">
-<col style="width: 3%">
-<col style="width: 3%">
-<col style="width: 3%">
+<col style="width: 1%">
 <col style="width: 2%">
-<col style="width: 2%">
-<col style="width: 3%">
+<col style="width: 1%">
+<col style="width: 4%">
+<col style="width: 4%">
 <col style="width: 4%">
 <col style="width: 1%">
+<col style="width: 4%">
+<col style="width: 2%">
 <col style="width: 3%">
-<col style="width: 1%">
-<col style="width: 6%">
 </colgroup>
 <thead>
 <tr class="header">
@@ -886,78 +1000,21 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <th style="text-align: right;">SR_75+_M</th>
 <th style="text-align: right;">SR_75+_F</th>
 <th style="text-align: right;">SR_75+_T</th>
+<th style="text-align: right;">POP_All_T</th>
 <th style="text-align: right;">gdp_per_capita</th>
 <th style="text-align: right;">hdi</th>
 <th style="text-align: right;">depr_rate</th>
 <th style="text-align: right;">gini</th>
 <th style="text-align: right;">violent_death_rate</th>
+<th style="text-align: right;">pop%extreme_poverty</th>
+<th style="text-align: right;">unemployment_rate</th>
+<th style="text-align: right;">HAQ</th>
+<th style="text-align: right;">healthcare_spend</th>
+<th style="text-align: right;">happiness</th>
+<th style="text-align: right;">mental_disorder</th>
 </tr>
 </thead>
 <tbody>
-<tr class="odd">
-<td style="text-align: left;">Afghanistan</td>
-<td style="text-align: left;">AFG</td>
-<td style="text-align: left;">South Asia</td>
-<td style="text-align: right;">1991</td>
-<td style="text-align: right;">7.365818</td>
-<td style="text-align: right;">8.956768</td>
-<td style="text-align: right;">8.174310</td>
-<td style="text-align: right;">1.426575</td>
-<td style="text-align: right;">0.2809178</td>
-<td style="text-align: right;">0.8663718</td>
-<td style="text-align: right;">7.312539</td>
-<td style="text-align: right;">7.557676</td>
-<td style="text-align: right;">7.433210</td>
-<td style="text-align: right;">11.48811</td>
-<td style="text-align: right;">13.40145</td>
-<td style="text-align: right;">12.55289</td>
-<td style="text-align: right;">9.861825</td>
-<td style="text-align: right;">15.51690</td>
-<td style="text-align: right;">12.72240</td>
-<td style="text-align: right;">8.700137</td>
-<td style="text-align: right;">14.54045</td>
-<td style="text-align: right;">11.37474</td>
-<td style="text-align: right;">11.10952</td>
-<td style="text-align: right;">8.685643</td>
-<td style="text-align: right;">10.000869</td>
-<td style="text-align: right;">NA</td>
-<td style="text-align: right;">0.279</td>
-<td style="text-align: right;">4989.29</td>
-<td style="text-align: right;">NA</td>
-<td style="text-align: right;">46.43</td>
-</tr>
-<tr class="even">
-<td style="text-align: left;">Afghanistan</td>
-<td style="text-align: left;">AFG</td>
-<td style="text-align: left;">South Asia</td>
-<td style="text-align: right;">1992</td>
-<td style="text-align: right;">7.311281</td>
-<td style="text-align: right;">8.949483</td>
-<td style="text-align: right;">8.139174</td>
-<td style="text-align: right;">1.441334</td>
-<td style="text-align: right;">0.2823200</td>
-<td style="text-align: right;">0.8783460</td>
-<td style="text-align: right;">7.416693</td>
-<td style="text-align: right;">7.846135</td>
-<td style="text-align: right;">7.622235</td>
-<td style="text-align: right;">11.18181</td>
-<td style="text-align: right;">13.34959</td>
-<td style="text-align: right;">12.35099</td>
-<td style="text-align: right;">9.815580</td>
-<td style="text-align: right;">15.51857</td>
-<td style="text-align: right;">12.71511</td>
-<td style="text-align: right;">8.642180</td>
-<td style="text-align: right;">14.52574</td>
-<td style="text-align: right;">11.33208</td>
-<td style="text-align: right;">11.03810</td>
-<td style="text-align: right;">8.651869</td>
-<td style="text-align: right;">9.944729</td>
-<td style="text-align: right;">NA</td>
-<td style="text-align: right;">0.287</td>
-<td style="text-align: right;">4981.35</td>
-<td style="text-align: right;">NA</td>
-<td style="text-align: right;">48.07</td>
-</tr>
 <tr class="odd">
 <td style="text-align: left;">Afghanistan</td>
 <td style="text-align: left;">AFG</td>
@@ -984,11 +1041,96 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <td style="text-align: right;">11.24017</td>
 <td style="text-align: right;">8.766798</td>
 <td style="text-align: right;">10.111531</td>
+<td style="text-align: right;">11418853</td>
 <td style="text-align: right;">NA</td>
 <td style="text-align: right;">0.273</td>
 <td style="text-align: right;">4996.12</td>
 <td style="text-align: right;">NA</td>
 <td style="text-align: right;">29.79</td>
+<td style="text-align: right;">NA</td>
+<td style="text-align: right;">NA</td>
+<td style="text-align: right;">24.7</td>
+<td style="text-align: right;">NA</td>
+<td style="text-align: right;">NA</td>
+<td style="text-align: right;">17415.21</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">Afghanistan</td>
+<td style="text-align: left;">AFG</td>
+<td style="text-align: left;">South Asia</td>
+<td style="text-align: right;">1991</td>
+<td style="text-align: right;">7.365818</td>
+<td style="text-align: right;">8.956768</td>
+<td style="text-align: right;">8.174310</td>
+<td style="text-align: right;">1.426575</td>
+<td style="text-align: right;">0.2809178</td>
+<td style="text-align: right;">0.8663718</td>
+<td style="text-align: right;">7.312539</td>
+<td style="text-align: right;">7.557676</td>
+<td style="text-align: right;">7.433210</td>
+<td style="text-align: right;">11.48811</td>
+<td style="text-align: right;">13.40145</td>
+<td style="text-align: right;">12.55289</td>
+<td style="text-align: right;">9.861825</td>
+<td style="text-align: right;">15.51690</td>
+<td style="text-align: right;">12.72240</td>
+<td style="text-align: right;">8.700137</td>
+<td style="text-align: right;">14.54045</td>
+<td style="text-align: right;">11.37474</td>
+<td style="text-align: right;">11.10952</td>
+<td style="text-align: right;">8.685643</td>
+<td style="text-align: right;">10.000869</td>
+<td style="text-align: right;">12587130</td>
+<td style="text-align: right;">NA</td>
+<td style="text-align: right;">0.279</td>
+<td style="text-align: right;">4989.29</td>
+<td style="text-align: right;">NA</td>
+<td style="text-align: right;">46.43</td>
+<td style="text-align: right;">NA</td>
+<td style="text-align: right;">10.649</td>
+<td style="text-align: right;">24.7</td>
+<td style="text-align: right;">NA</td>
+<td style="text-align: right;">NA</td>
+<td style="text-align: right;">17691.57</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">Afghanistan</td>
+<td style="text-align: left;">AFG</td>
+<td style="text-align: left;">South Asia</td>
+<td style="text-align: right;">1992</td>
+<td style="text-align: right;">7.311281</td>
+<td style="text-align: right;">8.949483</td>
+<td style="text-align: right;">8.139174</td>
+<td style="text-align: right;">1.441334</td>
+<td style="text-align: right;">0.2823200</td>
+<td style="text-align: right;">0.8783460</td>
+<td style="text-align: right;">7.416693</td>
+<td style="text-align: right;">7.846135</td>
+<td style="text-align: right;">7.622235</td>
+<td style="text-align: right;">11.18181</td>
+<td style="text-align: right;">13.34959</td>
+<td style="text-align: right;">12.35099</td>
+<td style="text-align: right;">9.815580</td>
+<td style="text-align: right;">15.51857</td>
+<td style="text-align: right;">12.71511</td>
+<td style="text-align: right;">8.642180</td>
+<td style="text-align: right;">14.52574</td>
+<td style="text-align: right;">11.33208</td>
+<td style="text-align: right;">11.03810</td>
+<td style="text-align: right;">8.651869</td>
+<td style="text-align: right;">9.944729</td>
+<td style="text-align: right;">14542839</td>
+<td style="text-align: right;">NA</td>
+<td style="text-align: right;">0.287</td>
+<td style="text-align: right;">4981.35</td>
+<td style="text-align: right;">NA</td>
+<td style="text-align: right;">48.07</td>
+<td style="text-align: right;">NA</td>
+<td style="text-align: right;">10.821</td>
+<td style="text-align: right;">24.7</td>
+<td style="text-align: right;">NA</td>
+<td style="text-align: right;">NA</td>
+<td style="text-align: right;">17939.24</td>
 </tr>
 <tr class="even">
 <td style="text-align: left;">Afghanistan</td>
@@ -1016,11 +1158,18 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <td style="text-align: right;">11.03904</td>
 <td style="text-align: right;">8.672698</td>
 <td style="text-align: right;">9.953116</td>
+<td style="text-align: right;">15985046</td>
 <td style="text-align: right;">NA</td>
 <td style="text-align: right;">0.297</td>
 <td style="text-align: right;">4976.96</td>
 <td style="text-align: right;">NA</td>
 <td style="text-align: right;">43.19</td>
+<td style="text-align: right;">NA</td>
+<td style="text-align: right;">10.723</td>
+<td style="text-align: right;">24.7</td>
+<td style="text-align: right;">NA</td>
+<td style="text-align: right;">NA</td>
+<td style="text-align: right;">18134.24</td>
 </tr>
 <tr class="odd">
 <td style="text-align: left;">Afghanistan</td>
@@ -1048,11 +1197,18 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <td style="text-align: right;">11.08710</td>
 <td style="text-align: right;">8.707214</td>
 <td style="text-align: right;">9.993162</td>
+<td style="text-align: right;">16733617</td>
 <td style="text-align: right;">NA</td>
 <td style="text-align: right;">0.292</td>
 <td style="text-align: right;">4977.78</td>
 <td style="text-align: right;">NA</td>
 <td style="text-align: right;">71.25</td>
+<td style="text-align: right;">NA</td>
+<td style="text-align: right;">10.726</td>
+<td style="text-align: right;">24.7</td>
+<td style="text-align: right;">NA</td>
+<td style="text-align: right;">NA</td>
+<td style="text-align: right;">18261.32</td>
 </tr>
 <tr class="even">
 <td style="text-align: left;">Afghanistan</td>
@@ -1080,11 +1236,18 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <td style="text-align: right;">11.06250</td>
 <td style="text-align: right;">8.696033</td>
 <td style="text-align: right;">9.971134</td>
+<td style="text-align: right;">17490181</td>
 <td style="text-align: right;">NA</td>
 <td style="text-align: right;">0.310</td>
 <td style="text-align: right;">4978.23</td>
 <td style="text-align: right;">NA</td>
 <td style="text-align: right;">50.07</td>
+<td style="text-align: right;">NA</td>
+<td style="text-align: right;">11.179</td>
+<td style="text-align: right;">24.5</td>
+<td style="text-align: right;">NA</td>
+<td style="text-align: right;">NA</td>
+<td style="text-align: right;">18309.33</td>
 </tr>
 </tbody>
 </table>
@@ -1097,35 +1260,35 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <p>The object <code>World</code> is a spatial object of class <code>sf</code> from the <a href="https://cran.r-project.org/package=sf">sf package</a>; it is a <code>data.frame</code> with a special column that contains a geometry for each row, in this case polygons</p>
 <p>Reference - https://cran.r-project.org/web/packages/tmap/vignettes/tmap-getstarted.html</p>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb30"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb30-1"><a href="#cb30-1" aria-hidden="true" tabindex="-1"></a><span class="fu">data</span>(<span class="st">"World"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb40"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb40-1"><a href="#cb40-1" aria-hidden="true" tabindex="-1"></a><span class="fu">data</span>(<span class="st">"World"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 <p>Joining the two dataframes together</p>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb31"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb31-1"><a href="#cb31-1" aria-hidden="true" tabindex="-1"></a>suicidedata_eda_map <span class="ot">&lt;-</span> <span class="fu">left_join</span>(World, </span>
-<span id="cb31-2"><a href="#cb31-2" aria-hidden="true" tabindex="-1"></a>                                  </span>
-<span id="cb31-3"><a href="#cb31-3" aria-hidden="true" tabindex="-1"></a>                                  <span class="co">#filter year 2015 for illustration</span></span>
-<span id="cb31-4"><a href="#cb31-4" aria-hidden="true" tabindex="-1"></a>                                   suicidedata_eda <span class="sc">%&gt;%</span> <span class="fu">filter</span>(year<span class="sc">==</span><span class="dv">2015</span>),</span>
-<span id="cb31-5"><a href="#cb31-5" aria-hidden="true" tabindex="-1"></a>                          <span class="at">by =</span> <span class="fu">c</span>(<span class="st">"iso_a3"</span> <span class="ot">=</span> <span class="st">"code"</span>)) <span class="sc">%&gt;%</span></span>
-<span id="cb31-6"><a href="#cb31-6" aria-hidden="true" tabindex="-1"></a>  <span class="fu">select</span>(<span class="sc">!</span><span class="fu">c</span>(<span class="dv">2</span>,<span class="dv">3</span>,<span class="dv">4</span>,<span class="dv">6</span>,<span class="dv">7</span>,<span class="dv">8</span>,<span class="dv">9</span>,<span class="dv">10</span>,<span class="dv">11</span>,<span class="dv">12</span>,<span class="dv">13</span>,<span class="dv">14</span>,<span class="dv">15</span>)) <span class="sc">%&gt;%</span></span>
-<span id="cb31-7"><a href="#cb31-7" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">area =</span> <span class="fu">as.numeric</span>(<span class="fu">str_remove</span>(<span class="st">`</span><span class="at">area</span><span class="st">`</span>, </span>
-<span id="cb31-8"><a href="#cb31-8" aria-hidden="true" tabindex="-1"></a>                                <span class="st">" </span><span class="sc">\\</span><span class="st">[km</span><span class="sc">\\</span><span class="st">^2</span><span class="sc">\\</span><span class="st">]"</span>)), </span>
-<span id="cb31-9"><a href="#cb31-9" aria-hidden="true" tabindex="-1"></a>         <span class="at">.after =</span> region)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb41"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb41-1"><a href="#cb41-1" aria-hidden="true" tabindex="-1"></a>suicidedata_eda_map <span class="ot">&lt;-</span> <span class="fu">left_join</span>(World, </span>
+<span id="cb41-2"><a href="#cb41-2" aria-hidden="true" tabindex="-1"></a>                                  </span>
+<span id="cb41-3"><a href="#cb41-3" aria-hidden="true" tabindex="-1"></a>                                  <span class="co">#filter year 2015 for illustration</span></span>
+<span id="cb41-4"><a href="#cb41-4" aria-hidden="true" tabindex="-1"></a>                                   suicidedata_eda <span class="sc">%&gt;%</span> <span class="fu">filter</span>(year<span class="sc">==</span><span class="dv">2015</span>),</span>
+<span id="cb41-5"><a href="#cb41-5" aria-hidden="true" tabindex="-1"></a>                          <span class="at">by =</span> <span class="fu">c</span>(<span class="st">"iso_a3"</span> <span class="ot">=</span> <span class="st">"code"</span>)) <span class="sc">%&gt;%</span></span>
+<span id="cb41-6"><a href="#cb41-6" aria-hidden="true" tabindex="-1"></a>  <span class="fu">select</span>(<span class="sc">!</span><span class="fu">c</span>(<span class="dv">2</span>,<span class="dv">3</span>,<span class="dv">4</span>,<span class="dv">6</span>,<span class="dv">7</span>,<span class="dv">8</span>,<span class="dv">9</span>,<span class="dv">10</span>,<span class="dv">11</span>,<span class="dv">12</span>,<span class="dv">13</span>,<span class="dv">14</span>,<span class="dv">15</span>)) <span class="sc">%&gt;%</span></span>
+<span id="cb41-7"><a href="#cb41-7" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">area =</span> <span class="fu">as.numeric</span>(<span class="fu">str_remove</span>(<span class="st">`</span><span class="at">area</span><span class="st">`</span>, </span>
+<span id="cb41-8"><a href="#cb41-8" aria-hidden="true" tabindex="-1"></a>                                <span class="st">" </span><span class="sc">\\</span><span class="st">[km</span><span class="sc">\\</span><span class="st">^2</span><span class="sc">\\</span><span class="st">]"</span>)), </span>
+<span id="cb41-9"><a href="#cb41-9" aria-hidden="true" tabindex="-1"></a>         <span class="at">.after =</span> region)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 <p>To illustrate mapping age-standardised suicide rate for both genders (SR_AS_T)</p>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb32"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb32-1"><a href="#cb32-1" aria-hidden="true" tabindex="-1"></a><span class="fu">tm_shape</span>(suicidedata_eda_map) <span class="sc">+</span></span>
-<span id="cb32-2"><a href="#cb32-2" aria-hidden="true" tabindex="-1"></a>    <span class="fu">tm_polygons</span>(<span class="st">"SR_AS_T"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb42"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb42-1"><a href="#cb42-1" aria-hidden="true" tabindex="-1"></a><span class="fu">tm_shape</span>(suicidedata_eda_map) <span class="sc">+</span></span>
+<span id="cb42-2"><a href="#cb42-2" aria-hidden="true" tabindex="-1"></a>    <span class="fu">tm_polygons</span>(<span class="st">"SR_AS_T"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output-display">
-<p><img src="DataPrep_files/figure-html/unnamed-chunk-29-1.png" class="img-fluid" width="672"></p>
+<p><img src="DataPrep_files/figure-html/unnamed-chunk-39-1.png" class="img-fluid" width="672"></p>
 </div>
 </div>
 <p>Ignore below</p>
 <p>#rworldmap - Example code below</p>
 <p>#https://cran.r-project.org/web/packages/rworldmap/vignettes/rworldmap.pdf</p>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb33"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb33-1"><a href="#cb33-1" aria-hidden="true" tabindex="-1"></a><span class="co">#suicidedata_cln_map &lt;- joinCountryData2Map(suicidedata_cln_region,</span></span>
-<span id="cb33-2"><a href="#cb33-2" aria-hidden="true" tabindex="-1"></a><span class="co">#                                 joinCode = "ISO3",</span></span>
-<span id="cb33-3"><a href="#cb33-3" aria-hidden="true" tabindex="-1"></a><span class="co">#                                 nameJoinColumn = "code")</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb43"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb43-1"><a href="#cb43-1" aria-hidden="true" tabindex="-1"></a><span class="co">#suicidedata_cln_map &lt;- joinCountryData2Map(suicidedata_cln_region,</span></span>
+<span id="cb43-2"><a href="#cb43-2" aria-hidden="true" tabindex="-1"></a><span class="co">#                                 joinCode = "ISO3",</span></span>
+<span id="cb43-3"><a href="#cb43-3" aria-hidden="true" tabindex="-1"></a><span class="co">#                                 nameJoinColumn = "code")</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 <p>#Other References using typical world map - https://rpubs.com/Thom_JH/798825</p>
 

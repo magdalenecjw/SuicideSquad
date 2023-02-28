@@ -132,6 +132,10 @@ suicidedata_cln
 
 ### 5. Preparing data for analysis
 
+Risk Factors of Suicide
+
+[![Risk Factors of Suicide](image/ourworldindata_risk-factors-and-interventions.png)](https://www.who.int/publications/i/item/9789241564779)
+
 #### 5.1 Age-Standardized Rate (Total and Gender) - Anchor
 
 ```{r}
@@ -376,6 +380,97 @@ violent <- violent %>%
   na.omit()
 ```
 
+#### 5.8 Share of Population in Extreme Proverty
+
+Reference - https://ourworldindata.org/grapher/share-of-population-in-extreme-poverty?country=BGD\~BOL\~MDG\~IND\~CHN\~ETH
+
+```{r}
+poverty <- read_csv("data/share-of-population-in-extreme-poverty.csv")
+```
+
+```{r}
+poverty <- poverty %>%
+  select(2,3,4) %>%
+  rename("code" = "Code",
+         "year" = "Year",
+         "pop%extreme_poverty" = "$2.15 a day - share of population below poverty line") %>%
+  filter(year %in% (1990:2019)) %>%
+  na.omit()
+```
+
+#### 5.9 Unemployment Rate
+
+Reference - https://ourworldindata.org/grapher/unemployment-rate?time=latest
+
+```{r}
+unemployment <- read_csv("data/unemployment-rate.csv")
+```
+
+```{r}
+unemployment <- unemployment %>%
+  select(2,3,4) %>%
+  rename("code" = "Code",
+         "year" = "Year",
+         "unemployment_rate" = "Unemployment, total (% of total labor force) (modeled ILO estimate)") %>%
+  filter(year %in% (1990:2019)) %>%
+  na.omit()
+```
+
+#### 5.10 Healthcare Access and Spending
+
+Reference - https://ourworldindata.org/grapher/haq-by-level-of-healthcare-spending-endpoints?time=earliest
+
+```{r}
+healthcare <- read_csv("data/HAQ-by-level-of-healthcare-spending-endpoints.csv")
+```
+
+```{r}
+healthcare <- healthcare %>%
+  select(2,3,4,5) %>%
+  rename("code" = "Code",
+         "year" = "Year",
+         "HAQ" = "HAQ Index (IHME (2017))",
+         "healthcare_spend" = "Current health expenditure per capita, PPP (current international $)") %>%
+  filter(year %in% (1990:2019)) %>%
+  filter(!is.na(HAQ) | !is.na(healthcare_spend))
+```
+
+#### 5.11 Life Satisfaction
+
+Reference - https://ourworldindata.org/grapher/happiness-cantril-ladder?time=latest
+
+```{r}
+happiness <- read_csv("data/happiness-cantril-ladder.csv")
+```
+
+```{r}
+happiness <- happiness %>%
+  select(2,3,4) %>%
+  rename("code" = "Code",
+         "year" = "Year",
+         "happiness" = "Life satisfaction in Cantril Ladder (World Happiness Report 2022)") %>%
+  filter(year %in% (1990:2019)) %>%
+  na.omit()
+```
+
+#### 5.12 Mental and Substance Use
+
+Reference - https://ourworldindata.org/grapher/suicide-rates-vs-prevalence-of-mental-and-substance-use-disorders?time=latest
+
+```{r}
+mental <- read_csv("data/suicide-rates-vs-prevalence-of-mental-and-substance-use-disorders.csv")
+```
+
+```{r}
+mental <- mental %>%
+  select(2,3,5) %>%
+  rename("code" = "Code",
+         "year" = "Year",
+         "mental_disorder" = "Prevalence - Mental and substance use disorders - Sex: Both - Age: Age-standardized (Rate)") %>%
+  filter(year %in% (1990:2019)) %>%
+  na.omit()
+```
+
 FEEL FREE TO ADD SOMEMORE
 
 #### Joining for EDA of Suicide Parameters
@@ -429,7 +524,9 @@ suicidedata_eda <- left_join(suicidedata_age_std, suicide_number_age, by = c('co
          `SP_75+_T` = `SN_75+_T`*100/`DN_75+_T`,
          `SP_All_M` = `SN_All_M`*100/`DN_All_M`,
          `SP_All_F` = `SN_All_F`*100/`DN_All_F`,
-         `SP_All_T` = `SN_All_T`*100/`DN_All_T`)
+         `SP_All_T` = `SN_All_T`*100/`DN_All_T`) %>%
+  
+   arrange(code, year)
 
 ```
 
@@ -439,7 +536,7 @@ For analysis, we will only use suicide rate (SR)
 
 ```{r}
 suicidedata_analysis <- left_join(suicidedata_eda %>%
-                                    select(country:`SR_AS_T`, `SR_10-14_M`:`SR_75+_T`)
+                                    select(country:`SR_AS_T`, `SR_10-14_M`:`SR_75+_T`,`POP_All_T`)
                                     , gdp_per_capita, by = c('code' = 'code', 'year' = 'year')) %>%
   
   left_join(., hdi, by = c('code' = 'code', 'year' = 'year')) %>%
@@ -448,7 +545,24 @@ suicidedata_analysis <- left_join(suicidedata_eda %>%
   
   left_join(., gini, by = c('code' = 'code', 'year' = 'year')) %>%
   
-  left_join(., violent, by = c('code' = 'code', 'year' = 'year')) 
+  left_join(., violent, by = c('code' = 'code', 'year' = 'year')) %>%
+  
+  left_join(., poverty, by = c('code' = 'code', 'year' = 'year')) %>%
+  
+  left_join(., unemployment, by = c('code' = 'code', 'year' = 'year')) %>%
+  
+  left_join(., healthcare, by = c('code' = 'code', 'year' = 'year')) %>%
+  
+  left_join(., happiness, by = c('code' = 'code', 'year' = 'year')) %>%
+  
+  left_join(., mental, by = c('code' = 'code', 'year' = 'year')) %>%
+  
+  arrange(code, year) %>%
+  
+  #infer HAQ data from previous survey year
+  group_by(code) %>%
+  fill(HAQ, .direction = "down") %>%
+  ungroup()
 
 knitr::kable(head(suicidedata_analysis))
 ```
