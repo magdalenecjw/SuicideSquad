@@ -530,7 +530,7 @@ suicidedata_eda_formap <- left_join(suicidedata_age_std, suicide_number_age, by 
 
 ```
 
-#### Joining for other EDA of Suicide Parameters 
+#### Joining for EDA (non-map) of Suicide Parameters 
 ```{r}
 suicidedata_eda_temp <- suicidedata_cln %>%
   select(!c(6,9,10,13)) %>%
