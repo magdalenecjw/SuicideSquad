@@ -611,3 +611,11 @@ Ignore below
 ```
 
 #Other References using typical world map - https://rpubs.com/Thom_JH/798825
+
+Save out the final data set
+
+```{r}
+#write.csv(suicidedata_analysis,'C:/magdalenecjw/SuicideSquad/EDA/data/suicide_analysis.csv', na = "", row.names = F)
+
+#write.csv(suicidedata_eda,'C:/magdalenecjw/SuicideSquad/EDA/data/suicide_eda.csv', na = "", row.names = F)
+```

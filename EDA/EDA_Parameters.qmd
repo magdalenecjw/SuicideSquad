@@ -1,0 +1,4 @@
+---
+title: "EDA: Analysis of Suicide Rate with Other Parameters"
+author: "Magdalene"
+---
