@@ -225,7 +225,7 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
     <div>
     <div class="quarto-title-meta-heading">Modified</div>
     <div class="quarto-title-meta-contents">
-      <p class="date-modified">February 28, 2023</p>
+      <p class="date-modified">March 1, 2023</p>
     </div>
   </div>
     
@@ -842,10 +842,10 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 </div>
 <p>FEEL FREE TO ADD SOMEMORE</p>
 </section>
-<section id="joining-for-eda-of-suicide-parameters" class="level4">
-<h4 class="anchored" data-anchor-id="joining-for-eda-of-suicide-parameters">Joining for EDA of Suicide Parameters</h4>
+<section id="joining-for-eda-of-suicide-parameters-with-map" class="level4">
+<h4 class="anchored" data-anchor-id="joining-for-eda-of-suicide-parameters-with-map">Joining for EDA of Suicide Parameters with Map</h4>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb38"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb38-1"><a href="#cb38-1" aria-hidden="true" tabindex="-1"></a>suicidedata_eda <span class="ot">&lt;-</span> <span class="fu">left_join</span>(suicidedata_age_std, suicide_number_age, <span class="at">by =</span> <span class="fu">c</span>(<span class="st">'code'</span> <span class="ot">=</span> <span class="st">'code'</span>, <span class="st">'year'</span> <span class="ot">=</span> <span class="st">'year'</span>)) <span class="sc">%&gt;%</span> </span>
+<div class="sourceCode cell-code" id="cb38"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb38-1"><a href="#cb38-1" aria-hidden="true" tabindex="-1"></a>suicidedata_eda_formap <span class="ot">&lt;-</span> <span class="fu">left_join</span>(suicidedata_age_std, suicide_number_age, <span class="at">by =</span> <span class="fu">c</span>(<span class="st">'code'</span> <span class="ot">=</span> <span class="st">'code'</span>, <span class="st">'year'</span> <span class="ot">=</span> <span class="st">'year'</span>)) <span class="sc">%&gt;%</span> </span>
 <span id="cb38-2"><a href="#cb38-2" aria-hidden="true" tabindex="-1"></a>  </span>
 <span id="cb38-3"><a href="#cb38-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">left_join</span>(., pop_size_age, <span class="at">by =</span> <span class="fu">c</span>(<span class="st">'code'</span> <span class="ot">=</span> <span class="st">'code'</span>, <span class="st">'year'</span> <span class="ot">=</span> <span class="st">'year'</span>)) <span class="sc">%&gt;%</span></span>
 <span id="cb38-4"><a href="#cb38-4" aria-hidden="true" tabindex="-1"></a>  </span>
@@ -898,40 +898,199 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <span id="cb38-51"><a href="#cb38-51" aria-hidden="true" tabindex="-1"></a>   <span class="fu">arrange</span>(code, year)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 </section>
+<section id="joining-for-other-eda-of-suicide-parameters" class="level4">
+<h4 class="anchored" data-anchor-id="joining-for-other-eda-of-suicide-parameters">Joining for other EDA of Suicide Parameters</h4>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb39"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb39-1"><a href="#cb39-1" aria-hidden="true" tabindex="-1"></a>suicidedata_eda_temp <span class="ot">&lt;-</span> suicidedata_cln <span class="sc">%&gt;%</span></span>
+<span id="cb39-2"><a href="#cb39-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">select</span>(<span class="sc">!</span><span class="fu">c</span>(<span class="dv">6</span>,<span class="dv">9</span>,<span class="dv">10</span>,<span class="dv">13</span>)) <span class="sc">%&gt;%</span></span>
+<span id="cb39-3"><a href="#cb39-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">age_name =</span> <span class="fu">str_remove</span>(age_name, <span class="st">" years"</span>)) <span class="sc">%&gt;%</span></span>
+<span id="cb39-4"><a href="#cb39-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">new_age_name =</span> <span class="fu">case_when</span>(age_name <span class="sc">%in%</span> <span class="fu">c</span>(<span class="st">"15-19"</span>, <span class="st">"20-24"</span>) <span class="sc">~</span> <span class="st">"15-24"</span>,</span>
+<span id="cb39-5"><a href="#cb39-5" aria-hidden="true" tabindex="-1"></a>                                  age_name <span class="sc">%in%</span> <span class="fu">c</span>(<span class="st">"25-29"</span>, <span class="st">"30-34"</span>, <span class="st">"35-39"</span>, <span class="st">"40-44"</span>) <span class="sc">~</span> <span class="st">"25-44"</span>,</span>
+<span id="cb39-6"><a href="#cb39-6" aria-hidden="true" tabindex="-1"></a>                                  age_name <span class="sc">%in%</span> <span class="fu">c</span>(<span class="st">"45-49"</span>, <span class="st">"50-54"</span>, <span class="st">"55-59"</span>, <span class="st">"60-64"</span>) <span class="sc">~</span> <span class="st">"45-64"</span>,</span>
+<span id="cb39-7"><a href="#cb39-7" aria-hidden="true" tabindex="-1"></a>                                  age_name <span class="sc">%in%</span> <span class="fu">c</span>(<span class="st">"65-69"</span>, <span class="st">"70-74"</span>) <span class="sc">~</span> <span class="st">"65-74"</span>,</span>
+<span id="cb39-8"><a href="#cb39-8" aria-hidden="true" tabindex="-1"></a>                                  age_name <span class="sc">%in%</span> <span class="fu">c</span>(<span class="st">"75-79"</span>, <span class="st">"80-84"</span>, <span class="st">"85+"</span>) <span class="sc">~</span> <span class="st">"75+"</span>,</span>
+<span id="cb39-9"><a href="#cb39-9" aria-hidden="true" tabindex="-1"></a>                                  <span class="cn">TRUE</span><span class="sc">~</span>age_name),</span>
+<span id="cb39-10"><a href="#cb39-10" aria-hidden="true" tabindex="-1"></a>         <span class="at">.after =</span> age_name) <span class="sc">%&gt;%</span></span>
+<span id="cb39-11"><a href="#cb39-11" aria-hidden="true" tabindex="-1"></a>  <span class="fu">group_by</span>(country, code, region, sex_name, new_age_name, year) <span class="sc">%&gt;%</span></span>
+<span id="cb39-12"><a href="#cb39-12" aria-hidden="true" tabindex="-1"></a>  <span class="fu">summarise</span>(<span class="at">suicide_Number =</span> <span class="fu">sum</span>(suicide_Number),</span>
+<span id="cb39-13"><a href="#cb39-13" aria-hidden="true" tabindex="-1"></a>            <span class="at">population_size =</span> <span class="fu">sum</span>(population_size),</span>
+<span id="cb39-14"><a href="#cb39-14" aria-hidden="true" tabindex="-1"></a>            <span class="at">death_number =</span> <span class="fu">sum</span>(death_number)) <span class="sc">%&gt;%</span></span>
+<span id="cb39-15"><a href="#cb39-15" aria-hidden="true" tabindex="-1"></a>  <span class="fu">ungroup</span>() <span class="sc">%&gt;%</span></span>
+<span id="cb39-16"><a href="#cb39-16" aria-hidden="true" tabindex="-1"></a>  </span>
+<span id="cb39-17"><a href="#cb39-17" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">suicide_Percent =</span> suicide_Number<span class="sc">*</span><span class="dv">100</span><span class="sc">/</span>death_number,</span>
+<span id="cb39-18"><a href="#cb39-18" aria-hidden="true" tabindex="-1"></a>         <span class="at">suicide_Rate =</span> suicide_Number<span class="sc">/</span>population_size<span class="sc">*</span><span class="dv">100000</span>,</span>
+<span id="cb39-19"><a href="#cb39-19" aria-hidden="true" tabindex="-1"></a>         <span class="at">death_rate =</span> death_number<span class="sc">/</span>population_size<span class="sc">*</span><span class="dv">100000</span>)</span>
+<span id="cb39-20"><a href="#cb39-20" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb39-21"><a href="#cb39-21" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb39-22"><a href="#cb39-22" aria-hidden="true" tabindex="-1"></a>  </span>
+<span id="cb39-23"><a href="#cb39-23" aria-hidden="true" tabindex="-1"></a>sd_as <span class="ot">&lt;-</span>  suicidedata_cln <span class="sc">%&gt;%</span></span>
+<span id="cb39-24"><a href="#cb39-24" aria-hidden="true" tabindex="-1"></a>  <span class="fu">filter</span>(age_name <span class="sc">==</span> <span class="st">"Age-standardized"</span>) <span class="sc">%&gt;%</span></span>
+<span id="cb39-25"><a href="#cb39-25" aria-hidden="true" tabindex="-1"></a>  <span class="fu">select</span>(<span class="fu">c</span>(<span class="dv">2</span>,<span class="dv">4</span>,<span class="dv">5</span>,<span class="dv">7</span>,<span class="dv">10</span>))</span>
+<span id="cb39-26"><a href="#cb39-26" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb39-27"><a href="#cb39-27" aria-hidden="true" tabindex="-1"></a><span class="co">#Final EDA dataset</span></span>
+<span id="cb39-28"><a href="#cb39-28" aria-hidden="true" tabindex="-1"></a>suicidedata_eda <span class="ot">&lt;-</span> <span class="fu">left_join</span>(suicidedata_eda_temp, sd_as, <span class="at">by =</span> <span class="fu">c</span>(<span class="st">'code'</span> <span class="ot">=</span> <span class="st">'code'</span>, <span class="st">'sex_name'</span> <span class="ot">=</span> <span class="st">'sex_name'</span>, <span class="st">'new_age_name'</span> <span class="ot">=</span> <span class="st">'age_name'</span>, <span class="st">'year'</span> <span class="ot">=</span> <span class="st">'year'</span>)) <span class="sc">%&gt;%</span></span>
+<span id="cb39-29"><a href="#cb39-29" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">suicide_Rate =</span> <span class="fu">case_when</span>(<span class="fu">is.na</span>(suicide_Rate.x) <span class="sc">~</span> suicide_Rate.y,</span>
+<span id="cb39-30"><a href="#cb39-30" aria-hidden="true" tabindex="-1"></a>                                  <span class="fu">is.na</span>(suicide_Rate.y) <span class="sc">~</span> suicide_Rate.x,</span>
+<span id="cb39-31"><a href="#cb39-31" aria-hidden="true" tabindex="-1"></a>                                  <span class="cn">TRUE</span><span class="sc">~</span>suicide_Rate.x)) <span class="sc">%&gt;%</span></span>
+<span id="cb39-32"><a href="#cb39-32" aria-hidden="true" tabindex="-1"></a>  <span class="fu">select</span>(<span class="sc">!</span><span class="fu">c</span>(<span class="dv">11</span>,<span class="dv">13</span>))</span>
+<span id="cb39-33"><a href="#cb39-33" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb39-34"><a href="#cb39-34" aria-hidden="true" tabindex="-1"></a>knitr<span class="sc">::</span><span class="fu">kable</span>(<span class="fu">head</span>(suicidedata_eda))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+<table class="table table-sm table-striped">
+<colgroup>
+<col style="width: 8%">
+<col style="width: 3%">
+<col style="width: 7%">
+<col style="width: 6%">
+<col style="width: 9%">
+<col style="width: 3%">
+<col style="width: 10%">
+<col style="width: 11%">
+<col style="width: 9%">
+<col style="width: 11%">
+<col style="width: 7%">
+<col style="width: 9%">
+</colgroup>
+<thead>
+<tr class="header">
+<th style="text-align: left;">country</th>
+<th style="text-align: left;">code</th>
+<th style="text-align: left;">region</th>
+<th style="text-align: left;">sex_name</th>
+<th style="text-align: left;">new_age_name</th>
+<th style="text-align: right;">year</th>
+<th style="text-align: right;">suicide_Number</th>
+<th style="text-align: right;">population_size</th>
+<th style="text-align: right;">death_number</th>
+<th style="text-align: right;">suicide_Percent</th>
+<th style="text-align: right;">death_rate</th>
+<th style="text-align: right;">suicide_Rate</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: left;">Afghanistan</td>
+<td style="text-align: left;">AFG</td>
+<td style="text-align: left;">South Asia</td>
+<td style="text-align: left;">Both</td>
+<td style="text-align: left;">10-14</td>
+<td style="text-align: right;">1990</td>
+<td style="text-align: right;">12.08308</td>
+<td style="text-align: right;">1388403</td>
+<td style="text-align: right;">2093.499</td>
+<td style="text-align: right;">0.5771713</td>
+<td style="text-align: right;">150.7847</td>
+<td style="text-align: right;">0.8702862</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">Afghanistan</td>
+<td style="text-align: left;">AFG</td>
+<td style="text-align: left;">South Asia</td>
+<td style="text-align: left;">Both</td>
+<td style="text-align: left;">10-14</td>
+<td style="text-align: right;">1991</td>
+<td style="text-align: right;">12.42996</td>
+<td style="text-align: right;">1434714</td>
+<td style="text-align: right;">2394.735</td>
+<td style="text-align: right;">0.5190537</td>
+<td style="text-align: right;">166.9137</td>
+<td style="text-align: right;">0.8663718</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">Afghanistan</td>
+<td style="text-align: left;">AFG</td>
+<td style="text-align: left;">South Asia</td>
+<td style="text-align: left;">Both</td>
+<td style="text-align: left;">10-14</td>
+<td style="text-align: right;">1992</td>
+<td style="text-align: right;">13.64449</td>
+<td style="text-align: right;">1553430</td>
+<td style="text-align: right;">2455.768</td>
+<td style="text-align: right;">0.5556098</td>
+<td style="text-align: right;">158.0868</td>
+<td style="text-align: right;">0.8783460</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">Afghanistan</td>
+<td style="text-align: left;">AFG</td>
+<td style="text-align: left;">South Asia</td>
+<td style="text-align: left;">Both</td>
+<td style="text-align: left;">10-14</td>
+<td style="text-align: right;">1993</td>
+<td style="text-align: right;">14.65760</td>
+<td style="text-align: right;">1650569</td>
+<td style="text-align: right;">2501.950</td>
+<td style="text-align: right;">0.5858470</td>
+<td style="text-align: right;">151.5810</td>
+<td style="text-align: right;">0.8880330</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">Afghanistan</td>
+<td style="text-align: left;">AFG</td>
+<td style="text-align: left;">South Asia</td>
+<td style="text-align: left;">Both</td>
+<td style="text-align: left;">10-14</td>
+<td style="text-align: right;">1994</td>
+<td style="text-align: right;">15.19196</td>
+<td style="text-align: right;">1720741</td>
+<td style="text-align: right;">2818.135</td>
+<td style="text-align: right;">0.5390784</td>
+<td style="text-align: right;">163.7745</td>
+<td style="text-align: right;">0.8828732</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">Afghanistan</td>
+<td style="text-align: left;">AFG</td>
+<td style="text-align: left;">South Asia</td>
+<td style="text-align: left;">Both</td>
+<td style="text-align: left;">10-14</td>
+<td style="text-align: right;">1995</td>
+<td style="text-align: right;">15.60024</td>
+<td style="text-align: right;">1803883</td>
+<td style="text-align: right;">2763.748</td>
+<td style="text-align: right;">0.5644595</td>
+<td style="text-align: right;">153.2111</td>
+<td style="text-align: right;">0.8648144</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+</section>
 <section id="joining-for-analysis-with-other-parameters" class="level4">
 <h4 class="anchored" data-anchor-id="joining-for-analysis-with-other-parameters">Joining for Analysis (with other parameters)</h4>
 <p>For analysis, we will only use suicide rate (SR)</p>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb39"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb39-1"><a href="#cb39-1" aria-hidden="true" tabindex="-1"></a>suicidedata_analysis <span class="ot">&lt;-</span> <span class="fu">left_join</span>(suicidedata_eda <span class="sc">%&gt;%</span></span>
-<span id="cb39-2"><a href="#cb39-2" aria-hidden="true" tabindex="-1"></a>                                    <span class="fu">select</span>(country<span class="sc">:</span><span class="st">`</span><span class="at">SR_AS_T</span><span class="st">`</span>, <span class="st">`</span><span class="at">SR_10-14_M</span><span class="st">`</span><span class="sc">:</span><span class="st">`</span><span class="at">SR_75+_T</span><span class="st">`</span>,<span class="st">`</span><span class="at">POP_All_T</span><span class="st">`</span>)</span>
-<span id="cb39-3"><a href="#cb39-3" aria-hidden="true" tabindex="-1"></a>                                    , gdp_per_capita, <span class="at">by =</span> <span class="fu">c</span>(<span class="st">'code'</span> <span class="ot">=</span> <span class="st">'code'</span>, <span class="st">'year'</span> <span class="ot">=</span> <span class="st">'year'</span>)) <span class="sc">%&gt;%</span></span>
-<span id="cb39-4"><a href="#cb39-4" aria-hidden="true" tabindex="-1"></a>  </span>
-<span id="cb39-5"><a href="#cb39-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">left_join</span>(., hdi, <span class="at">by =</span> <span class="fu">c</span>(<span class="st">'code'</span> <span class="ot">=</span> <span class="st">'code'</span>, <span class="st">'year'</span> <span class="ot">=</span> <span class="st">'year'</span>)) <span class="sc">%&gt;%</span></span>
-<span id="cb39-6"><a href="#cb39-6" aria-hidden="true" tabindex="-1"></a>  </span>
-<span id="cb39-7"><a href="#cb39-7" aria-hidden="true" tabindex="-1"></a>  <span class="fu">left_join</span>(., depr, <span class="at">by =</span> <span class="fu">c</span>(<span class="st">'code'</span> <span class="ot">=</span> <span class="st">'code'</span>, <span class="st">'year'</span> <span class="ot">=</span> <span class="st">'year'</span>)) <span class="sc">%&gt;%</span></span>
-<span id="cb39-8"><a href="#cb39-8" aria-hidden="true" tabindex="-1"></a>  </span>
-<span id="cb39-9"><a href="#cb39-9" aria-hidden="true" tabindex="-1"></a>  <span class="fu">left_join</span>(., gini, <span class="at">by =</span> <span class="fu">c</span>(<span class="st">'code'</span> <span class="ot">=</span> <span class="st">'code'</span>, <span class="st">'year'</span> <span class="ot">=</span> <span class="st">'year'</span>)) <span class="sc">%&gt;%</span></span>
-<span id="cb39-10"><a href="#cb39-10" aria-hidden="true" tabindex="-1"></a>  </span>
-<span id="cb39-11"><a href="#cb39-11" aria-hidden="true" tabindex="-1"></a>  <span class="fu">left_join</span>(., violent, <span class="at">by =</span> <span class="fu">c</span>(<span class="st">'code'</span> <span class="ot">=</span> <span class="st">'code'</span>, <span class="st">'year'</span> <span class="ot">=</span> <span class="st">'year'</span>)) <span class="sc">%&gt;%</span></span>
-<span id="cb39-12"><a href="#cb39-12" aria-hidden="true" tabindex="-1"></a>  </span>
-<span id="cb39-13"><a href="#cb39-13" aria-hidden="true" tabindex="-1"></a>  <span class="fu">left_join</span>(., poverty, <span class="at">by =</span> <span class="fu">c</span>(<span class="st">'code'</span> <span class="ot">=</span> <span class="st">'code'</span>, <span class="st">'year'</span> <span class="ot">=</span> <span class="st">'year'</span>)) <span class="sc">%&gt;%</span></span>
-<span id="cb39-14"><a href="#cb39-14" aria-hidden="true" tabindex="-1"></a>  </span>
-<span id="cb39-15"><a href="#cb39-15" aria-hidden="true" tabindex="-1"></a>  <span class="fu">left_join</span>(., unemployment, <span class="at">by =</span> <span class="fu">c</span>(<span class="st">'code'</span> <span class="ot">=</span> <span class="st">'code'</span>, <span class="st">'year'</span> <span class="ot">=</span> <span class="st">'year'</span>)) <span class="sc">%&gt;%</span></span>
-<span id="cb39-16"><a href="#cb39-16" aria-hidden="true" tabindex="-1"></a>  </span>
-<span id="cb39-17"><a href="#cb39-17" aria-hidden="true" tabindex="-1"></a>  <span class="fu">left_join</span>(., healthcare, <span class="at">by =</span> <span class="fu">c</span>(<span class="st">'code'</span> <span class="ot">=</span> <span class="st">'code'</span>, <span class="st">'year'</span> <span class="ot">=</span> <span class="st">'year'</span>)) <span class="sc">%&gt;%</span></span>
-<span id="cb39-18"><a href="#cb39-18" aria-hidden="true" tabindex="-1"></a>  </span>
-<span id="cb39-19"><a href="#cb39-19" aria-hidden="true" tabindex="-1"></a>  <span class="fu">left_join</span>(., happiness, <span class="at">by =</span> <span class="fu">c</span>(<span class="st">'code'</span> <span class="ot">=</span> <span class="st">'code'</span>, <span class="st">'year'</span> <span class="ot">=</span> <span class="st">'year'</span>)) <span class="sc">%&gt;%</span></span>
-<span id="cb39-20"><a href="#cb39-20" aria-hidden="true" tabindex="-1"></a>  </span>
-<span id="cb39-21"><a href="#cb39-21" aria-hidden="true" tabindex="-1"></a>  <span class="fu">left_join</span>(., mental, <span class="at">by =</span> <span class="fu">c</span>(<span class="st">'code'</span> <span class="ot">=</span> <span class="st">'code'</span>, <span class="st">'year'</span> <span class="ot">=</span> <span class="st">'year'</span>)) <span class="sc">%&gt;%</span></span>
-<span id="cb39-22"><a href="#cb39-22" aria-hidden="true" tabindex="-1"></a>  </span>
-<span id="cb39-23"><a href="#cb39-23" aria-hidden="true" tabindex="-1"></a>  <span class="fu">arrange</span>(code, year) <span class="sc">%&gt;%</span></span>
-<span id="cb39-24"><a href="#cb39-24" aria-hidden="true" tabindex="-1"></a>  </span>
-<span id="cb39-25"><a href="#cb39-25" aria-hidden="true" tabindex="-1"></a>  <span class="co">#infer HAQ data from previous survey year</span></span>
-<span id="cb39-26"><a href="#cb39-26" aria-hidden="true" tabindex="-1"></a>  <span class="fu">group_by</span>(code) <span class="sc">%&gt;%</span></span>
-<span id="cb39-27"><a href="#cb39-27" aria-hidden="true" tabindex="-1"></a>  <span class="fu">fill</span>(HAQ, <span class="at">.direction =</span> <span class="st">"down"</span>) <span class="sc">%&gt;%</span></span>
-<span id="cb39-28"><a href="#cb39-28" aria-hidden="true" tabindex="-1"></a>  <span class="fu">ungroup</span>()</span>
-<span id="cb39-29"><a href="#cb39-29" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb39-30"><a href="#cb39-30" aria-hidden="true" tabindex="-1"></a>knitr<span class="sc">::</span><span class="fu">kable</span>(<span class="fu">head</span>(suicidedata_analysis))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb40"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb40-1"><a href="#cb40-1" aria-hidden="true" tabindex="-1"></a>suicidedata_analysis <span class="ot">&lt;-</span> <span class="fu">left_join</span>(suicidedata_eda_formap <span class="sc">%&gt;%</span></span>
+<span id="cb40-2"><a href="#cb40-2" aria-hidden="true" tabindex="-1"></a>                                    <span class="fu">select</span>(country<span class="sc">:</span><span class="st">`</span><span class="at">SR_AS_T</span><span class="st">`</span>, <span class="st">`</span><span class="at">SR_10-14_M</span><span class="st">`</span><span class="sc">:</span><span class="st">`</span><span class="at">SR_75+_T</span><span class="st">`</span>,<span class="st">`</span><span class="at">POP_All_T</span><span class="st">`</span>)</span>
+<span id="cb40-3"><a href="#cb40-3" aria-hidden="true" tabindex="-1"></a>                                    , gdp_per_capita, <span class="at">by =</span> <span class="fu">c</span>(<span class="st">'code'</span> <span class="ot">=</span> <span class="st">'code'</span>, <span class="st">'year'</span> <span class="ot">=</span> <span class="st">'year'</span>)) <span class="sc">%&gt;%</span></span>
+<span id="cb40-4"><a href="#cb40-4" aria-hidden="true" tabindex="-1"></a>  </span>
+<span id="cb40-5"><a href="#cb40-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">left_join</span>(., hdi, <span class="at">by =</span> <span class="fu">c</span>(<span class="st">'code'</span> <span class="ot">=</span> <span class="st">'code'</span>, <span class="st">'year'</span> <span class="ot">=</span> <span class="st">'year'</span>)) <span class="sc">%&gt;%</span></span>
+<span id="cb40-6"><a href="#cb40-6" aria-hidden="true" tabindex="-1"></a>  </span>
+<span id="cb40-7"><a href="#cb40-7" aria-hidden="true" tabindex="-1"></a>  <span class="fu">left_join</span>(., depr, <span class="at">by =</span> <span class="fu">c</span>(<span class="st">'code'</span> <span class="ot">=</span> <span class="st">'code'</span>, <span class="st">'year'</span> <span class="ot">=</span> <span class="st">'year'</span>)) <span class="sc">%&gt;%</span></span>
+<span id="cb40-8"><a href="#cb40-8" aria-hidden="true" tabindex="-1"></a>  </span>
+<span id="cb40-9"><a href="#cb40-9" aria-hidden="true" tabindex="-1"></a>  <span class="fu">left_join</span>(., gini, <span class="at">by =</span> <span class="fu">c</span>(<span class="st">'code'</span> <span class="ot">=</span> <span class="st">'code'</span>, <span class="st">'year'</span> <span class="ot">=</span> <span class="st">'year'</span>)) <span class="sc">%&gt;%</span></span>
+<span id="cb40-10"><a href="#cb40-10" aria-hidden="true" tabindex="-1"></a>  </span>
+<span id="cb40-11"><a href="#cb40-11" aria-hidden="true" tabindex="-1"></a>  <span class="fu">left_join</span>(., violent, <span class="at">by =</span> <span class="fu">c</span>(<span class="st">'code'</span> <span class="ot">=</span> <span class="st">'code'</span>, <span class="st">'year'</span> <span class="ot">=</span> <span class="st">'year'</span>)) <span class="sc">%&gt;%</span></span>
+<span id="cb40-12"><a href="#cb40-12" aria-hidden="true" tabindex="-1"></a>  </span>
+<span id="cb40-13"><a href="#cb40-13" aria-hidden="true" tabindex="-1"></a>  <span class="fu">left_join</span>(., poverty, <span class="at">by =</span> <span class="fu">c</span>(<span class="st">'code'</span> <span class="ot">=</span> <span class="st">'code'</span>, <span class="st">'year'</span> <span class="ot">=</span> <span class="st">'year'</span>)) <span class="sc">%&gt;%</span></span>
+<span id="cb40-14"><a href="#cb40-14" aria-hidden="true" tabindex="-1"></a>  </span>
+<span id="cb40-15"><a href="#cb40-15" aria-hidden="true" tabindex="-1"></a>  <span class="fu">left_join</span>(., unemployment, <span class="at">by =</span> <span class="fu">c</span>(<span class="st">'code'</span> <span class="ot">=</span> <span class="st">'code'</span>, <span class="st">'year'</span> <span class="ot">=</span> <span class="st">'year'</span>)) <span class="sc">%&gt;%</span></span>
+<span id="cb40-16"><a href="#cb40-16" aria-hidden="true" tabindex="-1"></a>  </span>
+<span id="cb40-17"><a href="#cb40-17" aria-hidden="true" tabindex="-1"></a>  <span class="fu">left_join</span>(., healthcare, <span class="at">by =</span> <span class="fu">c</span>(<span class="st">'code'</span> <span class="ot">=</span> <span class="st">'code'</span>, <span class="st">'year'</span> <span class="ot">=</span> <span class="st">'year'</span>)) <span class="sc">%&gt;%</span></span>
+<span id="cb40-18"><a href="#cb40-18" aria-hidden="true" tabindex="-1"></a>  </span>
+<span id="cb40-19"><a href="#cb40-19" aria-hidden="true" tabindex="-1"></a>  <span class="fu">left_join</span>(., happiness, <span class="at">by =</span> <span class="fu">c</span>(<span class="st">'code'</span> <span class="ot">=</span> <span class="st">'code'</span>, <span class="st">'year'</span> <span class="ot">=</span> <span class="st">'year'</span>)) <span class="sc">%&gt;%</span></span>
+<span id="cb40-20"><a href="#cb40-20" aria-hidden="true" tabindex="-1"></a>  </span>
+<span id="cb40-21"><a href="#cb40-21" aria-hidden="true" tabindex="-1"></a>  <span class="fu">left_join</span>(., mental, <span class="at">by =</span> <span class="fu">c</span>(<span class="st">'code'</span> <span class="ot">=</span> <span class="st">'code'</span>, <span class="st">'year'</span> <span class="ot">=</span> <span class="st">'year'</span>)) <span class="sc">%&gt;%</span></span>
+<span id="cb40-22"><a href="#cb40-22" aria-hidden="true" tabindex="-1"></a>  </span>
+<span id="cb40-23"><a href="#cb40-23" aria-hidden="true" tabindex="-1"></a>  <span class="fu">arrange</span>(code, year) <span class="sc">%&gt;%</span></span>
+<span id="cb40-24"><a href="#cb40-24" aria-hidden="true" tabindex="-1"></a>  </span>
+<span id="cb40-25"><a href="#cb40-25" aria-hidden="true" tabindex="-1"></a>  <span class="co">#infer HAQ data from previous survey year</span></span>
+<span id="cb40-26"><a href="#cb40-26" aria-hidden="true" tabindex="-1"></a>  <span class="fu">group_by</span>(code) <span class="sc">%&gt;%</span></span>
+<span id="cb40-27"><a href="#cb40-27" aria-hidden="true" tabindex="-1"></a>  <span class="fu">fill</span>(HAQ, <span class="at">.direction =</span> <span class="st">"down"</span>) <span class="sc">%&gt;%</span></span>
+<span id="cb40-28"><a href="#cb40-28" aria-hidden="true" tabindex="-1"></a>  <span class="fu">ungroup</span>()</span>
+<span id="cb40-29"><a href="#cb40-29" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb40-30"><a href="#cb40-30" aria-hidden="true" tabindex="-1"></a>knitr<span class="sc">::</span><span class="fu">kable</span>(<span class="fu">head</span>(suicidedata_analysis))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output-display">
 <table class="table table-sm table-striped">
 <colgroup>
@@ -1260,35 +1419,949 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <p>The object <code>World</code> is a spatial object of class <code>sf</code> from the <a href="https://cran.r-project.org/package=sf">sf package</a>; it is a <code>data.frame</code> with a special column that contains a geometry for each row, in this case polygons</p>
 <p>Reference - https://cran.r-project.org/web/packages/tmap/vignettes/tmap-getstarted.html</p>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb40"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb40-1"><a href="#cb40-1" aria-hidden="true" tabindex="-1"></a><span class="fu">data</span>(<span class="st">"World"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb41"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb41-1"><a href="#cb41-1" aria-hidden="true" tabindex="-1"></a><span class="fu">data</span>(<span class="st">"World"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 <p>Joining the two dataframes together</p>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb41"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb41-1"><a href="#cb41-1" aria-hidden="true" tabindex="-1"></a>suicidedata_eda_map <span class="ot">&lt;-</span> <span class="fu">left_join</span>(World, </span>
-<span id="cb41-2"><a href="#cb41-2" aria-hidden="true" tabindex="-1"></a>                                  </span>
-<span id="cb41-3"><a href="#cb41-3" aria-hidden="true" tabindex="-1"></a>                                  <span class="co">#filter year 2015 for illustration</span></span>
-<span id="cb41-4"><a href="#cb41-4" aria-hidden="true" tabindex="-1"></a>                                   suicidedata_eda <span class="sc">%&gt;%</span> <span class="fu">filter</span>(year<span class="sc">==</span><span class="dv">2015</span>),</span>
-<span id="cb41-5"><a href="#cb41-5" aria-hidden="true" tabindex="-1"></a>                          <span class="at">by =</span> <span class="fu">c</span>(<span class="st">"iso_a3"</span> <span class="ot">=</span> <span class="st">"code"</span>)) <span class="sc">%&gt;%</span></span>
-<span id="cb41-6"><a href="#cb41-6" aria-hidden="true" tabindex="-1"></a>  <span class="fu">select</span>(<span class="sc">!</span><span class="fu">c</span>(<span class="dv">2</span>,<span class="dv">3</span>,<span class="dv">4</span>,<span class="dv">6</span>,<span class="dv">7</span>,<span class="dv">8</span>,<span class="dv">9</span>,<span class="dv">10</span>,<span class="dv">11</span>,<span class="dv">12</span>,<span class="dv">13</span>,<span class="dv">14</span>,<span class="dv">15</span>)) <span class="sc">%&gt;%</span></span>
-<span id="cb41-7"><a href="#cb41-7" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">area =</span> <span class="fu">as.numeric</span>(<span class="fu">str_remove</span>(<span class="st">`</span><span class="at">area</span><span class="st">`</span>, </span>
-<span id="cb41-8"><a href="#cb41-8" aria-hidden="true" tabindex="-1"></a>                                <span class="st">" </span><span class="sc">\\</span><span class="st">[km</span><span class="sc">\\</span><span class="st">^2</span><span class="sc">\\</span><span class="st">]"</span>)), </span>
-<span id="cb41-9"><a href="#cb41-9" aria-hidden="true" tabindex="-1"></a>         <span class="at">.after =</span> region)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb42"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb42-1"><a href="#cb42-1" aria-hidden="true" tabindex="-1"></a>suicidedata_eda_map <span class="ot">&lt;-</span> <span class="fu">left_join</span>(World, </span>
+<span id="cb42-2"><a href="#cb42-2" aria-hidden="true" tabindex="-1"></a>                                  </span>
+<span id="cb42-3"><a href="#cb42-3" aria-hidden="true" tabindex="-1"></a>                                  <span class="co">#filter year 2015 for illustration</span></span>
+<span id="cb42-4"><a href="#cb42-4" aria-hidden="true" tabindex="-1"></a>                                   suicidedata_eda_formap <span class="sc">%&gt;%</span> <span class="fu">filter</span>(year<span class="sc">==</span><span class="dv">2015</span>),</span>
+<span id="cb42-5"><a href="#cb42-5" aria-hidden="true" tabindex="-1"></a>                          <span class="at">by =</span> <span class="fu">c</span>(<span class="st">"iso_a3"</span> <span class="ot">=</span> <span class="st">"code"</span>)) <span class="sc">%&gt;%</span></span>
+<span id="cb42-6"><a href="#cb42-6" aria-hidden="true" tabindex="-1"></a>  <span class="fu">select</span>(<span class="sc">!</span><span class="fu">c</span>(<span class="dv">2</span>,<span class="dv">3</span>,<span class="dv">4</span>,<span class="dv">6</span>,<span class="dv">7</span>,<span class="dv">8</span>,<span class="dv">9</span>,<span class="dv">10</span>,<span class="dv">11</span>,<span class="dv">12</span>,<span class="dv">13</span>,<span class="dv">14</span>,<span class="dv">15</span>)) <span class="sc">%&gt;%</span></span>
+<span id="cb42-7"><a href="#cb42-7" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">area =</span> <span class="fu">as.numeric</span>(<span class="fu">str_remove</span>(<span class="st">`</span><span class="at">area</span><span class="st">`</span>, </span>
+<span id="cb42-8"><a href="#cb42-8" aria-hidden="true" tabindex="-1"></a>                                <span class="st">" </span><span class="sc">\\</span><span class="st">[km</span><span class="sc">\\</span><span class="st">^2</span><span class="sc">\\</span><span class="st">]"</span>)), </span>
+<span id="cb42-9"><a href="#cb42-9" aria-hidden="true" tabindex="-1"></a>         <span class="at">.after =</span> region)</span>
+<span id="cb42-10"><a href="#cb42-10" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb42-11"><a href="#cb42-11" aria-hidden="true" tabindex="-1"></a>knitr<span class="sc">::</span><span class="fu">kable</span>(<span class="fu">head</span>(suicidedata_eda_map))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+<table class="table table-sm table-striped">
+<colgroup>
+<col style="width: 0%">
+<col style="width: 0%">
+<col style="width: 1%">
+<col style="width: 2%">
+<col style="width: 0%">
+<col style="width: 0%">
+<col style="width: 0%">
+<col style="width: 0%">
+<col style="width: 0%">
+<col style="width: 0%">
+<col style="width: 0%">
+<col style="width: 0%">
+<col style="width: 0%">
+<col style="width: 0%">
+<col style="width: 0%">
+<col style="width: 0%">
+<col style="width: 0%">
+<col style="width: 0%">
+<col style="width: 0%">
+<col style="width: 0%">
+<col style="width: 0%">
+<col style="width: 0%">
+<col style="width: 0%">
+<col style="width: 0%">
+<col style="width: 0%">
+<col style="width: 0%">
+<col style="width: 0%">
+<col style="width: 0%">
+<col style="width: 0%">
+<col style="width: 0%">
+<col style="width: 0%">
+<col style="width: 0%">
+<col style="width: 0%">
+<col style="width: 0%">
+<col style="width: 0%">
+<col style="width: 0%">
+<col style="width: 0%">
+<col style="width: 0%">
+<col style="width: 0%">
+<col style="width: 0%">
+<col style="width: 0%">
+<col style="width: 0%">
+<col style="width: 0%">
+<col style="width: 0%">
+<col style="width: 0%">
+<col style="width: 0%">
+<col style="width: 0%">
+<col style="width: 0%">
+<col style="width: 0%">
+<col style="width: 0%">
+<col style="width: 0%">
+<col style="width: 0%">
+<col style="width: 0%">
+<col style="width: 0%">
+<col style="width: 0%">
+<col style="width: 0%">
+<col style="width: 0%">
+<col style="width: 0%">
+<col style="width: 0%">
+<col style="width: 0%">
+<col style="width: 0%">
+<col style="width: 0%">
+<col style="width: 0%">
+<col style="width: 0%">
+<col style="width: 0%">
+<col style="width: 0%">
+<col style="width: 0%">
+<col style="width: 0%">
+<col style="width: 0%">
+<col style="width: 0%">
+<col style="width: 0%">
+<col style="width: 0%">
+<col style="width: 0%">
+<col style="width: 0%">
+<col style="width: 0%">
+<col style="width: 0%">
+<col style="width: 0%">
+<col style="width: 0%">
+<col style="width: 0%">
+<col style="width: 0%">
+<col style="width: 0%">
+<col style="width: 0%">
+<col style="width: 0%">
+<col style="width: 0%">
+<col style="width: 0%">
+<col style="width: 0%">
+<col style="width: 0%">
+<col style="width: 0%">
+<col style="width: 0%">
+<col style="width: 0%">
+<col style="width: 0%">
+<col style="width: 0%">
+<col style="width: 0%">
+<col style="width: 0%">
+<col style="width: 0%">
+<col style="width: 0%">
+<col style="width: 0%">
+<col style="width: 0%">
+<col style="width: 0%">
+<col style="width: 0%">
+<col style="width: 0%">
+<col style="width: 0%">
+<col style="width: 0%">
+<col style="width: 0%">
+<col style="width: 0%">
+<col style="width: 0%">
+<col style="width: 0%">
+<col style="width: 0%">
+<col style="width: 0%">
+<col style="width: 0%">
+<col style="width: 2%">
+</colgroup>
+<thead>
+<tr class="header">
+<th style="text-align: left;">iso_a3</th>
+<th style="text-align: right;">area</th>
+<th style="text-align: left;">country</th>
+<th style="text-align: left;">region</th>
+<th style="text-align: right;">year</th>
+<th style="text-align: right;">SR_AS_M</th>
+<th style="text-align: right;">SR_AS_F</th>
+<th style="text-align: right;">SR_AS_T</th>
+<th style="text-align: right;">SN_10-14_M</th>
+<th style="text-align: right;">SN_10-14_F</th>
+<th style="text-align: right;">SN_10-14_T</th>
+<th style="text-align: right;">SN_15-24_M</th>
+<th style="text-align: right;">SN_15-24_F</th>
+<th style="text-align: right;">SN_15-24_T</th>
+<th style="text-align: right;">SN_25-44_M</th>
+<th style="text-align: right;">SN_25-44_F</th>
+<th style="text-align: right;">SN_25-44_T</th>
+<th style="text-align: right;">SN_45-64_M</th>
+<th style="text-align: right;">SN_45-64_F</th>
+<th style="text-align: right;">SN_45-64_T</th>
+<th style="text-align: right;">SN_65-74_M</th>
+<th style="text-align: right;">SN_65-74_F</th>
+<th style="text-align: right;">SN_65-74_T</th>
+<th style="text-align: right;">SN_75+_M</th>
+<th style="text-align: right;">SN_75+_F</th>
+<th style="text-align: right;">SN_75+_T</th>
+<th style="text-align: right;">SN_All_M</th>
+<th style="text-align: right;">SN_All_F</th>
+<th style="text-align: right;">SN_All_T</th>
+<th style="text-align: right;">POP_10-14_M</th>
+<th style="text-align: right;">POP_10-14_F</th>
+<th style="text-align: right;">POP_10-14_T</th>
+<th style="text-align: right;">POP_15-24_M</th>
+<th style="text-align: right;">POP_15-24_F</th>
+<th style="text-align: right;">POP_15-24_T</th>
+<th style="text-align: right;">POP_25-44_M</th>
+<th style="text-align: right;">POP_25-44_F</th>
+<th style="text-align: right;">POP_25-44_T</th>
+<th style="text-align: right;">POP_45-64_M</th>
+<th style="text-align: right;">POP_45-64_F</th>
+<th style="text-align: right;">POP_45-64_T</th>
+<th style="text-align: right;">POP_65-74_M</th>
+<th style="text-align: right;">POP_65-74_F</th>
+<th style="text-align: right;">POP_65-74_T</th>
+<th style="text-align: right;">POP_75+_M</th>
+<th style="text-align: right;">POP_75+_F</th>
+<th style="text-align: right;">POP_75+_T</th>
+<th style="text-align: right;">POP_All_M</th>
+<th style="text-align: right;">POP_All_F</th>
+<th style="text-align: right;">POP_All_T</th>
+<th style="text-align: right;">DN_10-14_M</th>
+<th style="text-align: right;">DN_10-14_F</th>
+<th style="text-align: right;">DN_10-14_T</th>
+<th style="text-align: right;">DN_15-24_M</th>
+<th style="text-align: right;">DN_15-24_F</th>
+<th style="text-align: right;">DN_15-24_T</th>
+<th style="text-align: right;">DN_25-44_M</th>
+<th style="text-align: right;">DN_25-44_F</th>
+<th style="text-align: right;">DN_25-44_T</th>
+<th style="text-align: right;">DN_45-64_M</th>
+<th style="text-align: right;">DN_45-64_F</th>
+<th style="text-align: right;">DN_45-64_T</th>
+<th style="text-align: right;">DN_65-74_M</th>
+<th style="text-align: right;">DN_65-74_F</th>
+<th style="text-align: right;">DN_65-74_T</th>
+<th style="text-align: right;">DN_75+_M</th>
+<th style="text-align: right;">DN_75+_F</th>
+<th style="text-align: right;">DN_75+_T</th>
+<th style="text-align: right;">DN_All_M</th>
+<th style="text-align: right;">DN_All_F</th>
+<th style="text-align: right;">DN_All_T</th>
+<th style="text-align: right;">SR_10-14_M</th>
+<th style="text-align: right;">SR_10-14_F</th>
+<th style="text-align: right;">SR_10-14_T</th>
+<th style="text-align: right;">SR_15-24_M</th>
+<th style="text-align: right;">SR_15-24_F</th>
+<th style="text-align: right;">SR_15-24_T</th>
+<th style="text-align: right;">SR_25-44_M</th>
+<th style="text-align: right;">SR_25-44_F</th>
+<th style="text-align: right;">SR_25-44_T</th>
+<th style="text-align: right;">SR_45-64_M</th>
+<th style="text-align: right;">SR_45-64_F</th>
+<th style="text-align: right;">SR_45-64_T</th>
+<th style="text-align: right;">SR_65-74_M</th>
+<th style="text-align: right;">SR_65-74_F</th>
+<th style="text-align: right;">SR_65-74_T</th>
+<th style="text-align: right;">SR_75+_M</th>
+<th style="text-align: right;">SR_75+_F</th>
+<th style="text-align: right;">SR_75+_T</th>
+<th style="text-align: right;">SP_10-14_M</th>
+<th style="text-align: right;">SP_10-14_F</th>
+<th style="text-align: right;">SP_10-14_T</th>
+<th style="text-align: right;">SP_15-24_M</th>
+<th style="text-align: right;">SP_15-24_F</th>
+<th style="text-align: right;">SP_15-24_T</th>
+<th style="text-align: right;">SP_25-44_M</th>
+<th style="text-align: right;">SP_25-44_F</th>
+<th style="text-align: right;">SP_25-44_T</th>
+<th style="text-align: right;">SP_45-64_M</th>
+<th style="text-align: right;">SP_45-64_F</th>
+<th style="text-align: right;">SP_45-64_T</th>
+<th style="text-align: right;">SP_65-74_M</th>
+<th style="text-align: right;">SP_65-74_F</th>
+<th style="text-align: right;">SP_65-74_T</th>
+<th style="text-align: right;">SP_75+_M</th>
+<th style="text-align: right;">SP_75+_F</th>
+<th style="text-align: right;">SP_75+_T</th>
+<th style="text-align: right;">SP_All_M</th>
+<th style="text-align: right;">SP_All_F</th>
+<th style="text-align: right;">SP_All_T</th>
+<th style="text-align: left;">geometry</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: left;">AFG</td>
+<td style="text-align: right;">652860.00</td>
+<td style="text-align: left;">Afghanistan</td>
+<td style="text-align: left;">South Asia</td>
+<td style="text-align: right;">2015</td>
+<td style="text-align: right;">6.024135</td>
+<td style="text-align: right;">6.741279</td>
+<td style="text-align: right;">6.431005</td>
+<td style="text-align: right;">20.5227717</td>
+<td style="text-align: right;">3.5260647</td>
+<td style="text-align: right;">24.0488364</td>
+<td style="text-align: right;">203.67055</td>
+<td style="text-align: right;">169.119876</td>
+<td style="text-align: right;">372.79043</td>
+<td style="text-align: right;">376.72312</td>
+<td style="text-align: right;">328.75956</td>
+<td style="text-align: right;">705.48267</td>
+<td style="text-align: right;">112.12180</td>
+<td style="text-align: right;">179.11254</td>
+<td style="text-align: right;">291.23434</td>
+<td style="text-align: right;">16.476129</td>
+<td style="text-align: right;">33.5121907</td>
+<td style="text-align: right;">49.988319</td>
+<td style="text-align: right;">13.1995178</td>
+<td style="text-align: right;">10.364070</td>
+<td style="text-align: right;">23.563588</td>
+<td style="text-align: right;">742.7139</td>
+<td style="text-align: right;">724.39430</td>
+<td style="text-align: right;">1467.1082</td>
+<td style="text-align: right;">2306362.26</td>
+<td style="text-align: right;">2183941.69</td>
+<td style="text-align: right;">4490304.0</td>
+<td style="text-align: right;">3731529.9</td>
+<td style="text-align: right;">3533358.5</td>
+<td style="text-align: right;">7264888.4</td>
+<td style="text-align: right;">3784047.0</td>
+<td style="text-align: right;">3475662.2</td>
+<td style="text-align: right;">7259709.2</td>
+<td style="text-align: right;">1362286.6</td>
+<td style="text-align: right;">1434660.8</td>
+<td style="text-align: right;">2796947.4</td>
+<td style="text-align: right;">223149.79</td>
+<td style="text-align: right;">265143.12</td>
+<td style="text-align: right;">488292.91</td>
+<td style="text-align: right;">131334.416</td>
+<td style="text-align: right;">128583.555</td>
+<td style="text-align: right;">259917.97</td>
+<td style="text-align: right;">17206269</td>
+<td style="text-align: right;">16376997</td>
+<td style="text-align: right;">33583266</td>
+<td style="text-align: right;">2717.05506</td>
+<td style="text-align: right;">2386.18087</td>
+<td style="text-align: right;">5102.25422</td>
+<td style="text-align: right;">13286.1715</td>
+<td style="text-align: right;">6888.74363</td>
+<td style="text-align: right;">20168.5141</td>
+<td style="text-align: right;">19313.3988</td>
+<td style="text-align: right;">15170.4637</td>
+<td style="text-align: right;">34482.5598</td>
+<td style="text-align: right;">18784.581</td>
+<td style="text-align: right;">21837.915</td>
+<td style="text-align: right;">40626.606</td>
+<td style="text-align: right;">11382.910</td>
+<td style="text-align: right;">13438.558</td>
+<td style="text-align: right;">24827.304</td>
+<td style="text-align: right;">15815.642</td>
+<td style="text-align: right;">15927.3701</td>
+<td style="text-align: right;">31740.837</td>
+<td style="text-align: right;">129881.14</td>
+<td style="text-align: right;">118424.208</td>
+<td style="text-align: right;">248322.64</td>
+<td style="text-align: right;">0.8898330</td>
+<td style="text-align: right;">0.1614542</td>
+<td style="text-align: right;">0.5355726</td>
+<td style="text-align: right;">5.458098</td>
+<td style="text-align: right;">4.786378</td>
+<td style="text-align: right;">5.131399</td>
+<td style="text-align: right;">9.955561</td>
+<td style="text-align: right;">9.458904</td>
+<td style="text-align: right;">9.717781</td>
+<td style="text-align: right;">8.230412</td>
+<td style="text-align: right;">12.484661</td>
+<td style="text-align: right;">10.412578</td>
+<td style="text-align: right;">7.383439</td>
+<td style="text-align: right;">12.639283</td>
+<td style="text-align: right;">10.237363</td>
+<td style="text-align: right;">10.05031</td>
+<td style="text-align: right;">8.060183</td>
+<td style="text-align: right;">9.065779</td>
+<td style="text-align: right;">0.7553315</td>
+<td style="text-align: right;">0.1477702</td>
+<td style="text-align: right;">0.4713375</td>
+<td style="text-align: right;">1.532951</td>
+<td style="text-align: right;">2.455018</td>
+<td style="text-align: right;">1.848378</td>
+<td style="text-align: right;">1.950579</td>
+<td style="text-align: right;">2.1671029</td>
+<td style="text-align: right;">2.045911</td>
+<td style="text-align: right;">0.5968821</td>
+<td style="text-align: right;">0.8201907</td>
+<td style="text-align: right;">0.7168562</td>
+<td style="text-align: right;">0.1447444</td>
+<td style="text-align: right;">0.2493734</td>
+<td style="text-align: right;">0.2013441</td>
+<td style="text-align: right;">0.0834586</td>
+<td style="text-align: right;">0.0650708</td>
+<td style="text-align: right;">0.0742375</td>
+<td style="text-align: right;">0.5718412</td>
+<td style="text-align: right;">0.6116944</td>
+<td style="text-align: right;">0.5908073</td>
+<td style="text-align: left;">MULTIPOLYGON (((61.21082 35…</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">AGO</td>
+<td style="text-align: right;">1246700.00</td>
+<td style="text-align: left;">Angola</td>
+<td style="text-align: left;">Sub-Saharan Africa</td>
+<td style="text-align: right;">2015</td>
+<td style="text-align: right;">21.896669</td>
+<td style="text-align: right;">4.836927</td>
+<td style="text-align: right;">12.534813</td>
+<td style="text-align: right;">41.4338534</td>
+<td style="text-align: right;">11.1098732</td>
+<td style="text-align: right;">52.5437266</td>
+<td style="text-align: right;">199.14250</td>
+<td style="text-align: right;">50.657369</td>
+<td style="text-align: right;">249.79987</td>
+<td style="text-align: right;">450.26378</td>
+<td style="text-align: right;">97.05681</td>
+<td style="text-align: right;">547.32060</td>
+<td style="text-align: right;">449.18872</td>
+<td style="text-align: right;">120.05158</td>
+<td style="text-align: right;">569.24030</td>
+<td style="text-align: right;">132.296713</td>
+<td style="text-align: right;">39.7720635</td>
+<td style="text-align: right;">172.068776</td>
+<td style="text-align: right;">78.4143010</td>
+<td style="text-align: right;">21.644262</td>
+<td style="text-align: right;">100.058563</td>
+<td style="text-align: right;">1350.7399</td>
+<td style="text-align: right;">340.29196</td>
+<td style="text-align: right;">1691.0318</td>
+<td style="text-align: right;">1593522.83</td>
+<td style="text-align: right;">1631294.22</td>
+<td style="text-align: right;">3224817.0</td>
+<td style="text-align: right;">2322012.3</td>
+<td style="text-align: right;">2516729.4</td>
+<td style="text-align: right;">4838741.7</td>
+<td style="text-align: right;">2825202.9</td>
+<td style="text-align: right;">3162604.9</td>
+<td style="text-align: right;">5987807.8</td>
+<td style="text-align: right;">1196269.4</td>
+<td style="text-align: right;">1322735.7</td>
+<td style="text-align: right;">2519005.1</td>
+<td style="text-align: right;">179153.92</td>
+<td style="text-align: right;">222227.27</td>
+<td style="text-align: right;">401381.18</td>
+<td style="text-align: right;">66404.552</td>
+<td style="text-align: right;">94976.785</td>
+<td style="text-align: right;">161381.34</td>
+<td style="text-align: right;">12780032</td>
+<td style="text-align: right;">13553062</td>
+<td style="text-align: right;">26333094</td>
+<td style="text-align: right;">1574.60487</td>
+<td style="text-align: right;">1146.38596</td>
+<td style="text-align: right;">2720.35748</td>
+<td style="text-align: right;">4660.5425</td>
+<td style="text-align: right;">3557.05884</td>
+<td style="text-align: right;">8221.2432</td>
+<td style="text-align: right;">12770.1578</td>
+<td style="text-align: right;">12053.4901</td>
+<td style="text-align: right;">24813.5767</td>
+<td style="text-align: right;">20976.117</td>
+<td style="text-align: right;">14412.543</td>
+<td style="text-align: right;">35384.251</td>
+<td style="text-align: right;">9801.122</td>
+<td style="text-align: right;">7785.831</td>
+<td style="text-align: right;">17585.970</td>
+<td style="text-align: right;">8070.951</td>
+<td style="text-align: right;">8928.6120</td>
+<td style="text-align: right;">16997.980</td>
+<td style="text-align: right;">101271.46</td>
+<td style="text-align: right;">82739.779</td>
+<td style="text-align: right;">183941.00</td>
+<td style="text-align: right;">2.6001418</td>
+<td style="text-align: right;">0.6810466</td>
+<td style="text-align: right;">1.6293553</td>
+<td style="text-align: right;">8.576290</td>
+<td style="text-align: right;">2.012825</td>
+<td style="text-align: right;">5.162496</td>
+<td style="text-align: right;">15.937396</td>
+<td style="text-align: right;">3.068888</td>
+<td style="text-align: right;">9.140584</td>
+<td style="text-align: right;">37.549129</td>
+<td style="text-align: right;">9.076007</td>
+<td style="text-align: right;">22.597823</td>
+<td style="text-align: right;">73.845280</td>
+<td style="text-align: right;">17.897022</td>
+<td style="text-align: right;">42.869169</td>
+<td style="text-align: right;">118.08573</td>
+<td style="text-align: right;">22.789003</td>
+<td style="text-align: right;">62.001323</td>
+<td style="text-align: right;">2.6313810</td>
+<td style="text-align: right;">0.9691215</td>
+<td style="text-align: right;">1.9315008</td>
+<td style="text-align: right;">4.272947</td>
+<td style="text-align: right;">1.424136</td>
+<td style="text-align: right;">3.038468</td>
+<td style="text-align: right;">3.525906</td>
+<td style="text-align: right;">0.8052175</td>
+<td style="text-align: right;">2.205730</td>
+<td style="text-align: right;">2.1414294</td>
+<td style="text-align: right;">0.8329660</td>
+<td style="text-align: right;">1.6087391</td>
+<td style="text-align: right;">1.3498119</td>
+<td style="text-align: right;">0.5108262</td>
+<td style="text-align: right;">0.9784435</td>
+<td style="text-align: right;">0.9715621</td>
+<td style="text-align: right;">0.2424146</td>
+<td style="text-align: right;">0.5886497</td>
+<td style="text-align: right;">1.3337813</td>
+<td style="text-align: right;">0.4112798</td>
+<td style="text-align: right;">0.9193338</td>
+<td style="text-align: left;">MULTIPOLYGON (((16.32653 -5…</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">ALB</td>
+<td style="text-align: right;">27400.00</td>
+<td style="text-align: left;">Albania</td>
+<td style="text-align: left;">Europe and Central Asia</td>
+<td style="text-align: right;">2015</td>
+<td style="text-align: right;">7.188618</td>
+<td style="text-align: right;">3.161862</td>
+<td style="text-align: right;">5.149327</td>
+<td style="text-align: right;">1.7506308</td>
+<td style="text-align: right;">1.0715855</td>
+<td style="text-align: right;">2.8222163</td>
+<td style="text-align: right;">21.31921</td>
+<td style="text-align: right;">12.872753</td>
+<td style="text-align: right;">34.19197</td>
+<td style="text-align: right;">39.47496</td>
+<td style="text-align: right;">13.84050</td>
+<td style="text-align: right;">53.31546</td>
+<td style="text-align: right;">30.35561</td>
+<td style="text-align: right;">12.56863</td>
+<td style="text-align: right;">42.92423</td>
+<td style="text-align: right;">8.659451</td>
+<td style="text-align: right;">3.3755519</td>
+<td style="text-align: right;">12.035003</td>
+<td style="text-align: right;">8.6248866</td>
+<td style="text-align: right;">5.742322</td>
+<td style="text-align: right;">14.367209</td>
+<td style="text-align: right;">110.1848</td>
+<td style="text-align: right;">49.47133</td>
+<td style="text-align: right;">159.6561</td>
+<td style="text-align: right;">101265.07</td>
+<td style="text-align: right;">91987.02</td>
+<td style="text-align: right;">193252.1</td>
+<td style="text-align: right;">245086.4</td>
+<td style="text-align: right;">230524.8</td>
+<td style="text-align: right;">475611.2</td>
+<td style="text-align: right;">352390.7</td>
+<td style="text-align: right;">355470.5</td>
+<td style="text-align: right;">707861.2</td>
+<td style="text-align: right;">355410.2</td>
+<td style="text-align: right;">368122.4</td>
+<td style="text-align: right;">723532.6</td>
+<td style="text-align: right;">104498.71</td>
+<td style="text-align: right;">105885.80</td>
+<td style="text-align: right;">210384.52</td>
+<td style="text-align: right;">65418.527</td>
+<td style="text-align: right;">80530.168</td>
+<td style="text-align: right;">145948.70</td>
+<td style="text-align: right;">1392936</td>
+<td style="text-align: right;">1385423</td>
+<td style="text-align: right;">2778359</td>
+<td style="text-align: right;">38.81143</td>
+<td style="text-align: right;">21.31527</td>
+<td style="text-align: right;">60.12015</td>
+<td style="text-align: right;">206.9370</td>
+<td style="text-align: right;">77.42318</td>
+<td style="text-align: right;">284.3179</td>
+<td style="text-align: right;">515.1111</td>
+<td style="text-align: right;">218.6979</td>
+<td style="text-align: right;">733.7353</td>
+<td style="text-align: right;">2040.983</td>
+<td style="text-align: right;">1063.180</td>
+<td style="text-align: right;">3104.372</td>
+<td style="text-align: right;">2665.265</td>
+<td style="text-align: right;">1577.458</td>
+<td style="text-align: right;">4243.934</td>
+<td style="text-align: right;">6015.928</td>
+<td style="text-align: right;">5743.9928</td>
+<td style="text-align: right;">11760.125</td>
+<td style="text-align: right;">11845.85</td>
+<td style="text-align: right;">8991.488</td>
+<td style="text-align: right;">20835.77</td>
+<td style="text-align: right;">1.7287608</td>
+<td style="text-align: right;">1.1649312</td>
+<td style="text-align: right;">1.4603808</td>
+<td style="text-align: right;">8.698651</td>
+<td style="text-align: right;">5.584109</td>
+<td style="text-align: right;">7.189059</td>
+<td style="text-align: right;">11.202043</td>
+<td style="text-align: right;">3.893571</td>
+<td style="text-align: right;">7.531908</td>
+<td style="text-align: right;">8.541006</td>
+<td style="text-align: right;">3.414252</td>
+<td style="text-align: right;">5.932592</td>
+<td style="text-align: right;">8.286658</td>
+<td style="text-align: right;">3.187917</td>
+<td style="text-align: right;">5.720479</td>
+<td style="text-align: right;">13.18417</td>
+<td style="text-align: right;">7.130647</td>
+<td style="text-align: right;">9.844013</td>
+<td style="text-align: right;">4.5106060</td>
+<td style="text-align: right;">5.0273140</td>
+<td style="text-align: right;">4.6942936</td>
+<td style="text-align: right;">10.302272</td>
+<td style="text-align: right;">16.626484</td>
+<td style="text-align: right;">12.025962</td>
+<td style="text-align: right;">7.663388</td>
+<td style="text-align: right;">6.3285897</td>
+<td style="text-align: right;">7.266307</td>
+<td style="text-align: right;">1.4873031</td>
+<td style="text-align: right;">1.1821731</td>
+<td style="text-align: right;">1.3827028</td>
+<td style="text-align: right;">0.3249003</td>
+<td style="text-align: right;">0.2139868</td>
+<td style="text-align: right;">0.2835813</td>
+<td style="text-align: right;">0.1433675</td>
+<td style="text-align: right;">0.0999709</td>
+<td style="text-align: right;">0.1221688</td>
+<td style="text-align: right;">0.9301552</td>
+<td style="text-align: right;">0.5502019</td>
+<td style="text-align: right;">0.7662597</td>
+<td style="text-align: left;">MULTIPOLYGON (((20.59025 41…</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">ARE</td>
+<td style="text-align: right;">71252.17</td>
+<td style="text-align: left;">United Arab Emirates</td>
+<td style="text-align: left;">Middle East and North Africa</td>
+<td style="text-align: right;">2015</td>
+<td style="text-align: right;">6.499349</td>
+<td style="text-align: right;">2.693028</td>
+<td style="text-align: right;">5.491611</td>
+<td style="text-align: right;">0.5684426</td>
+<td style="text-align: right;">0.1590175</td>
+<td style="text-align: right;">0.7274601</td>
+<td style="text-align: right;">22.50879</td>
+<td style="text-align: right;">4.747960</td>
+<td style="text-align: right;">27.25675</td>
+<td style="text-align: right;">445.61060</td>
+<td style="text-align: right;">52.41087</td>
+<td style="text-align: right;">498.02148</td>
+<td style="text-align: right;">104.70366</td>
+<td style="text-align: right;">9.21879</td>
+<td style="text-align: right;">113.92245</td>
+<td style="text-align: right;">2.961838</td>
+<td style="text-align: right;">0.4379355</td>
+<td style="text-align: right;">3.399773</td>
+<td style="text-align: right;">0.8833814</td>
+<td style="text-align: right;">0.334826</td>
+<td style="text-align: right;">1.218208</td>
+<td style="text-align: right;">577.2367</td>
+<td style="text-align: right;">67.30940</td>
+<td style="text-align: right;">644.5461</td>
+<td style="text-align: right;">176956.74</td>
+<td style="text-align: right;">165408.04</td>
+<td style="text-align: right;">342364.8</td>
+<td style="text-align: right;">364914.3</td>
+<td style="text-align: right;">280777.3</td>
+<td style="text-align: right;">645691.6</td>
+<td style="text-align: right;">4632006.7</td>
+<td style="text-align: right;">1264106.1</td>
+<td style="text-align: right;">5896112.8</td>
+<td style="text-align: right;">985153.5</td>
+<td style="text-align: right;">275082.2</td>
+<td style="text-align: right;">1260235.8</td>
+<td style="text-align: right;">32506.25</td>
+<td style="text-align: right;">16190.27</td>
+<td style="text-align: right;">48696.52</td>
+<td style="text-align: right;">7941.803</td>
+<td style="text-align: right;">3613.348</td>
+<td style="text-align: right;">11555.15</td>
+<td style="text-align: right;">6633891</td>
+<td style="text-align: right;">2416386</td>
+<td style="text-align: right;">9050276</td>
+<td style="text-align: right;">57.63853</td>
+<td style="text-align: right;">30.38897</td>
+<td style="text-align: right;">88.03915</td>
+<td style="text-align: right;">385.1858</td>
+<td style="text-align: right;">118.56331</td>
+<td style="text-align: right;">503.7389</td>
+<td style="text-align: right;">8766.0655</td>
+<td style="text-align: right;">1236.2361</td>
+<td style="text-align: right;">10001.8532</td>
+<td style="text-align: right;">7465.451</td>
+<td style="text-align: right;">1541.173</td>
+<td style="text-align: right;">9007.562</td>
+<td style="text-align: right;">1196.180</td>
+<td style="text-align: right;">468.250</td>
+<td style="text-align: right;">1664.638</td>
+<td style="text-align: right;">831.633</td>
+<td style="text-align: right;">284.8243</td>
+<td style="text-align: right;">1116.562</td>
+<td style="text-align: right;">19008.94</td>
+<td style="text-align: right;">3930.387</td>
+<td style="text-align: right;">22937.21</td>
+<td style="text-align: right;">0.3212325</td>
+<td style="text-align: right;">0.0961365</td>
+<td style="text-align: right;">0.2124810</td>
+<td style="text-align: right;">6.168239</td>
+<td style="text-align: right;">1.691006</td>
+<td style="text-align: right;">4.221326</td>
+<td style="text-align: right;">9.620249</td>
+<td style="text-align: right;">4.146082</td>
+<td style="text-align: right;">8.446607</td>
+<td style="text-align: right;">10.628156</td>
+<td style="text-align: right;">3.351285</td>
+<td style="text-align: right;">9.039772</td>
+<td style="text-align: right;">9.111594</td>
+<td style="text-align: right;">2.704930</td>
+<td style="text-align: right;">6.981552</td>
+<td style="text-align: right;">11.12319</td>
+<td style="text-align: right;">9.266364</td>
+<td style="text-align: right;">10.542549</td>
+<td style="text-align: right;">0.9862198</td>
+<td style="text-align: right;">0.5232737</td>
+<td style="text-align: right;">0.8262916</td>
+<td style="text-align: right;">5.843617</td>
+<td style="text-align: right;">4.004578</td>
+<td style="text-align: right;">5.410888</td>
+<td style="text-align: right;">5.083359</td>
+<td style="text-align: right;">4.2395520</td>
+<td style="text-align: right;">4.979292</td>
+<td style="text-align: right;">1.4025094</td>
+<td style="text-align: right;">0.5981670</td>
+<td style="text-align: right;">1.2647423</td>
+<td style="text-align: right;">0.2476081</td>
+<td style="text-align: right;">0.0935260</td>
+<td style="text-align: right;">0.2042350</td>
+<td style="text-align: right;">0.1062225</td>
+<td style="text-align: right;">0.1175553</td>
+<td style="text-align: right;">0.1091034</td>
+<td style="text-align: right;">3.0366585</td>
+<td style="text-align: right;">1.7125388</td>
+<td style="text-align: right;">2.8100457</td>
+<td style="text-align: left;">MULTIPOLYGON (((51.57952 24…</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">ARG</td>
+<td style="text-align: right;">2736690.00</td>
+<td style="text-align: left;">Argentina</td>
+<td style="text-align: left;">Latin America and Caribbean</td>
+<td style="text-align: right;">2015</td>
+<td style="text-align: right;">17.484488</td>
+<td style="text-align: right;">3.937958</td>
+<td style="text-align: right;">10.374888</td>
+<td style="text-align: right;">32.6394303</td>
+<td style="text-align: right;">22.9966833</td>
+<td style="text-align: right;">55.6361137</td>
+<td style="text-align: right;">998.29883</td>
+<td style="text-align: right;">228.358908</td>
+<td style="text-align: right;">1226.65774</td>
+<td style="text-align: right;">1367.97052</td>
+<td style="text-align: right;">296.27335</td>
+<td style="text-align: right;">1664.24387</td>
+<td style="text-align: right;">807.08034</td>
+<td style="text-align: right;">238.43032</td>
+<td style="text-align: right;">1045.51066</td>
+<td style="text-align: right;">309.566482</td>
+<td style="text-align: right;">76.3241618</td>
+<td style="text-align: right;">385.890644</td>
+<td style="text-align: right;">323.0928166</td>
+<td style="text-align: right;">71.928794</td>
+<td style="text-align: right;">395.021611</td>
+<td style="text-align: right;">3838.6484</td>
+<td style="text-align: right;">934.31222</td>
+<td style="text-align: right;">4772.9606</td>
+<td style="text-align: right;">1788468.84</td>
+<td style="text-align: right;">1736840.65</td>
+<td style="text-align: right;">3525309.5</td>
+<td style="text-align: right;">3597003.9</td>
+<td style="text-align: right;">3569553.9</td>
+<td style="text-align: right;">7166557.8</td>
+<td style="text-align: right;">6194679.7</td>
+<td style="text-align: right;">6408778.6</td>
+<td style="text-align: right;">12603458.3</td>
+<td style="text-align: right;">4035560.8</td>
+<td style="text-align: right;">4361404.0</td>
+<td style="text-align: right;">8396964.8</td>
+<td style="text-align: right;">1207356.76</td>
+<td style="text-align: right;">1476178.41</td>
+<td style="text-align: right;">2683535.17</td>
+<td style="text-align: right;">739058.664</td>
+<td style="text-align: right;">1243389.111</td>
+<td style="text-align: right;">1982447.77</td>
+<td style="text-align: right;">21176169</td>
+<td style="text-align: right;">22286211</td>
+<td style="text-align: right;">43462380</td>
+<td style="text-align: right;">501.34827</td>
+<td style="text-align: right;">335.59106</td>
+<td style="text-align: right;">836.95218</td>
+<td style="text-align: right;">4531.6919</td>
+<td style="text-align: right;">1597.78527</td>
+<td style="text-align: right;">6129.4963</td>
+<td style="text-align: right;">10957.9685</td>
+<td style="text-align: right;">5950.9260</td>
+<td style="text-align: right;">16908.9387</td>
+<td style="text-align: right;">36612.816</td>
+<td style="text-align: right;">22000.843</td>
+<td style="text-align: right;">58613.340</td>
+<td style="text-align: right;">38867.303</td>
+<td style="text-align: right;">25540.271</td>
+<td style="text-align: right;">64407.621</td>
+<td style="text-align: right;">74269.595</td>
+<td style="text-align: right;">100652.9623</td>
+<td style="text-align: right;">174922.572</td>
+<td style="text-align: right;">171054.00</td>
+<td style="text-align: right;">160158.037</td>
+<td style="text-align: right;">331211.97</td>
+<td style="text-align: right;">1.8249929</td>
+<td style="text-align: right;">1.3240526</td>
+<td style="text-align: right;">1.5781909</td>
+<td style="text-align: right;">27.753621</td>
+<td style="text-align: right;">6.397407</td>
+<td style="text-align: right;">17.116415</td>
+<td style="text-align: right;">22.082991</td>
+<td style="text-align: right;">4.622930</td>
+<td style="text-align: right;">13.204660</td>
+<td style="text-align: right;">19.999212</td>
+<td style="text-align: right;">5.466825</td>
+<td style="text-align: right;">12.451054</td>
+<td style="text-align: right;">25.640017</td>
+<td style="text-align: right;">5.170389</td>
+<td style="text-align: right;">14.379936</td>
+<td style="text-align: right;">43.71680</td>
+<td style="text-align: right;">5.784898</td>
+<td style="text-align: right;">19.925953</td>
+<td style="text-align: right;">6.5103308</td>
+<td style="text-align: right;">6.8525913</td>
+<td style="text-align: right;">6.6474662</td>
+<td style="text-align: right;">22.029274</td>
+<td style="text-align: right;">14.292215</td>
+<td style="text-align: right;">20.012374</td>
+<td style="text-align: right;">12.483797</td>
+<td style="text-align: right;">4.9786093</td>
+<td style="text-align: right;">9.842391</td>
+<td style="text-align: right;">2.2043656</td>
+<td style="text-align: right;">1.0837326</td>
+<td style="text-align: right;">1.7837418</td>
+<td style="text-align: right;">0.7964702</td>
+<td style="text-align: right;">0.2988385</td>
+<td style="text-align: right;">0.5991382</td>
+<td style="text-align: right;">0.4350270</td>
+<td style="text-align: right;">0.0714622</td>
+<td style="text-align: right;">0.2258266</td>
+<td style="text-align: right;">2.2441150</td>
+<td style="text-align: right;">0.5833689</td>
+<td style="text-align: right;">1.4410592</td>
+<td style="text-align: left;">MULTIPOLYGON (((-65.5 -55.2…</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">ARM</td>
+<td style="text-align: right;">28470.00</td>
+<td style="text-align: left;">Armenia</td>
+<td style="text-align: left;">Europe and Central Asia</td>
+<td style="text-align: right;">2015</td>
+<td style="text-align: right;">14.098353</td>
+<td style="text-align: right;">3.512812</td>
+<td style="text-align: right;">8.351635</td>
+<td style="text-align: right;">0.8440151</td>
+<td style="text-align: right;">0.3055932</td>
+<td style="text-align: right;">1.1496084</td>
+<td style="text-align: right;">21.03323</td>
+<td style="text-align: right;">3.961647</td>
+<td style="text-align: right;">24.99488</td>
+<td style="text-align: right;">66.76874</td>
+<td style="text-align: right;">11.45912</td>
+<td style="text-align: right;">78.22787</td>
+<td style="text-align: right;">77.98008</td>
+<td style="text-align: right;">19.89774</td>
+<td style="text-align: right;">97.87781</td>
+<td style="text-align: right;">23.041570</td>
+<td style="text-align: right;">10.2959888</td>
+<td style="text-align: right;">33.337559</td>
+<td style="text-align: right;">38.8685190</td>
+<td style="text-align: right;">27.154958</td>
+<td style="text-align: right;">66.023477</td>
+<td style="text-align: right;">228.5362</td>
+<td style="text-align: right;">73.07505</td>
+<td style="text-align: right;">301.6112</td>
+<td style="text-align: right;">93148.89</td>
+<td style="text-align: right;">80295.95</td>
+<td style="text-align: right;">173444.8</td>
+<td style="text-align: right;">220963.5</td>
+<td style="text-align: right;">213838.0</td>
+<td style="text-align: right;">434801.5</td>
+<td style="text-align: right;">448679.9</td>
+<td style="text-align: right;">480271.1</td>
+<td style="text-align: right;">928951.0</td>
+<td style="text-align: right;">348881.2</td>
+<td style="text-align: right;">413358.7</td>
+<td style="text-align: right;">762239.9</td>
+<td style="text-align: right;">69967.05</td>
+<td style="text-align: right;">95614.11</td>
+<td style="text-align: right;">165581.16</td>
+<td style="text-align: right;">62546.628</td>
+<td style="text-align: right;">101615.609</td>
+<td style="text-align: right;">164162.24</td>
+<td style="text-align: right;">1470531</td>
+<td style="text-align: right;">1583486</td>
+<td style="text-align: right;">3054017</td>
+<td style="text-align: right;">22.88045</td>
+<td style="text-align: right;">13.82072</td>
+<td style="text-align: right;">36.70343</td>
+<td style="text-align: right;">160.1594</td>
+<td style="text-align: right;">50.14563</td>
+<td style="text-align: right;">210.3026</td>
+<td style="text-align: right;">736.8637</td>
+<td style="text-align: right;">308.9896</td>
+<td style="text-align: right;">1045.8305</td>
+<td style="text-align: right;">4141.364</td>
+<td style="text-align: right;">1992.081</td>
+<td style="text-align: right;">6133.363</td>
+<td style="text-align: right;">2550.600</td>
+<td style="text-align: right;">1938.685</td>
+<td style="text-align: right;">4489.208</td>
+<td style="text-align: right;">6360.953</td>
+<td style="text-align: right;">8907.8589</td>
+<td style="text-align: right;">15268.619</td>
+<td style="text-align: right;">14362.52</td>
+<td style="text-align: right;">13484.984</td>
+<td style="text-align: right;">27846.78</td>
+<td style="text-align: right;">0.9060925</td>
+<td style="text-align: right;">0.3805836</td>
+<td style="text-align: right;">0.6628092</td>
+<td style="text-align: right;">9.518873</td>
+<td style="text-align: right;">1.852639</td>
+<td style="text-align: right;">5.748572</td>
+<td style="text-align: right;">14.881152</td>
+<td style="text-align: right;">2.385970</td>
+<td style="text-align: right;">8.421097</td>
+<td style="text-align: right;">22.351470</td>
+<td style="text-align: right;">4.813673</td>
+<td style="text-align: right;">12.840815</td>
+<td style="text-align: right;">32.932030</td>
+<td style="text-align: right;">10.768273</td>
+<td style="text-align: right;">20.133667</td>
+<td style="text-align: right;">62.14327</td>
+<td style="text-align: right;">26.723215</td>
+<td style="text-align: right;">40.218431</td>
+<td style="text-align: right;">3.6888053</td>
+<td style="text-align: right;">2.2111241</td>
+<td style="text-align: right;">3.1321555</td>
+<td style="text-align: right;">13.132688</td>
+<td style="text-align: right;">7.900282</td>
+<td style="text-align: right;">11.885198</td>
+<td style="text-align: right;">9.061207</td>
+<td style="text-align: right;">3.7085787</td>
+<td style="text-align: right;">7.479975</td>
+<td style="text-align: right;">1.8829563</td>
+<td style="text-align: right;">0.9988418</td>
+<td style="text-align: right;">1.5958261</td>
+<td style="text-align: right;">0.9033783</td>
+<td style="text-align: right;">0.5310812</td>
+<td style="text-align: right;">0.7426156</td>
+<td style="text-align: right;">0.6110487</td>
+<td style="text-align: right;">0.3048427</td>
+<td style="text-align: right;">0.4324129</td>
+<td style="text-align: right;">1.5911985</td>
+<td style="text-align: right;">0.5418994</td>
+<td style="text-align: right;">1.0831098</td>
+<td style="text-align: left;">MULTIPOLYGON (((43.58275 41…</td>
+</tr>
+</tbody>
+</table>
+</div>
 </div>
 <p>To illustrate mapping age-standardised suicide rate for both genders (SR_AS_T)</p>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb42"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb42-1"><a href="#cb42-1" aria-hidden="true" tabindex="-1"></a><span class="fu">tm_shape</span>(suicidedata_eda_map) <span class="sc">+</span></span>
-<span id="cb42-2"><a href="#cb42-2" aria-hidden="true" tabindex="-1"></a>    <span class="fu">tm_polygons</span>(<span class="st">"SR_AS_T"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb43"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb43-1"><a href="#cb43-1" aria-hidden="true" tabindex="-1"></a><span class="fu">tm_shape</span>(suicidedata_eda_map) <span class="sc">+</span></span>
+<span id="cb43-2"><a href="#cb43-2" aria-hidden="true" tabindex="-1"></a>    <span class="fu">tm_polygons</span>(<span class="st">"SR_AS_T"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output-display">
-<p><img src="DataPrep_files/figure-html/unnamed-chunk-39-1.png" class="img-fluid" width="672"></p>
+<p><img src="DataPrep_files/figure-html/unnamed-chunk-40-1.png" class="img-fluid" width="672"></p>
 </div>
 </div>
 <p>Ignore below</p>
 <p>#rworldmap - Example code below</p>
 <p>#https://cran.r-project.org/web/packages/rworldmap/vignettes/rworldmap.pdf</p>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb43"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb43-1"><a href="#cb43-1" aria-hidden="true" tabindex="-1"></a><span class="co">#suicidedata_cln_map &lt;- joinCountryData2Map(suicidedata_cln_region,</span></span>
-<span id="cb43-2"><a href="#cb43-2" aria-hidden="true" tabindex="-1"></a><span class="co">#                                 joinCode = "ISO3",</span></span>
-<span id="cb43-3"><a href="#cb43-3" aria-hidden="true" tabindex="-1"></a><span class="co">#                                 nameJoinColumn = "code")</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb44"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb44-1"><a href="#cb44-1" aria-hidden="true" tabindex="-1"></a><span class="co">#suicidedata_cln_map &lt;- joinCountryData2Map(suicidedata_cln_region,</span></span>
+<span id="cb44-2"><a href="#cb44-2" aria-hidden="true" tabindex="-1"></a><span class="co">#                                 joinCode = "ISO3",</span></span>
+<span id="cb44-3"><a href="#cb44-3" aria-hidden="true" tabindex="-1"></a><span class="co">#                                 nameJoinColumn = "code")</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 <p>#Other References using typical world map - https://rpubs.com/Thom_JH/798825</p>
 
