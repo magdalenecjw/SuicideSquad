@@ -1,0 +1,4 @@
+---
+title: "EDA: Overview of Suicide Rate in a Particular Year"
+author: "Michael"
+---
