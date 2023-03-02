@@ -473,10 +473,10 @@ mental <- mental %>%
 
 FEEL FREE TO ADD SOMEMORE
 
-#### Joining for EDA of Suicide Parameters with Map
+#### Joining for EDA of Suicide Parameters
 
 ```{r}
-suicidedata_eda_formap <- left_join(suicidedata_age_std, suicide_number_age, by = c('code' = 'code', 'year' = 'year')) %>% 
+suicidedata_eda <- left_join(suicidedata_age_std, suicide_number_age, by = c('code' = 'code', 'year' = 'year')) %>% 
   
   left_join(., pop_size_age, by = c('code' = 'code', 'year' = 'year')) %>%
   
@@ -530,51 +530,12 @@ suicidedata_eda_formap <- left_join(suicidedata_age_std, suicide_number_age, by 
 
 ```
 
-#### Joining for EDA (non-map) of Suicide Parameters 
-```{r}
-suicidedata_eda_temp <- suicidedata_cln %>%
-  select(!c(6,9,10,13)) %>%
-  mutate(age_name = str_remove(age_name, " years")) %>%
-  mutate(new_age_name = case_when(age_name %in% c("15-19", "20-24") ~ "15-24",
-                                  age_name %in% c("25-29", "30-34", "35-39", "40-44") ~ "25-44",
-                                  age_name %in% c("45-49", "50-54", "55-59", "60-64") ~ "45-64",
-                                  age_name %in% c("65-69", "70-74") ~ "65-74",
-                                  age_name %in% c("75-79", "80-84", "85+") ~ "75+",
-                                  TRUE~age_name),
-         .after = age_name) %>%
-  group_by(country, code, region, sex_name, new_age_name, year) %>%
-  summarise(suicide_Number = sum(suicide_Number),
-            population_size = sum(population_size),
-            death_number = sum(death_number)) %>%
-  ungroup() %>%
-  
-  mutate(suicide_Percent = suicide_Number*100/death_number,
-         suicide_Rate = suicide_Number/population_size*100000,
-         death_rate = death_number/population_size*100000)
-
-
-  
-sd_as <-  suicidedata_cln %>%
-  filter(age_name == "Age-standardized") %>%
-  select(c(2,4,5,7,10))
-
-#Final EDA dataset
-suicidedata_eda <- left_join(suicidedata_eda_temp, sd_as, by = c('code' = 'code', 'sex_name' = 'sex_name', 'new_age_name' = 'age_name', 'year' = 'year')) %>%
-  mutate(suicide_Rate = case_when(is.na(suicide_Rate.x) ~ suicide_Rate.y,
-                                  is.na(suicide_Rate.y) ~ suicide_Rate.x,
-                                  TRUE~suicide_Rate.x)) %>%
-  select(!c(11,13))
-
-knitr::kable(head(suicidedata_eda))
-```
-
-
 #### Joining for Analysis (with other parameters)
 
 For analysis, we will only use suicide rate (SR)
 
 ```{r}
-suicidedata_analysis <- left_join(suicidedata_eda_formap %>%
+suicidedata_analysis <- left_join(suicidedata_eda %>%
                                     select(country:`SR_AS_T`, `SR_10-14_M`:`SR_75+_T`,`POP_All_T`)
                                     , gdp_per_capita, by = c('code' = 'code', 'year' = 'year')) %>%
   
@@ -622,14 +583,12 @@ Joining the two dataframes together
 suicidedata_eda_map <- left_join(World, 
                                   
                                   #filter year 2015 for illustration
-                                   suicidedata_eda_formap %>% filter(year==2015),
+                                   suicidedata_eda %>% filter(year==2015),
                           by = c("iso_a3" = "code")) %>%
   select(!c(2,3,4,6,7,8,9,10,11,12,13,14,15)) %>%
   mutate(area = as.numeric(str_remove(`area`, 
                                 " \\[km\\^2\\]")), 
          .after = region)
-
-knitr::kable(head(suicidedata_eda_map))
 ```
 
 To illustrate mapping age-standardised suicide rate for both genders (SR_AS_T)
