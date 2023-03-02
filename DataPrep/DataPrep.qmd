@@ -532,6 +532,11 @@ knitr::kable(head(suicidedata_eda_formap))
 
 ```
 
+```{r}
+#write_csv(suicidedata_eda_formap,'C:/michaeldjo/SuicideSquad/EDA/data/suicidedata_eda_formap.csv')
+```
+
+
 #### Joining for EDA (for non-map) of Suicide Parameters
 
 ```{r}
@@ -572,6 +577,10 @@ knitr::kable(head(suicidedata_eda))
 
 ```
 
+```{r}
+#write_csv(suicidedata_eda,'C:/michaeldjo/SuicideSquad/EDA/data/suicidedata_eda.csv')
+```
+
 #### Joining for Analysis (with other parameters)
 
 For analysis, we will only use suicide rate (SR)
@@ -608,6 +617,11 @@ suicidedata_analysis <- left_join(suicidedata_eda_formap %>%
 
 knitr::kable(head(suicidedata_analysis))
 ```
+
+```{r}
+#write_csv(suicidedata_analysis,'C:/michaeldjo/SuicideSquad/EDA/data/suicidedata_analysis.csv')
+```
+
 
 ### 6. Joining with world map
 

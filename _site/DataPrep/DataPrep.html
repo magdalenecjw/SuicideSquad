@@ -1795,44 +1795,47 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 </table>
 </div>
 </div>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb39"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb39-1"><a href="#cb39-1" aria-hidden="true" tabindex="-1"></a><span class="co">#write_csv(suicidedata_eda_formap,'C:/michaeldjo/SuicideSquad/EDA/data/suicidedata_eda_formap.csv')</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
 </section>
 <section id="joining-for-eda-for-non-map-of-suicide-parameters" class="level4">
 <h4 class="anchored" data-anchor-id="joining-for-eda-for-non-map-of-suicide-parameters">Joining for EDA (for non-map) of Suicide Parameters</h4>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb39"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb39-1"><a href="#cb39-1" aria-hidden="true" tabindex="-1"></a>suicidedata_eda_temp <span class="ot">&lt;-</span> suicidedata_cln <span class="sc">%&gt;%</span></span>
-<span id="cb39-2"><a href="#cb39-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">select</span>(<span class="sc">!</span><span class="fu">c</span>(<span class="dv">6</span>,<span class="dv">9</span>,<span class="dv">10</span>,<span class="dv">13</span>)) <span class="sc">%&gt;%</span></span>
-<span id="cb39-3"><a href="#cb39-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">age_name =</span> <span class="fu">str_remove</span>(age_name, <span class="st">" years"</span>)) <span class="sc">%&gt;%</span></span>
-<span id="cb39-4"><a href="#cb39-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">age_name =</span> <span class="fu">case_when</span>(age_name <span class="sc">%in%</span> <span class="fu">c</span>(<span class="st">"15-19"</span>, <span class="st">"20-24"</span>) <span class="sc">~</span> <span class="st">"15-24"</span>,</span>
-<span id="cb39-5"><a href="#cb39-5" aria-hidden="true" tabindex="-1"></a>                                  age_name <span class="sc">%in%</span> <span class="fu">c</span>(<span class="st">"25-29"</span>, <span class="st">"30-34"</span>, <span class="st">"35-39"</span>, <span class="st">"40-44"</span>) <span class="sc">~</span> <span class="st">"25-44"</span>,</span>
-<span id="cb39-6"><a href="#cb39-6" aria-hidden="true" tabindex="-1"></a>                                  age_name <span class="sc">%in%</span> <span class="fu">c</span>(<span class="st">"45-49"</span>, <span class="st">"50-54"</span>, <span class="st">"55-59"</span>, <span class="st">"60-64"</span>) <span class="sc">~</span> <span class="st">"45-64"</span>,</span>
-<span id="cb39-7"><a href="#cb39-7" aria-hidden="true" tabindex="-1"></a>                                  age_name <span class="sc">%in%</span> <span class="fu">c</span>(<span class="st">"65-69"</span>, <span class="st">"70-74"</span>) <span class="sc">~</span> <span class="st">"65-74"</span>,</span>
-<span id="cb39-8"><a href="#cb39-8" aria-hidden="true" tabindex="-1"></a>                                  age_name <span class="sc">%in%</span> <span class="fu">c</span>(<span class="st">"75-79"</span>, <span class="st">"80-84"</span>, <span class="st">"85+"</span>) <span class="sc">~</span> <span class="st">"75+"</span>,</span>
-<span id="cb39-9"><a href="#cb39-9" aria-hidden="true" tabindex="-1"></a>                                  <span class="cn">TRUE</span><span class="sc">~</span>age_name),</span>
-<span id="cb39-10"><a href="#cb39-10" aria-hidden="true" tabindex="-1"></a>         <span class="at">.after =</span> age_name) <span class="sc">%&gt;%</span></span>
-<span id="cb39-11"><a href="#cb39-11" aria-hidden="true" tabindex="-1"></a>  <span class="fu">group_by</span>(country, code, region, sex_name, age_name, year) <span class="sc">%&gt;%</span></span>
-<span id="cb39-12"><a href="#cb39-12" aria-hidden="true" tabindex="-1"></a>  <span class="fu">summarise</span>(<span class="at">SN =</span> <span class="fu">sum</span>(suicide_Number),</span>
-<span id="cb39-13"><a href="#cb39-13" aria-hidden="true" tabindex="-1"></a>            <span class="at">POP =</span> <span class="fu">sum</span>(population_size),</span>
-<span id="cb39-14"><a href="#cb39-14" aria-hidden="true" tabindex="-1"></a>            <span class="at">DN =</span> <span class="fu">sum</span>(death_number)) <span class="sc">%&gt;%</span></span>
-<span id="cb39-15"><a href="#cb39-15" aria-hidden="true" tabindex="-1"></a>  <span class="fu">ungroup</span>() <span class="sc">%&gt;%</span></span>
-<span id="cb39-16"><a href="#cb39-16" aria-hidden="true" tabindex="-1"></a>  </span>
-<span id="cb39-17"><a href="#cb39-17" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">SP =</span> SN<span class="sc">*</span><span class="dv">100</span><span class="sc">/</span>DN,</span>
-<span id="cb39-18"><a href="#cb39-18" aria-hidden="true" tabindex="-1"></a>         <span class="at">SR =</span> SN<span class="sc">/</span>POP<span class="sc">*</span><span class="dv">100000</span>,</span>
-<span id="cb39-19"><a href="#cb39-19" aria-hidden="true" tabindex="-1"></a>         <span class="at">DR =</span> DN<span class="sc">/</span>POP<span class="sc">*</span><span class="dv">100000</span>)</span>
-<span id="cb39-20"><a href="#cb39-20" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb39-21"><a href="#cb39-21" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb39-22"><a href="#cb39-22" aria-hidden="true" tabindex="-1"></a>  </span>
-<span id="cb39-23"><a href="#cb39-23" aria-hidden="true" tabindex="-1"></a>sd_as <span class="ot">&lt;-</span>  suicidedata_cln <span class="sc">%&gt;%</span></span>
-<span id="cb39-24"><a href="#cb39-24" aria-hidden="true" tabindex="-1"></a>  <span class="fu">filter</span>(age_name <span class="sc">==</span> <span class="st">"Age-standardized"</span>) <span class="sc">%&gt;%</span></span>
-<span id="cb39-25"><a href="#cb39-25" aria-hidden="true" tabindex="-1"></a>  <span class="fu">select</span>(<span class="fu">c</span>(<span class="dv">2</span>,<span class="dv">4</span>,<span class="dv">5</span>,<span class="dv">7</span>,<span class="dv">10</span>))</span>
-<span id="cb39-26"><a href="#cb39-26" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb39-27"><a href="#cb39-27" aria-hidden="true" tabindex="-1"></a><span class="co">#Final EDA dataset</span></span>
-<span id="cb39-28"><a href="#cb39-28" aria-hidden="true" tabindex="-1"></a>suicidedata_eda <span class="ot">&lt;-</span> <span class="fu">left_join</span>(suicidedata_eda_temp, sd_as, <span class="at">by =</span> <span class="fu">c</span>(<span class="st">'code'</span> <span class="ot">=</span> <span class="st">'code'</span>, <span class="st">'sex_name'</span> <span class="ot">=</span> <span class="st">'sex_name'</span>, <span class="st">'age_name'</span> <span class="ot">=</span> <span class="st">'age_name'</span>, <span class="st">'year'</span> <span class="ot">=</span> <span class="st">'year'</span>)) <span class="sc">%&gt;%</span></span>
-<span id="cb39-29"><a href="#cb39-29" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">SR =</span> <span class="fu">case_when</span>(<span class="fu">is.na</span>(SR) <span class="sc">~</span> suicide_Rate,</span>
-<span id="cb39-30"><a href="#cb39-30" aria-hidden="true" tabindex="-1"></a>                        <span class="fu">is.na</span>(suicide_Rate) <span class="sc">~</span> SR,</span>
-<span id="cb39-31"><a href="#cb39-31" aria-hidden="true" tabindex="-1"></a>                        <span class="cn">TRUE</span><span class="sc">~</span>SR)) <span class="sc">%&gt;%</span></span>
-<span id="cb39-32"><a href="#cb39-32" aria-hidden="true" tabindex="-1"></a>  <span class="fu">select</span>(<span class="sc">!</span><span class="fu">c</span>(<span class="dv">13</span>))</span>
-<span id="cb39-33"><a href="#cb39-33" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb39-34"><a href="#cb39-34" aria-hidden="true" tabindex="-1"></a>knitr<span class="sc">::</span><span class="fu">kable</span>(<span class="fu">head</span>(suicidedata_eda))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb40"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb40-1"><a href="#cb40-1" aria-hidden="true" tabindex="-1"></a>suicidedata_eda_temp <span class="ot">&lt;-</span> suicidedata_cln <span class="sc">%&gt;%</span></span>
+<span id="cb40-2"><a href="#cb40-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">select</span>(<span class="sc">!</span><span class="fu">c</span>(<span class="dv">6</span>,<span class="dv">9</span>,<span class="dv">10</span>,<span class="dv">13</span>)) <span class="sc">%&gt;%</span></span>
+<span id="cb40-3"><a href="#cb40-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">age_name =</span> <span class="fu">str_remove</span>(age_name, <span class="st">" years"</span>)) <span class="sc">%&gt;%</span></span>
+<span id="cb40-4"><a href="#cb40-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">age_name =</span> <span class="fu">case_when</span>(age_name <span class="sc">%in%</span> <span class="fu">c</span>(<span class="st">"15-19"</span>, <span class="st">"20-24"</span>) <span class="sc">~</span> <span class="st">"15-24"</span>,</span>
+<span id="cb40-5"><a href="#cb40-5" aria-hidden="true" tabindex="-1"></a>                                  age_name <span class="sc">%in%</span> <span class="fu">c</span>(<span class="st">"25-29"</span>, <span class="st">"30-34"</span>, <span class="st">"35-39"</span>, <span class="st">"40-44"</span>) <span class="sc">~</span> <span class="st">"25-44"</span>,</span>
+<span id="cb40-6"><a href="#cb40-6" aria-hidden="true" tabindex="-1"></a>                                  age_name <span class="sc">%in%</span> <span class="fu">c</span>(<span class="st">"45-49"</span>, <span class="st">"50-54"</span>, <span class="st">"55-59"</span>, <span class="st">"60-64"</span>) <span class="sc">~</span> <span class="st">"45-64"</span>,</span>
+<span id="cb40-7"><a href="#cb40-7" aria-hidden="true" tabindex="-1"></a>                                  age_name <span class="sc">%in%</span> <span class="fu">c</span>(<span class="st">"65-69"</span>, <span class="st">"70-74"</span>) <span class="sc">~</span> <span class="st">"65-74"</span>,</span>
+<span id="cb40-8"><a href="#cb40-8" aria-hidden="true" tabindex="-1"></a>                                  age_name <span class="sc">%in%</span> <span class="fu">c</span>(<span class="st">"75-79"</span>, <span class="st">"80-84"</span>, <span class="st">"85+"</span>) <span class="sc">~</span> <span class="st">"75+"</span>,</span>
+<span id="cb40-9"><a href="#cb40-9" aria-hidden="true" tabindex="-1"></a>                                  <span class="cn">TRUE</span><span class="sc">~</span>age_name),</span>
+<span id="cb40-10"><a href="#cb40-10" aria-hidden="true" tabindex="-1"></a>         <span class="at">.after =</span> age_name) <span class="sc">%&gt;%</span></span>
+<span id="cb40-11"><a href="#cb40-11" aria-hidden="true" tabindex="-1"></a>  <span class="fu">group_by</span>(country, code, region, sex_name, age_name, year) <span class="sc">%&gt;%</span></span>
+<span id="cb40-12"><a href="#cb40-12" aria-hidden="true" tabindex="-1"></a>  <span class="fu">summarise</span>(<span class="at">SN =</span> <span class="fu">sum</span>(suicide_Number),</span>
+<span id="cb40-13"><a href="#cb40-13" aria-hidden="true" tabindex="-1"></a>            <span class="at">POP =</span> <span class="fu">sum</span>(population_size),</span>
+<span id="cb40-14"><a href="#cb40-14" aria-hidden="true" tabindex="-1"></a>            <span class="at">DN =</span> <span class="fu">sum</span>(death_number)) <span class="sc">%&gt;%</span></span>
+<span id="cb40-15"><a href="#cb40-15" aria-hidden="true" tabindex="-1"></a>  <span class="fu">ungroup</span>() <span class="sc">%&gt;%</span></span>
+<span id="cb40-16"><a href="#cb40-16" aria-hidden="true" tabindex="-1"></a>  </span>
+<span id="cb40-17"><a href="#cb40-17" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">SP =</span> SN<span class="sc">*</span><span class="dv">100</span><span class="sc">/</span>DN,</span>
+<span id="cb40-18"><a href="#cb40-18" aria-hidden="true" tabindex="-1"></a>         <span class="at">SR =</span> SN<span class="sc">/</span>POP<span class="sc">*</span><span class="dv">100000</span>,</span>
+<span id="cb40-19"><a href="#cb40-19" aria-hidden="true" tabindex="-1"></a>         <span class="at">DR =</span> DN<span class="sc">/</span>POP<span class="sc">*</span><span class="dv">100000</span>)</span>
+<span id="cb40-20"><a href="#cb40-20" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb40-21"><a href="#cb40-21" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb40-22"><a href="#cb40-22" aria-hidden="true" tabindex="-1"></a>  </span>
+<span id="cb40-23"><a href="#cb40-23" aria-hidden="true" tabindex="-1"></a>sd_as <span class="ot">&lt;-</span>  suicidedata_cln <span class="sc">%&gt;%</span></span>
+<span id="cb40-24"><a href="#cb40-24" aria-hidden="true" tabindex="-1"></a>  <span class="fu">filter</span>(age_name <span class="sc">==</span> <span class="st">"Age-standardized"</span>) <span class="sc">%&gt;%</span></span>
+<span id="cb40-25"><a href="#cb40-25" aria-hidden="true" tabindex="-1"></a>  <span class="fu">select</span>(<span class="fu">c</span>(<span class="dv">2</span>,<span class="dv">4</span>,<span class="dv">5</span>,<span class="dv">7</span>,<span class="dv">10</span>))</span>
+<span id="cb40-26"><a href="#cb40-26" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb40-27"><a href="#cb40-27" aria-hidden="true" tabindex="-1"></a><span class="co">#Final EDA dataset</span></span>
+<span id="cb40-28"><a href="#cb40-28" aria-hidden="true" tabindex="-1"></a>suicidedata_eda <span class="ot">&lt;-</span> <span class="fu">left_join</span>(suicidedata_eda_temp, sd_as, <span class="at">by =</span> <span class="fu">c</span>(<span class="st">'code'</span> <span class="ot">=</span> <span class="st">'code'</span>, <span class="st">'sex_name'</span> <span class="ot">=</span> <span class="st">'sex_name'</span>, <span class="st">'age_name'</span> <span class="ot">=</span> <span class="st">'age_name'</span>, <span class="st">'year'</span> <span class="ot">=</span> <span class="st">'year'</span>)) <span class="sc">%&gt;%</span></span>
+<span id="cb40-29"><a href="#cb40-29" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">SR =</span> <span class="fu">case_when</span>(<span class="fu">is.na</span>(SR) <span class="sc">~</span> suicide_Rate,</span>
+<span id="cb40-30"><a href="#cb40-30" aria-hidden="true" tabindex="-1"></a>                        <span class="fu">is.na</span>(suicide_Rate) <span class="sc">~</span> SR,</span>
+<span id="cb40-31"><a href="#cb40-31" aria-hidden="true" tabindex="-1"></a>                        <span class="cn">TRUE</span><span class="sc">~</span>SR)) <span class="sc">%&gt;%</span></span>
+<span id="cb40-32"><a href="#cb40-32" aria-hidden="true" tabindex="-1"></a>  <span class="fu">select</span>(<span class="sc">!</span><span class="fu">c</span>(<span class="dv">13</span>))</span>
+<span id="cb40-33"><a href="#cb40-33" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb40-34"><a href="#cb40-34" aria-hidden="true" tabindex="-1"></a>knitr<span class="sc">::</span><span class="fu">kable</span>(<span class="fu">head</span>(suicidedata_eda))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output-display">
 <table class="table table-sm table-striped">
 <colgroup>
@@ -1954,41 +1957,44 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 </table>
 </div>
 </div>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb41"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb41-1"><a href="#cb41-1" aria-hidden="true" tabindex="-1"></a><span class="co">#write_csv(suicidedata_eda,'C:/michaeldjo/SuicideSquad/EDA/data/suicidedata_eda.csv')</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
 </section>
 <section id="joining-for-analysis-with-other-parameters" class="level4">
 <h4 class="anchored" data-anchor-id="joining-for-analysis-with-other-parameters">Joining for Analysis (with other parameters)</h4>
 <p>For analysis, we will only use suicide rate (SR)</p>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb40"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb40-1"><a href="#cb40-1" aria-hidden="true" tabindex="-1"></a>suicidedata_analysis <span class="ot">&lt;-</span> <span class="fu">left_join</span>(suicidedata_eda_formap <span class="sc">%&gt;%</span></span>
-<span id="cb40-2"><a href="#cb40-2" aria-hidden="true" tabindex="-1"></a>                                    <span class="fu">select</span>(country<span class="sc">:</span><span class="st">`</span><span class="at">SR_AS_T</span><span class="st">`</span>, <span class="st">`</span><span class="at">SR_10-14_M</span><span class="st">`</span><span class="sc">:</span><span class="st">`</span><span class="at">SR_75+_T</span><span class="st">`</span>,<span class="st">`</span><span class="at">POP_All_T</span><span class="st">`</span>)</span>
-<span id="cb40-3"><a href="#cb40-3" aria-hidden="true" tabindex="-1"></a>                                    , gdp_per_capita, <span class="at">by =</span> <span class="fu">c</span>(<span class="st">'code'</span> <span class="ot">=</span> <span class="st">'code'</span>, <span class="st">'year'</span> <span class="ot">=</span> <span class="st">'year'</span>)) <span class="sc">%&gt;%</span></span>
-<span id="cb40-4"><a href="#cb40-4" aria-hidden="true" tabindex="-1"></a>  </span>
-<span id="cb40-5"><a href="#cb40-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">left_join</span>(., hdi, <span class="at">by =</span> <span class="fu">c</span>(<span class="st">'code'</span> <span class="ot">=</span> <span class="st">'code'</span>, <span class="st">'year'</span> <span class="ot">=</span> <span class="st">'year'</span>)) <span class="sc">%&gt;%</span></span>
-<span id="cb40-6"><a href="#cb40-6" aria-hidden="true" tabindex="-1"></a>  </span>
-<span id="cb40-7"><a href="#cb40-7" aria-hidden="true" tabindex="-1"></a>  <span class="fu">left_join</span>(., depr, <span class="at">by =</span> <span class="fu">c</span>(<span class="st">'code'</span> <span class="ot">=</span> <span class="st">'code'</span>, <span class="st">'year'</span> <span class="ot">=</span> <span class="st">'year'</span>)) <span class="sc">%&gt;%</span></span>
-<span id="cb40-8"><a href="#cb40-8" aria-hidden="true" tabindex="-1"></a>  </span>
-<span id="cb40-9"><a href="#cb40-9" aria-hidden="true" tabindex="-1"></a>  <span class="fu">left_join</span>(., gini, <span class="at">by =</span> <span class="fu">c</span>(<span class="st">'code'</span> <span class="ot">=</span> <span class="st">'code'</span>, <span class="st">'year'</span> <span class="ot">=</span> <span class="st">'year'</span>)) <span class="sc">%&gt;%</span></span>
-<span id="cb40-10"><a href="#cb40-10" aria-hidden="true" tabindex="-1"></a>  </span>
-<span id="cb40-11"><a href="#cb40-11" aria-hidden="true" tabindex="-1"></a>  <span class="fu">left_join</span>(., violent, <span class="at">by =</span> <span class="fu">c</span>(<span class="st">'code'</span> <span class="ot">=</span> <span class="st">'code'</span>, <span class="st">'year'</span> <span class="ot">=</span> <span class="st">'year'</span>)) <span class="sc">%&gt;%</span></span>
-<span id="cb40-12"><a href="#cb40-12" aria-hidden="true" tabindex="-1"></a>  </span>
-<span id="cb40-13"><a href="#cb40-13" aria-hidden="true" tabindex="-1"></a>  <span class="fu">left_join</span>(., poverty, <span class="at">by =</span> <span class="fu">c</span>(<span class="st">'code'</span> <span class="ot">=</span> <span class="st">'code'</span>, <span class="st">'year'</span> <span class="ot">=</span> <span class="st">'year'</span>)) <span class="sc">%&gt;%</span></span>
-<span id="cb40-14"><a href="#cb40-14" aria-hidden="true" tabindex="-1"></a>  </span>
-<span id="cb40-15"><a href="#cb40-15" aria-hidden="true" tabindex="-1"></a>  <span class="fu">left_join</span>(., unemployment, <span class="at">by =</span> <span class="fu">c</span>(<span class="st">'code'</span> <span class="ot">=</span> <span class="st">'code'</span>, <span class="st">'year'</span> <span class="ot">=</span> <span class="st">'year'</span>)) <span class="sc">%&gt;%</span></span>
-<span id="cb40-16"><a href="#cb40-16" aria-hidden="true" tabindex="-1"></a>  </span>
-<span id="cb40-17"><a href="#cb40-17" aria-hidden="true" tabindex="-1"></a>  <span class="fu">left_join</span>(., healthcare, <span class="at">by =</span> <span class="fu">c</span>(<span class="st">'code'</span> <span class="ot">=</span> <span class="st">'code'</span>, <span class="st">'year'</span> <span class="ot">=</span> <span class="st">'year'</span>)) <span class="sc">%&gt;%</span></span>
-<span id="cb40-18"><a href="#cb40-18" aria-hidden="true" tabindex="-1"></a>  </span>
-<span id="cb40-19"><a href="#cb40-19" aria-hidden="true" tabindex="-1"></a>  <span class="fu">left_join</span>(., happiness, <span class="at">by =</span> <span class="fu">c</span>(<span class="st">'code'</span> <span class="ot">=</span> <span class="st">'code'</span>, <span class="st">'year'</span> <span class="ot">=</span> <span class="st">'year'</span>)) <span class="sc">%&gt;%</span></span>
-<span id="cb40-20"><a href="#cb40-20" aria-hidden="true" tabindex="-1"></a>  </span>
-<span id="cb40-21"><a href="#cb40-21" aria-hidden="true" tabindex="-1"></a>  <span class="fu">left_join</span>(., mental, <span class="at">by =</span> <span class="fu">c</span>(<span class="st">'code'</span> <span class="ot">=</span> <span class="st">'code'</span>, <span class="st">'year'</span> <span class="ot">=</span> <span class="st">'year'</span>)) <span class="sc">%&gt;%</span></span>
-<span id="cb40-22"><a href="#cb40-22" aria-hidden="true" tabindex="-1"></a>  </span>
-<span id="cb40-23"><a href="#cb40-23" aria-hidden="true" tabindex="-1"></a>  <span class="fu">arrange</span>(code, year) <span class="sc">%&gt;%</span></span>
-<span id="cb40-24"><a href="#cb40-24" aria-hidden="true" tabindex="-1"></a>  </span>
-<span id="cb40-25"><a href="#cb40-25" aria-hidden="true" tabindex="-1"></a>  <span class="co">#infer HAQ data from previous survey year</span></span>
-<span id="cb40-26"><a href="#cb40-26" aria-hidden="true" tabindex="-1"></a>  <span class="fu">group_by</span>(code) <span class="sc">%&gt;%</span></span>
-<span id="cb40-27"><a href="#cb40-27" aria-hidden="true" tabindex="-1"></a>  <span class="fu">fill</span>(HAQ, <span class="at">.direction =</span> <span class="st">"down"</span>) <span class="sc">%&gt;%</span></span>
-<span id="cb40-28"><a href="#cb40-28" aria-hidden="true" tabindex="-1"></a>  <span class="fu">ungroup</span>()</span>
-<span id="cb40-29"><a href="#cb40-29" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb40-30"><a href="#cb40-30" aria-hidden="true" tabindex="-1"></a>knitr<span class="sc">::</span><span class="fu">kable</span>(<span class="fu">head</span>(suicidedata_analysis))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb42"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb42-1"><a href="#cb42-1" aria-hidden="true" tabindex="-1"></a>suicidedata_analysis <span class="ot">&lt;-</span> <span class="fu">left_join</span>(suicidedata_eda_formap <span class="sc">%&gt;%</span></span>
+<span id="cb42-2"><a href="#cb42-2" aria-hidden="true" tabindex="-1"></a>                                    <span class="fu">select</span>(country<span class="sc">:</span><span class="st">`</span><span class="at">SR_AS_T</span><span class="st">`</span>, <span class="st">`</span><span class="at">SR_10-14_M</span><span class="st">`</span><span class="sc">:</span><span class="st">`</span><span class="at">SR_75+_T</span><span class="st">`</span>,<span class="st">`</span><span class="at">POP_All_T</span><span class="st">`</span>)</span>
+<span id="cb42-3"><a href="#cb42-3" aria-hidden="true" tabindex="-1"></a>                                    , gdp_per_capita, <span class="at">by =</span> <span class="fu">c</span>(<span class="st">'code'</span> <span class="ot">=</span> <span class="st">'code'</span>, <span class="st">'year'</span> <span class="ot">=</span> <span class="st">'year'</span>)) <span class="sc">%&gt;%</span></span>
+<span id="cb42-4"><a href="#cb42-4" aria-hidden="true" tabindex="-1"></a>  </span>
+<span id="cb42-5"><a href="#cb42-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">left_join</span>(., hdi, <span class="at">by =</span> <span class="fu">c</span>(<span class="st">'code'</span> <span class="ot">=</span> <span class="st">'code'</span>, <span class="st">'year'</span> <span class="ot">=</span> <span class="st">'year'</span>)) <span class="sc">%&gt;%</span></span>
+<span id="cb42-6"><a href="#cb42-6" aria-hidden="true" tabindex="-1"></a>  </span>
+<span id="cb42-7"><a href="#cb42-7" aria-hidden="true" tabindex="-1"></a>  <span class="fu">left_join</span>(., depr, <span class="at">by =</span> <span class="fu">c</span>(<span class="st">'code'</span> <span class="ot">=</span> <span class="st">'code'</span>, <span class="st">'year'</span> <span class="ot">=</span> <span class="st">'year'</span>)) <span class="sc">%&gt;%</span></span>
+<span id="cb42-8"><a href="#cb42-8" aria-hidden="true" tabindex="-1"></a>  </span>
+<span id="cb42-9"><a href="#cb42-9" aria-hidden="true" tabindex="-1"></a>  <span class="fu">left_join</span>(., gini, <span class="at">by =</span> <span class="fu">c</span>(<span class="st">'code'</span> <span class="ot">=</span> <span class="st">'code'</span>, <span class="st">'year'</span> <span class="ot">=</span> <span class="st">'year'</span>)) <span class="sc">%&gt;%</span></span>
+<span id="cb42-10"><a href="#cb42-10" aria-hidden="true" tabindex="-1"></a>  </span>
+<span id="cb42-11"><a href="#cb42-11" aria-hidden="true" tabindex="-1"></a>  <span class="fu">left_join</span>(., violent, <span class="at">by =</span> <span class="fu">c</span>(<span class="st">'code'</span> <span class="ot">=</span> <span class="st">'code'</span>, <span class="st">'year'</span> <span class="ot">=</span> <span class="st">'year'</span>)) <span class="sc">%&gt;%</span></span>
+<span id="cb42-12"><a href="#cb42-12" aria-hidden="true" tabindex="-1"></a>  </span>
+<span id="cb42-13"><a href="#cb42-13" aria-hidden="true" tabindex="-1"></a>  <span class="fu">left_join</span>(., poverty, <span class="at">by =</span> <span class="fu">c</span>(<span class="st">'code'</span> <span class="ot">=</span> <span class="st">'code'</span>, <span class="st">'year'</span> <span class="ot">=</span> <span class="st">'year'</span>)) <span class="sc">%&gt;%</span></span>
+<span id="cb42-14"><a href="#cb42-14" aria-hidden="true" tabindex="-1"></a>  </span>
+<span id="cb42-15"><a href="#cb42-15" aria-hidden="true" tabindex="-1"></a>  <span class="fu">left_join</span>(., unemployment, <span class="at">by =</span> <span class="fu">c</span>(<span class="st">'code'</span> <span class="ot">=</span> <span class="st">'code'</span>, <span class="st">'year'</span> <span class="ot">=</span> <span class="st">'year'</span>)) <span class="sc">%&gt;%</span></span>
+<span id="cb42-16"><a href="#cb42-16" aria-hidden="true" tabindex="-1"></a>  </span>
+<span id="cb42-17"><a href="#cb42-17" aria-hidden="true" tabindex="-1"></a>  <span class="fu">left_join</span>(., healthcare, <span class="at">by =</span> <span class="fu">c</span>(<span class="st">'code'</span> <span class="ot">=</span> <span class="st">'code'</span>, <span class="st">'year'</span> <span class="ot">=</span> <span class="st">'year'</span>)) <span class="sc">%&gt;%</span></span>
+<span id="cb42-18"><a href="#cb42-18" aria-hidden="true" tabindex="-1"></a>  </span>
+<span id="cb42-19"><a href="#cb42-19" aria-hidden="true" tabindex="-1"></a>  <span class="fu">left_join</span>(., happiness, <span class="at">by =</span> <span class="fu">c</span>(<span class="st">'code'</span> <span class="ot">=</span> <span class="st">'code'</span>, <span class="st">'year'</span> <span class="ot">=</span> <span class="st">'year'</span>)) <span class="sc">%&gt;%</span></span>
+<span id="cb42-20"><a href="#cb42-20" aria-hidden="true" tabindex="-1"></a>  </span>
+<span id="cb42-21"><a href="#cb42-21" aria-hidden="true" tabindex="-1"></a>  <span class="fu">left_join</span>(., mental, <span class="at">by =</span> <span class="fu">c</span>(<span class="st">'code'</span> <span class="ot">=</span> <span class="st">'code'</span>, <span class="st">'year'</span> <span class="ot">=</span> <span class="st">'year'</span>)) <span class="sc">%&gt;%</span></span>
+<span id="cb42-22"><a href="#cb42-22" aria-hidden="true" tabindex="-1"></a>  </span>
+<span id="cb42-23"><a href="#cb42-23" aria-hidden="true" tabindex="-1"></a>  <span class="fu">arrange</span>(code, year) <span class="sc">%&gt;%</span></span>
+<span id="cb42-24"><a href="#cb42-24" aria-hidden="true" tabindex="-1"></a>  </span>
+<span id="cb42-25"><a href="#cb42-25" aria-hidden="true" tabindex="-1"></a>  <span class="co">#infer HAQ data from previous survey year</span></span>
+<span id="cb42-26"><a href="#cb42-26" aria-hidden="true" tabindex="-1"></a>  <span class="fu">group_by</span>(code) <span class="sc">%&gt;%</span></span>
+<span id="cb42-27"><a href="#cb42-27" aria-hidden="true" tabindex="-1"></a>  <span class="fu">fill</span>(HAQ, <span class="at">.direction =</span> <span class="st">"down"</span>) <span class="sc">%&gt;%</span></span>
+<span id="cb42-28"><a href="#cb42-28" aria-hidden="true" tabindex="-1"></a>  <span class="fu">ungroup</span>()</span>
+<span id="cb42-29"><a href="#cb42-29" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb42-30"><a href="#cb42-30" aria-hidden="true" tabindex="-1"></a>knitr<span class="sc">::</span><span class="fu">kable</span>(<span class="fu">head</span>(suicidedata_analysis))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output-display">
 <table class="table table-sm table-striped">
 <colgroup>
@@ -2310,6 +2316,9 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 </table>
 </div>
 </div>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb43"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb43-1"><a href="#cb43-1" aria-hidden="true" tabindex="-1"></a><span class="co">#write_csv(suicidedata_analysis,'C:/michaeldjo/SuicideSquad/EDA/data/suicidedata_analysis.csv')</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
 </section>
 </section>
 <section id="joining-with-world-map" class="level3">
@@ -2317,35 +2326,35 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <p>The object <code>World</code> is a spatial object of class <code>sf</code> from the <a href="https://cran.r-project.org/package=sf">sf package</a>; it is a <code>data.frame</code> with a special column that contains a geometry for each row, in this case polygons</p>
 <p>Reference - https://cran.r-project.org/web/packages/tmap/vignettes/tmap-getstarted.html</p>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb41"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb41-1"><a href="#cb41-1" aria-hidden="true" tabindex="-1"></a><span class="fu">data</span>(<span class="st">"World"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb44"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb44-1"><a href="#cb44-1" aria-hidden="true" tabindex="-1"></a><span class="fu">data</span>(<span class="st">"World"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 <p>Joining the two dataframes together</p>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb42"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb42-1"><a href="#cb42-1" aria-hidden="true" tabindex="-1"></a>suicidedata_eda_map <span class="ot">&lt;-</span> <span class="fu">left_join</span>(World, </span>
-<span id="cb42-2"><a href="#cb42-2" aria-hidden="true" tabindex="-1"></a>                                  </span>
-<span id="cb42-3"><a href="#cb42-3" aria-hidden="true" tabindex="-1"></a>                                  <span class="co">#filter year 2015 for illustration</span></span>
-<span id="cb42-4"><a href="#cb42-4" aria-hidden="true" tabindex="-1"></a>                                   suicidedata_eda_formap <span class="sc">%&gt;%</span> <span class="fu">filter</span>(year<span class="sc">==</span><span class="dv">2015</span>),</span>
-<span id="cb42-5"><a href="#cb42-5" aria-hidden="true" tabindex="-1"></a>                          <span class="at">by =</span> <span class="fu">c</span>(<span class="st">"iso_a3"</span> <span class="ot">=</span> <span class="st">"code"</span>)) <span class="sc">%&gt;%</span></span>
-<span id="cb42-6"><a href="#cb42-6" aria-hidden="true" tabindex="-1"></a>  <span class="fu">select</span>(<span class="sc">!</span><span class="fu">c</span>(<span class="dv">2</span>,<span class="dv">3</span>,<span class="dv">4</span>,<span class="dv">6</span>,<span class="dv">7</span>,<span class="dv">8</span>,<span class="dv">9</span>,<span class="dv">10</span>,<span class="dv">11</span>,<span class="dv">12</span>,<span class="dv">13</span>,<span class="dv">14</span>,<span class="dv">15</span>)) <span class="sc">%&gt;%</span></span>
-<span id="cb42-7"><a href="#cb42-7" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">area =</span> <span class="fu">as.numeric</span>(<span class="fu">str_remove</span>(<span class="st">`</span><span class="at">area</span><span class="st">`</span>, </span>
-<span id="cb42-8"><a href="#cb42-8" aria-hidden="true" tabindex="-1"></a>                                <span class="st">" </span><span class="sc">\\</span><span class="st">[km</span><span class="sc">\\</span><span class="st">^2</span><span class="sc">\\</span><span class="st">]"</span>)), </span>
-<span id="cb42-9"><a href="#cb42-9" aria-hidden="true" tabindex="-1"></a>         <span class="at">.after =</span> region)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb45"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb45-1"><a href="#cb45-1" aria-hidden="true" tabindex="-1"></a>suicidedata_eda_map <span class="ot">&lt;-</span> <span class="fu">left_join</span>(World, </span>
+<span id="cb45-2"><a href="#cb45-2" aria-hidden="true" tabindex="-1"></a>                                  </span>
+<span id="cb45-3"><a href="#cb45-3" aria-hidden="true" tabindex="-1"></a>                                  <span class="co">#filter year 2015 for illustration</span></span>
+<span id="cb45-4"><a href="#cb45-4" aria-hidden="true" tabindex="-1"></a>                                   suicidedata_eda_formap <span class="sc">%&gt;%</span> <span class="fu">filter</span>(year<span class="sc">==</span><span class="dv">2015</span>),</span>
+<span id="cb45-5"><a href="#cb45-5" aria-hidden="true" tabindex="-1"></a>                          <span class="at">by =</span> <span class="fu">c</span>(<span class="st">"iso_a3"</span> <span class="ot">=</span> <span class="st">"code"</span>)) <span class="sc">%&gt;%</span></span>
+<span id="cb45-6"><a href="#cb45-6" aria-hidden="true" tabindex="-1"></a>  <span class="fu">select</span>(<span class="sc">!</span><span class="fu">c</span>(<span class="dv">2</span>,<span class="dv">3</span>,<span class="dv">4</span>,<span class="dv">6</span>,<span class="dv">7</span>,<span class="dv">8</span>,<span class="dv">9</span>,<span class="dv">10</span>,<span class="dv">11</span>,<span class="dv">12</span>,<span class="dv">13</span>,<span class="dv">14</span>,<span class="dv">15</span>)) <span class="sc">%&gt;%</span></span>
+<span id="cb45-7"><a href="#cb45-7" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">area =</span> <span class="fu">as.numeric</span>(<span class="fu">str_remove</span>(<span class="st">`</span><span class="at">area</span><span class="st">`</span>, </span>
+<span id="cb45-8"><a href="#cb45-8" aria-hidden="true" tabindex="-1"></a>                                <span class="st">" </span><span class="sc">\\</span><span class="st">[km</span><span class="sc">\\</span><span class="st">^2</span><span class="sc">\\</span><span class="st">]"</span>)), </span>
+<span id="cb45-9"><a href="#cb45-9" aria-hidden="true" tabindex="-1"></a>         <span class="at">.after =</span> region)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 <p>To illustrate mapping age-standardised suicide rate for both genders (SR_AS_T)</p>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb43"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb43-1"><a href="#cb43-1" aria-hidden="true" tabindex="-1"></a><span class="fu">tm_shape</span>(suicidedata_eda_map) <span class="sc">+</span></span>
-<span id="cb43-2"><a href="#cb43-2" aria-hidden="true" tabindex="-1"></a>    <span class="fu">tm_polygons</span>(<span class="st">"SR_AS_T"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb46"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb46-1"><a href="#cb46-1" aria-hidden="true" tabindex="-1"></a><span class="fu">tm_shape</span>(suicidedata_eda_map) <span class="sc">+</span></span>
+<span id="cb46-2"><a href="#cb46-2" aria-hidden="true" tabindex="-1"></a>    <span class="fu">tm_polygons</span>(<span class="st">"SR_AS_T"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output-display">
-<p><img src="DataPrep_files/figure-html/unnamed-chunk-40-1.png" class="img-fluid" width="672"></p>
+<p><img src="DataPrep_files/figure-html/unnamed-chunk-43-1.png" class="img-fluid" width="672"></p>
 </div>
 </div>
 <p>Ignore below</p>
 <p>rworldmap - Example code below</p>
 <p>https://cran.r-project.org/web/packages/rworldmap/vignettes/rworldmap.pdf</p>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb44"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb44-1"><a href="#cb44-1" aria-hidden="true" tabindex="-1"></a><span class="co">#suicidedata_cln_map &lt;- joinCountryData2Map(suicidedata_cln_region,</span></span>
-<span id="cb44-2"><a href="#cb44-2" aria-hidden="true" tabindex="-1"></a><span class="co">#                                 joinCode = "ISO3",</span></span>
-<span id="cb44-3"><a href="#cb44-3" aria-hidden="true" tabindex="-1"></a><span class="co">#                                 nameJoinColumn = "code")</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb47"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb47-1"><a href="#cb47-1" aria-hidden="true" tabindex="-1"></a><span class="co">#suicidedata_cln_map &lt;- joinCountryData2Map(suicidedata_cln_region,</span></span>
+<span id="cb47-2"><a href="#cb47-2" aria-hidden="true" tabindex="-1"></a><span class="co">#                                 joinCode = "ISO3",</span></span>
+<span id="cb47-3"><a href="#cb47-3" aria-hidden="true" tabindex="-1"></a><span class="co">#                                 nameJoinColumn = "code")</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 <p>Other References using typical world map - https://rpubs.com/Thom_JH/798825</p>
 
