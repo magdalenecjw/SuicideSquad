@@ -526,6 +526,29 @@ suicidedata_eda_formap <- left_join(suicidedata_age_std, suicide_number_age, by 
          `SP_All_F` = `SN_All_F`*100/`DN_All_F`,
          `SP_All_T` = `SN_All_T`*100/`DN_All_T`) %>%
   
+  #calculate death rate for each age group and gender
+  mutate(`DR_10-14_M` = `DN_10-14_M`*100000/`POP_10-14_M`,
+         `DR_10-14_F` = `DN_10-14_F`*100000/`POP_10-14_F`,
+         `DR_10-14_T` = `DN_10-14_T`*100000/`POP_10-14_T`,
+         `DR_15-24_M` = `DN_15-24_M`*100000/`POP_15-24_M`,
+         `DR_15-24_F` = `DN_15-24_F`*100000/`POP_15-24_F`,
+         `DR_15-24_T` = `DN_15-24_T`*100000/`POP_15-24_T`,
+         `DR_25-44_M` = `DN_25-44_M`*100000/`POP_25-44_M`,
+         `DR_25-44_F` = `DN_25-44_F`*100000/`POP_25-44_F`,
+         `DR_25-44_T` = `DN_25-44_T`*100000/`POP_25-44_T`,
+         `DR_45-64_M` = `DN_45-64_M`*100000/`POP_45-64_M`,
+         `DR_45-64_F` = `DN_45-64_F`*100000/`POP_45-64_F`,
+         `DR_45-64_T` = `DN_45-64_T`*100000/`POP_45-64_T`,
+         `DR_65-74_M` = `DN_65-74_M`*100000/`POP_65-74_M`,
+         `DR_65-74_F` = `DN_65-74_F`*100000/`POP_65-74_F`,
+         `DR_65-74_T` = `DN_65-74_T`*100000/`POP_65-74_T`,
+         `DR_75+_M` = `DN_75+_M`*100000/`POP_75+_M`,
+         `DR_75+_F` = `DN_75+_F`*100000/`POP_75+_F`,
+         `DR_75+_T` = `DN_75+_T`*100000/`POP_75+_T`,
+         `DR_All_M` = `DN_All_M`*100000/`POP_All_M`,
+         `DR_All_F` = `DN_All_F`*100000/`POP_All_F`,
+         `DR_All_T` = `DN_All_T`*100000/`POP_All_T`) %>%
+  
    arrange(code, year)
 
 knitr::kable(head(suicidedata_eda_formap))
@@ -620,6 +643,5 @@ knitr::kable(head(suicidedata_analysis))
 ```{r}
 #write_csv(suicidedata_analysis,'C:/michaeldjo/SuicideSquad/EDA/data/suicidedata_analysis.csv')
 ```
-
 
 Other References using typical world map - https://rpubs.com/Thom_JH/798825

@@ -79,11 +79,11 @@ descr_stats <- function(year, gender = "Both", age = "All ages") {
                                               sex_name == gender,
                                               age_name == age) %>%
                                        select(!c(6,8)) %>%
-                                       rename("Suicide Number" = "SN",
-                                              "Death Number" = "DN",
-                                              "Share of Deaths from Suicide(%)" = "SP",
-                                              "Suicide Rate" = "SR",
-                                              "Death Rate" = "DR"))
+                                       rename("Number of suicide" = "SN",
+                                              "Number of deaths" = "DN",
+                                              "Share of deaths from suicide (%)" = "SP",
+                                              "Suicide rate" = "SR",
+                                              "Mortality rate" = "DR"))
 descr$kable_ret  %>%
   kable_styling("condensed", full_width = F, position = "center")
 }
@@ -124,13 +124,17 @@ Creating a function to plot
 ```{r}
 plot_map_eda <- function(year, metric = "SR", gender = "T", style = "jenks"){
   
-metric_text = case_when(metric == "SR" ~ "Suicide Rate",
+metric_text = case_when(metric == "SR" ~ "Suicide rate",
                         metric == "SP" ~ "Share of deaths from suicide (%)",
-                        metric == "SN" ~ "Number of suicide")
+                        metric == "SN" ~ "Number of suicide",
+                        metric == "DN" ~ "Number of deaths",
+                        metric == "DR" ~ "Mortality rate")
 
 age = case_when(metric == "SR" ~ "AS",
                 metric == "SP" ~ "All",
-                metric == "SN" ~ "All")
+                metric == "SN" ~ "All",
+                metric == "DN" ~ "All",
+                metric == "DR" ~ "All")
 
 gender_text = case_when(gender == "T" ~ "Total",
                         gender == "M" ~ "Male",
