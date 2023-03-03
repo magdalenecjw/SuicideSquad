@@ -53,7 +53,7 @@ suicidedata_eda_map <- left_join(World,
 Creating a function to plot
 
 ```{r}
-plot_map_eda <- function(year, metric = "SR", gender = "T"){
+plot_map_eda <- function(year, metric = "SR", gender = "T", style = "jenks"){
   
 metric_text = case_when(metric == "SR" ~ "Suicide Rate",
                         metric == "SP" ~ "Share of deaths from suicide (%)",
@@ -72,7 +72,7 @@ tmap_mode("view")
 tm_shape(suicidedata_eda_map |> 
            filter(year == year))+
   tm_fill(paste0(metric,"_",age,"_",gender), 
-          style = "quantile", 
+          style = style, 
           palette="YlOrBr", 
           id = "country",
           title = paste0(metric_text, ", ",gender_text,", ", year),
@@ -85,7 +85,7 @@ tm_shape(suicidedata_eda_map |>
 ```
 
 ```{r}
-plot_map_eda(2016, "SR", "M")
+plot_map_eda(2016, "SR", "M", "jenks")
 tmap_mode("plot")
 ```
 
