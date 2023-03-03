@@ -16,7 +16,7 @@ editor: visual
 ### 1. Installing and launching required R packages
 
 ```{r}
-pacman::p_load("tmap", "ExPanDaR", "ggstatsplot", "tidyverse")
+pacman::p_load("tmap", "ExPanDaR", "kableExtra", "ggstatsplot", "tidyverse")
 ```
 
 ### 2. Loading the data
@@ -25,10 +25,79 @@ pacman::p_load("tmap", "ExPanDaR", "ggstatsplot", "tidyverse")
 suicidedata_eda_formap <- read_csv("data/suicidedata_eda_formap.csv", show_col_types = FALSE)
 ```
 
-### 3. Plotting the choropleth map
-#### 3.1 Joining with world map (tmap object)
+```{r}
+suicidedata_eda <- read_csv("data/suicidedata_eda.csv", show_col_types = FALSE)
+```
 
-The object World is a spatial object of class sf from the sf package; it is a data.frame with a special column that contains a geometry for each row, in this case polygons
+### 3. Dataset overview
+We will check the suicidedata_eda as suicidedata_eda_formap is meant to be combined with the sf file (world)
+
+#### 3.1 Missing Values
+```{r}
+missing.values <- suicidedata_eda %>%
+    gather(key = "key", value = "val") %>%
+    mutate(is.missing = is.na(val)) %>%
+    group_by(key, is.missing) %>%
+    summarise(num.missing = n()) %>%
+    filter(is.missing==T) %>%
+    select(-is.missing) %>%
+    arrange(desc(num.missing)) 
+missing.values %>% kable()
+```
+
+Visualising Missing Values
+By country
+```{r}
+#| fig-height: 15
+#| fig-width: 10
+prepare_missing_values_graph(suicidedata_eda, ts_id = "country")
+```
+
+By gender
+```{r}
+prepare_missing_values_graph(suicidedata_eda, ts_id = "sex_name")
+```
+
+By age group
+```{r}
+prepare_missing_values_graph(suicidedata_eda, ts_id = "age_name")
+```
+
+By year
+```{r}
+prepare_missing_values_graph(suicidedata_eda, ts_id = "year")
+```
+Conclusion : The missing values are because of age-standardised (only for Suicide Rates)
+
+#### 3.2 Descriptive statistics
+
+```{r}
+descr_stats <- function(year, gender = "Both", age = "All ages") {
+  
+  descr <- prepare_descriptive_table(suicidedata_eda %>%
+                                       filter(year == year,
+                                              sex_name == gender,
+                                              age_name == age) %>%
+                                       select(!c(6,8)) %>%
+                                       rename("Suicide Number" = "SN",
+                                              "Death Number" = "DN",
+                                              "Share of Deaths from Suicide(%)" = "SP",
+                                              "Suicide Rate" = "SR",
+                                              "Death Rate" = "DR"))
+descr$kable_ret  %>%
+  kable_styling("condensed", full_width = F, position = "center")
+}
+```
+
+```{r}
+descr_stats(2010, "Both", "All ages")
+```
+
+
+### 4. Plotting the choropleth map
+#### 4.1 Joining with world map (tmap object)
+
+The object `World` is a spatial object of class `sf` from the [sf package](https://cran.r-project.org/package=sf); it is a `data.frame` with a special column that contains a geometry for each row, in this case polygons
 
 Reference - https://cran.r-project.org/web/packages/tmap/vignettes/tmap-getstarted.html
 
@@ -78,7 +147,7 @@ tm_shape(suicidedata_eda_map |>
           title = paste0(metric_text, ", ",gender_text,", ", year),
           popup.vars = c(value = paste0(metric,"_",age,"_",gender))) +
   
-  tm_borders(col = "grey90",
+  tm_borders(col = "grey20",
              alpha = 0.5) 
 }
 

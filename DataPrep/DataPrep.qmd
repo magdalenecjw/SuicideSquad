@@ -536,7 +536,6 @@ knitr::kable(head(suicidedata_eda_formap))
 #write_csv(suicidedata_eda_formap,'C:/michaeldjo/SuicideSquad/EDA/data/suicidedata_eda_formap.csv')
 ```
 
-
 #### Joining for EDA (for non-map) of Suicide Parameters
 
 ```{r}
@@ -622,48 +621,5 @@ knitr::kable(head(suicidedata_analysis))
 #write_csv(suicidedata_analysis,'C:/michaeldjo/SuicideSquad/EDA/data/suicidedata_analysis.csv')
 ```
 
-
-### 6. Joining with world map
-
-The object `World` is a spatial object of class `sf` from the [sf package](https://cran.r-project.org/package=sf); it is a `data.frame` with a special column that contains a geometry for each row, in this case polygons
-
-Reference - https://cran.r-project.org/web/packages/tmap/vignettes/tmap-getstarted.html
-
-```{r}
-data("World")
-```
-
-Joining the two dataframes together
-
-```{r}
-suicidedata_eda_map <- left_join(World, 
-                                  
-                                  #filter year 2015 for illustration
-                                   suicidedata_eda_formap %>% filter(year==2015),
-                          by = c("iso_a3" = "code")) %>%
-  select(!c(2,3,4,6,7,8,9,10,11,12,13,14,15)) %>%
-  mutate(area = as.numeric(str_remove(`area`, 
-                                " \\[km\\^2\\]")), 
-         .after = region)
-```
-
-To illustrate mapping age-standardised suicide rate for both genders (SR_AS_T)
-
-```{r}
-tm_shape(suicidedata_eda_map) +
-    tm_polygons("SR_AS_T")
-```
-
-Ignore below
-
-rworldmap - Example code below
-
-https://cran.r-project.org/web/packages/rworldmap/vignettes/rworldmap.pdf
-
-```{r}
-#suicidedata_cln_map <- joinCountryData2Map(suicidedata_cln_region,
-#                                 joinCode = "ISO3",
-#                                 nameJoinColumn = "code")
-```
 
 Other References using typical world map - https://rpubs.com/Thom_JH/798825

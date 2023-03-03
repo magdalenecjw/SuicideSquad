@@ -196,7 +196,6 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
   <li><a href="#data-wrangling" id="toc-data-wrangling" class="nav-link" data-scroll-target="#data-wrangling">3. Data wrangling</a></li>
   <li><a href="#matching-countrys-name-with-region-iso-3166-1-alpha-3-country-code" id="toc-matching-countrys-name-with-region-iso-3166-1-alpha-3-country-code" class="nav-link" data-scroll-target="#matching-countrys-name-with-region-iso-3166-1-alpha-3-country-code">4. Matching country’s name with region (<em>ISO 3166-1 alpha-3</em> country code</a></li>
   <li><a href="#preparing-data-for-analysis" id="toc-preparing-data-for-analysis" class="nav-link" data-scroll-target="#preparing-data-for-analysis">5. Preparing data for analysis</a></li>
-  <li><a href="#joining-with-world-map" id="toc-joining-with-world-map" class="nav-link" data-scroll-target="#joining-with-world-map">6. Joining with world map</a></li>
   </ul></li>
   </ul>
 </nav>
@@ -230,7 +229,7 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
     <div>
     <div class="quarto-title-meta-heading">Modified</div>
     <div class="quarto-title-meta-contents">
-      <p class="date-modified">March 2, 2023</p>
+      <p class="date-modified">March 3, 2023</p>
     </div>
   </div>
     
@@ -2324,46 +2323,10 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <div class="cell">
 <div class="sourceCode cell-code" id="cb43"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb43-1"><a href="#cb43-1" aria-hidden="true" tabindex="-1"></a><span class="co">#write_csv(suicidedata_analysis,'C:/michaeldjo/SuicideSquad/EDA/data/suicidedata_analysis.csv')</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
-</section>
-</section>
-<section id="joining-with-world-map" class="level3">
-<h3 class="anchored" data-anchor-id="joining-with-world-map">6. Joining with world map</h3>
-<p>The object <code>World</code> is a spatial object of class <code>sf</code> from the <a href="https://cran.r-project.org/package=sf">sf package</a>; it is a <code>data.frame</code> with a special column that contains a geometry for each row, in this case polygons</p>
-<p>Reference - https://cran.r-project.org/web/packages/tmap/vignettes/tmap-getstarted.html</p>
-<div class="cell">
-<div class="sourceCode cell-code" id="cb44"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb44-1"><a href="#cb44-1" aria-hidden="true" tabindex="-1"></a><span class="fu">data</span>(<span class="st">"World"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-</div>
-<p>Joining the two dataframes together</p>
-<div class="cell">
-<div class="sourceCode cell-code" id="cb45"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb45-1"><a href="#cb45-1" aria-hidden="true" tabindex="-1"></a>suicidedata_eda_map <span class="ot">&lt;-</span> <span class="fu">left_join</span>(World, </span>
-<span id="cb45-2"><a href="#cb45-2" aria-hidden="true" tabindex="-1"></a>                                  </span>
-<span id="cb45-3"><a href="#cb45-3" aria-hidden="true" tabindex="-1"></a>                                  <span class="co">#filter year 2015 for illustration</span></span>
-<span id="cb45-4"><a href="#cb45-4" aria-hidden="true" tabindex="-1"></a>                                   suicidedata_eda_formap <span class="sc">%&gt;%</span> <span class="fu">filter</span>(year<span class="sc">==</span><span class="dv">2015</span>),</span>
-<span id="cb45-5"><a href="#cb45-5" aria-hidden="true" tabindex="-1"></a>                          <span class="at">by =</span> <span class="fu">c</span>(<span class="st">"iso_a3"</span> <span class="ot">=</span> <span class="st">"code"</span>)) <span class="sc">%&gt;%</span></span>
-<span id="cb45-6"><a href="#cb45-6" aria-hidden="true" tabindex="-1"></a>  <span class="fu">select</span>(<span class="sc">!</span><span class="fu">c</span>(<span class="dv">2</span>,<span class="dv">3</span>,<span class="dv">4</span>,<span class="dv">6</span>,<span class="dv">7</span>,<span class="dv">8</span>,<span class="dv">9</span>,<span class="dv">10</span>,<span class="dv">11</span>,<span class="dv">12</span>,<span class="dv">13</span>,<span class="dv">14</span>,<span class="dv">15</span>)) <span class="sc">%&gt;%</span></span>
-<span id="cb45-7"><a href="#cb45-7" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">area =</span> <span class="fu">as.numeric</span>(<span class="fu">str_remove</span>(<span class="st">`</span><span class="at">area</span><span class="st">`</span>, </span>
-<span id="cb45-8"><a href="#cb45-8" aria-hidden="true" tabindex="-1"></a>                                <span class="st">" </span><span class="sc">\\</span><span class="st">[km</span><span class="sc">\\</span><span class="st">^2</span><span class="sc">\\</span><span class="st">]"</span>)), </span>
-<span id="cb45-9"><a href="#cb45-9" aria-hidden="true" tabindex="-1"></a>         <span class="at">.after =</span> region)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-</div>
-<p>To illustrate mapping age-standardised suicide rate for both genders (SR_AS_T)</p>
-<div class="cell">
-<div class="sourceCode cell-code" id="cb46"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb46-1"><a href="#cb46-1" aria-hidden="true" tabindex="-1"></a><span class="fu">tm_shape</span>(suicidedata_eda_map) <span class="sc">+</span></span>
-<span id="cb46-2"><a href="#cb46-2" aria-hidden="true" tabindex="-1"></a>    <span class="fu">tm_polygons</span>(<span class="st">"SR_AS_T"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-<div class="cell-output-display">
-<p><img src="DataPrep_files/figure-html/unnamed-chunk-43-1.png" class="img-fluid" width="672"></p>
-</div>
-</div>
-<p>Ignore below</p>
-<p>rworldmap - Example code below</p>
-<p>https://cran.r-project.org/web/packages/rworldmap/vignettes/rworldmap.pdf</p>
-<div class="cell">
-<div class="sourceCode cell-code" id="cb47"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb47-1"><a href="#cb47-1" aria-hidden="true" tabindex="-1"></a><span class="co">#suicidedata_cln_map &lt;- joinCountryData2Map(suicidedata_cln_region,</span></span>
-<span id="cb47-2"><a href="#cb47-2" aria-hidden="true" tabindex="-1"></a><span class="co">#                                 joinCode = "ISO3",</span></span>
-<span id="cb47-3"><a href="#cb47-3" aria-hidden="true" tabindex="-1"></a><span class="co">#                                 nameJoinColumn = "code")</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-</div>
 <p>Other References using typical world map - https://rpubs.com/Thom_JH/798825</p>
 
 
+</section>
 </section>
 </section>
 
