@@ -1,4 +1,31 @@
 ---
 title: "EDA: Analysis of Suicide Rate with Other Parameters"
 author: "Magdalene"
+execute: 
+  warning: false
 ---
+
+# Load Packages and Data Set
+
+```{r}
+pacman::p_load(tidyverse, ExPanDaR, knitr)
+
+suicide_analysis <- read.csv('data/suicidedata_analysis.csv', header = T)
+```
+
+# Data Wrangling
+
+```{r}
+missing.values <- suicide_analysis %>%
+    pivot_longer(cols = SR_AS_M:mental_disorder, 
+                 names_to = "rate",
+                 values_to = "values") %>%
+    mutate(is.missing = is.na(values)) %>%
+    group_by(rate, is.missing) %>%
+    summarise(num.missing = n()) %>%
+    filter(is.missing==T) %>%
+    select(-is.missing) %>%
+    arrange(desc(num.missing)) 
+
+missing.values %>% kable()
+```
