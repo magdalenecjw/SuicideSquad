@@ -46,26 +46,33 @@ missing.values %>% kable()
 ```
 
 Visualising Missing Values
+```{r}
+missing_values <- function(vari = "age_name"){
+prepare_missing_values_graph(suicidedata_eda, ts_id = vari)
+}
+```
+
 By country
 ```{r}
 #| fig-height: 15
 #| fig-width: 10
-prepare_missing_values_graph(suicidedata_eda, ts_id = "country")
+missing_values("country")
 ```
+
 
 By gender
 ```{r}
-prepare_missing_values_graph(suicidedata_eda, ts_id = "sex_name")
+missing_values("sex_name")
 ```
 
 By age group
 ```{r}
-prepare_missing_values_graph(suicidedata_eda, ts_id = "age_name")
+missing_values("age_name")
 ```
 
 By year
 ```{r}
-prepare_missing_values_graph(suicidedata_eda, ts_id = "year")
+missing_values("year")
 ```
 Conclusion : The missing values are because of age-standardised (only for Suicide Rates)
 
