@@ -128,51 +128,70 @@ suicidedata_hist %>%
 ```{r}
 plot_multi_distribution(2010, "Both", "All ages")
 ```
+```{r}
+suicidedata_hist <- suicidedata_eda %>% 
+  filter(year == 2010,
+         sex_name == "Both",
+         age_name == "All ages")
+
+
+suicidedata_summary <- suicidedata_hist %>%
+  summarise(mean = round(mean(SR)),
+            median = round(median(SR)),
+            ymax = as.numeric(round((IQR(SR)*1.5) + quantile(SR,0.75))),
+            ymin = as.integer(min(SR))) 
+
+#var_mean <- mean(suicidedata_hist[,11])
+```
 
 
 ##### 3.3.2 Histogram of individual variables
 ```{r}
-plot_distribution <- function(year, gender = "Both", age = "All ages") {
-
+plot_distribution <- function(year, gender = "Both", age = "All ages", vari = SR, title = "Suicide Rate", binwidth = 2) {
+  
 suicidedata_hist <- suicidedata_eda %>% 
   filter(year == year,
          sex_name == gender,
          age_name == age)
-  
+
+suicidedata_summary <- suicidedata_hist %>%
+  summarise(mean = round(mean({{vari}})),
+            median = round(median({{vari}})),
+            ymax = as.numeric(round((IQR({{vari}})*1.5) + quantile({{vari}},0.75))),
+            ymin = as.integer(min({{vari}}))) 
+
 #computing summary statistics of mean, median and lower and upper whiskers in boxplot
-var_mean <- round(mean(suicidedata_hist$SR))
-var_median <- round(median(suicidedata_hist$SR))
-ymax <- as.numeric(round((IQR(suicidedata_hist$SR)*1.5) +
-                quantile(suicidedata_hist$SR,0.75)))
-ymin <- as.integer(min(suicidedata_hist$SR))
+var_mean <- suicidedata_summary$mean
+var_median <- suicidedata_summary$median
+ymax <- suicidedata_summary$ymax
+ymin <- suicidedata_summary$ymin
 
 #plotting histogram
-h <- suicidedata_hist %>%
-  ggplot(aes(x = SR)) + 
-  geom_histogram(color="black", fill="azure4") + 
-  scale_x_continuous(labels = scales::comma) +
-  labs(x = paste0("Suicide Rate, ",gender,", ",age,", ", year), y = "Count") +
+h1 <- ggplot(suicidedata_hist, aes(x = {{vari}})) + 
+  geom_histogram(color="black", fill="azure4", binwidth = binwidth)  
+  
+h <- h1 + scale_x_continuous(labels = scales::comma) +
+  labs(x = paste0(title,", ",gender,", ",age,", ", year), y = "Count") +
   geom_vline(aes(xintercept = var_mean), col="darkblue", linewidth=1, linetype = "dashed") +
-  annotate("text", x=17, y=1750, label="Mean:", 
-           size=4, color="darkblue") +
-  annotate("text", x=17, y=1650, label=format(var_mean, big.mark = ","),
-           size=4, color="darkblue") +
+  annotate("text", x=var_mean*1.05, y=max(ggplot_build(h1)$data[[1]]$count)*1.2, label="Mean:", 
+           size=4, color="darkblue", hjust = 0) +
+  annotate("text", x=var_mean*1.05, y=max(ggplot_build(h1)$data[[1]]$count)*1.1, label=format(var_mean, big.mark = ","),
+           size=4, color="darkblue", hjust = 0) +
   geom_vline(aes(xintercept = var_median), col="lightpink4", linewidth=1, linetype = "dashed") +
-  annotate("text", x=0, y=1750, label="Median:", 
-           size=4, color="lightpink4") +
-  annotate("text", x=0, y=1650, label=format(var_median, big.mark = ","),
-           size=4, color="lightpink4") +
+  annotate("text", x=var_median*0.95, y=max(ggplot_build(h1)$data[[1]]$count)*1.2, label="Median:", 
+           size=4, color="lightpink4", hjust = 1) +
+  annotate("text", x=var_median*0.95, y=max(ggplot_build(h1)$data[[1]]$count)*1.1, label=format(var_median, big.mark = ","),
+           size=4, color="lightpink4", hjust = 1) +
   theme(axis.text.x = element_text(size=8))
 
 #plotting boxplot
-b <- suicidedata_hist %>%
-  ggplot(aes(y = SR)) + 
+b <- ggplot(suicidedata_hist, aes(y = {{vari}})) + 
   geom_boxplot(outlier.colour="firebrick", outlier.shape=16,
                outlier.size=1, notch=FALSE) + 
   coord_flip() + labs(y = "", x = "") + 
   scale_y_continuous(labels = scales::comma) +
   theme(axis.text = element_blank(), axis.ticks = element_blank()) + 
-  stat_boxplot(geom="errorbar", width=0.5) + 
+  stat_boxplot(geom="errorbar", width=0.5) +
   annotate("text", x=0.35, y=ymax, label=format(ymax, big.mark = ","), 
            size=3, color="lightpink4") +
   annotate("text", x=0.35, y=ymin, label=format(ymin, big.mark = ","), 
@@ -187,7 +206,7 @@ suicide_distri
 ```
 
 ```{r}
-plot_distribution(2010, "Both", "All ages")
+plot_distribution(2010, "Both", "All ages", SR, "Suicide Rate", 2)
 ```
 
 
