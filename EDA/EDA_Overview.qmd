@@ -16,7 +16,7 @@ editor: visual
 ### 1. Installing and launching required R packages
 
 ```{r}
-pacman::p_load("tmap", "ExPanDaR", "kableExtra", "ggstatsplot", "tidyverse")
+pacman::p_load("patchwork", "tmap", "ExPanDaR", "kableExtra", "ggstatsplot", "tidyverse")
 ```
 
 ### 2. Loading the data
@@ -46,26 +46,33 @@ missing.values %>% kable()
 ```
 
 Visualising Missing Values
+```{r}
+missing_values <- function(vari = "age_name"){
+prepare_missing_values_graph(suicidedata_eda, ts_id = vari)
+}
+```
+
 By country
 ```{r}
 #| fig-height: 15
 #| fig-width: 10
-prepare_missing_values_graph(suicidedata_eda, ts_id = "country")
+missing_values("country")
 ```
+
 
 By gender
 ```{r}
-prepare_missing_values_graph(suicidedata_eda, ts_id = "sex_name")
+missing_values("sex_name")
 ```
 
 By age group
 ```{r}
-prepare_missing_values_graph(suicidedata_eda, ts_id = "age_name")
+missing_values("age_name")
 ```
 
 By year
 ```{r}
-prepare_missing_values_graph(suicidedata_eda, ts_id = "year")
+missing_values("year")
 ```
 Conclusion : The missing values are because of age-standardised (only for Suicide Rates)
 
@@ -92,6 +99,97 @@ descr$kable_ret  %>%
 ```{r}
 descr_stats(2010, "Both", "All ages")
 ```
+
+#### 3.3 Distribution 
+
+##### 3.3.1 Histogram of multiple variables
+```{r}
+plot_multi_distribution <- function(year, gender = "Both", age = "All ages") {
+  
+suicidedata_hist <- suicidedata_eda %>% 
+  filter(year == year,
+         sex_name == gender,
+         age_name == age) %>%
+  select(c(7,9,10,11,12)) %>%
+  rename("Number of suicide" = "SN",
+         "Number of deaths" = "DN",
+         "Share of deaths from suicide (%)" = "SP",
+         "Suicide rate" = "SR",
+         "Mortality rate" = "DR")
+  
+suicidedata_hist %>% 
+  gather() %>%
+  ggplot(aes(value)) +
+  facet_wrap( ~key, ncol=3, scales="free") +
+  geom_histogram()
+}
+```
+
+```{r}
+plot_multi_distribution(2010, "Both", "All ages")
+```
+
+
+##### 3.3.2 Histogram of individual variables
+```{r}
+plot_distribution <- function(year, gender = "Both", age = "All ages") {
+
+suicidedata_hist <- suicidedata_eda %>% 
+  filter(year == year,
+         sex_name == gender,
+         age_name == age)
+  
+#computing summary statistics of mean, median and lower and upper whiskers in boxplot
+var_mean <- round(mean(suicidedata_hist$SR))
+var_median <- round(median(suicidedata_hist$SR))
+ymax <- as.numeric(round((IQR(suicidedata_hist$SR)*1.5) +
+                quantile(suicidedata_hist$SR,0.75)))
+ymin <- as.integer(min(suicidedata_hist$SR))
+
+#plotting histogram
+h <- suicidedata_hist %>%
+  ggplot(aes(x = SR)) + 
+  geom_histogram(color="black", fill="azure4") + 
+  scale_x_continuous(labels = scales::comma) +
+  labs(x = paste0("Suicide Rate, ",gender,", ",age,", ", year), y = "Count") +
+  geom_vline(aes(xintercept = var_mean), col="darkblue", linewidth=1, linetype = "dashed") +
+  annotate("text", x=17, y=1750, label="Mean:", 
+           size=4, color="darkblue") +
+  annotate("text", x=17, y=1650, label=format(var_mean, big.mark = ","),
+           size=4, color="darkblue") +
+  geom_vline(aes(xintercept = var_median), col="lightpink4", linewidth=1, linetype = "dashed") +
+  annotate("text", x=0, y=1750, label="Median:", 
+           size=4, color="lightpink4") +
+  annotate("text", x=0, y=1650, label=format(var_median, big.mark = ","),
+           size=4, color="lightpink4") +
+  theme(axis.text.x = element_text(size=8))
+
+#plotting boxplot
+b <- suicidedata_hist %>%
+  ggplot(aes(y = SR)) + 
+  geom_boxplot(outlier.colour="firebrick", outlier.shape=16,
+               outlier.size=1, notch=FALSE) + 
+  coord_flip() + labs(y = "", x = "") + 
+  scale_y_continuous(labels = scales::comma) +
+  theme(axis.text = element_blank(), axis.ticks = element_blank()) + 
+  stat_boxplot(geom="errorbar", width=0.5) + 
+  annotate("text", x=0.35, y=ymax, label=format(ymax, big.mark = ","), 
+           size=3, color="lightpink4") +
+  annotate("text", x=0.35, y=ymin, label=format(ymin, big.mark = ","), 
+           size=3, color="lightpink4")
+
+#combining plots
+suicide_distri <- b / h + plot_layout(heights = c(1, 4)) 
+
+suicide_distri
+}
+
+```
+
+```{r}
+plot_distribution(2010, "Both", "All ages")
+```
+
 
 
 ### 4. Plotting the choropleth map
