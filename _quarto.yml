@@ -27,6 +27,8 @@ website:
         text: "Proposal"
       - href: "DataPrep/DataPrep.html"
         text: "Data Preparation"
+      - href: "EDA/EDA_Overview.html"
+        text: "EDA Overview"
 
 format:
   html:

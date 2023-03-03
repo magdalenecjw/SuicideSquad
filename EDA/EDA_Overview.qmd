@@ -1,4 +1,91 @@
 ---
 title: "EDA: Overview of Suicide Rate in a Particular Year"
 author: "Michael"
+date: 03 Mar 2023
+date-modified: "`r Sys.Date()`"
+execute: 
+  echo: true
+  eval: true
+  warning: false
+format: html
+editor: visual
 ---
+
+## Step-by-Step Data Preparation
+
+### 1. Installing and launching required R packages
+
+```{r}
+pacman::p_load("tmap", "ExPanDaR", "ggstatsplot", "tidyverse")
+```
+
+### 2. Loading the data
+
+```{r}
+suicidedata_eda_formap <- read_csv("data/suicidedata_eda_formap.csv", show_col_types = FALSE)
+```
+
+### 3. Plotting the choropleth map
+#### 3.1 Joining with world map (tmap object)
+
+The object World is a spatial object of class sf from the sf package; it is a data.frame with a special column that contains a geometry for each row, in this case polygons
+
+Reference - https://cran.r-project.org/web/packages/tmap/vignettes/tmap-getstarted.html
+
+```{r}
+data("World")
+```
+
+Joining the two dataframes together
+
+```{r}
+suicidedata_eda_map <- left_join(World, 
+                                 suicidedata_eda_formap %>% mutate(across(where(is.numeric), round, 2)),
+                          by = c("iso_a3" = "code")) %>%
+  select(!c(2,3,4,6,7,8,9,10,11,12,13,14,15)) %>%
+  mutate(area = as.numeric(str_remove(`area`, 
+                                " \\[km\\^2\\]")), 
+         .after = region) %>%
+  na.omit()
+```
+
+
+Creating a function to plot
+
+```{r}
+plot_map_eda <- function(year, metric = "SR", gender = "T"){
+  
+metric_text = case_when(metric == "SR" ~ "Suicide Rate",
+                        metric == "SP" ~ "Share of deaths from suicide (%)",
+                        metric == "SN" ~ "Number of suicide")
+
+age = case_when(metric == "SR" ~ "AS",
+                metric == "SP" ~ "All",
+                metric == "SN" ~ "All")
+
+gender_text = case_when(gender == "T" ~ "Total",
+                        gender == "M" ~ "Male",
+                        gender == "F" ~ "Female")
+  
+tmap_mode("view")
+
+tm_shape(suicidedata_eda_map |> 
+           filter(year == year))+
+  tm_fill(paste0(metric,"_",age,"_",gender), 
+          style = "quantile", 
+          palette="YlOrBr", 
+          id = "country",
+          title = paste0(metric_text, ", ",gender_text,", ", year),
+          popup.vars = c(value = paste0(metric,"_",age,"_",gender))) +
+  
+  tm_borders(col = "grey90",
+             alpha = 0.5) 
+}
+
+```
+
+```{r}
+plot_map_eda(2016, "SR", "M")
+tmap_mode("plot")
+```
+
