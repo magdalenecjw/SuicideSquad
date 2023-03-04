@@ -234,7 +234,7 @@ outliers_table("Both", "All ages", "Suicide rate")
 
 More outliers on the high-end as compared to the other side with Greenland dominating the outliers. There might be interesting pattern here, hence windsorising the data using `treat_outliers()` function might not be recommended
 
-### 4. Comparing between countries and regions within a particular year
+### 4. Comparing between regions within particular period
 
 #### 4.1 Plotting the choropleth map
 
@@ -264,7 +264,7 @@ suicidedata_eda_map <- left_join(World,
 ##### 4.1.2 Creating function to plot choropleth map
 
 ```{r}
-plot_map_eda <- function(year, metric = "SR", gender = "T", style = "jenks"){
+plot_map_eda <- function(period, metric = "SR", gender = "T", style = "jenks"){
   
 metric_text = case_when(metric == "SR" ~ "Suicide rate",
                         metric == "SP" ~ "Share of deaths from suicide (%)",
@@ -285,12 +285,12 @@ gender_text = case_when(gender == "T" ~ "Total",
 tmap_mode("view")
 
 tm_shape(suicidedata_eda_map |> 
-           filter(year == year))+
+           filter(year == period))+
   tm_fill(paste0(metric,"_",age,"_",gender), 
           style = style, 
           palette="YlOrBr", 
           id = "country",
-          title = paste0(metric_text, ", ",gender_text,", ", year),
+          title = paste0(metric_text, ", ",gender_text,", ", period),
           popup.vars = c(value = paste0(metric,"_",age,"_",gender))) +
   
   tm_borders(col = "grey20",
@@ -306,17 +306,17 @@ tmap_mode("plot")
 
 #### 4.2 Statistical testing on difference in suicide metrics between Regions
 
-Note that it does not make sense to compare the statistical testing between countries within a particular year as there is only one metric per country. As such, statistical test will be done for a time period for a country (in EDA Time Series segment)
+Note that it does not make sense to perform the statistical testing between countries within a fixed particular period. Hence, statistical test will be done to check whether there are changes in the metric of particular country across time period (in EDA Time Series segment)
 
 ##### 4.2.1.1 Normality assumption
 
 Plotting histogram by regions
 
 ```{r}
-plot_multi_distribution_region <- function(year, gender = "Both", age = "All ages", vari = SR) {
+plot_multi_distribution_region <- function(period1, period2, gender = "Both", age = "All ages", vari = SR) {
   
 suicidedata_hist <- suicidedata_eda %>% 
-  filter(year == year,
+  filter(year > period1 & year < period2,
          sex_name == gender,
          age_name == age) %>%
   select(c(3,7,8,9,10,11,12))
@@ -331,16 +331,16 @@ ggplotly(plot)
 ```
 
 ```{r}
-plot_multi_distribution_region(2010, "Both", "All ages", SR)
+plot_multi_distribution_region(2000, 2015, "Both", "All ages", SR)
 ```
 
 Anderson-Darling Test by Region
 
 ```{r}
-adtest_region <- function(year, gender = "Both", age = "All ages", vari = "SR") {
+adtest_region <- function(period1, period2, gender = "Both", age = "All ages", vari = "SR") {
 
 suicidedata_ad <- suicidedata_eda %>% 
-  filter(year == year,
+  filter(year > period1 & year < period2,
          sex_name == gender,
          age_name == age) %>%
   select(c(3,7,8,9,10,11,12))
@@ -361,19 +361,19 @@ DT::datatable(normaltest, class= "compact")
 ```
 
 ```{r}
-adtest_region(2010, "Both", "All ages", "SR")
+adtest_region(2000, 2015, "Both", "All ages", "SR")
 ```
 
 ##### 4.2.1.2 ANOVA Test
 
 ```{r}
-plot_ANOVA_region <- function(year, gender = "Both", age = "All ages", vari = SR, title = "Suicide rate", type = "np", conf = 0.95) {
+plot_ANOVA_region <- function(period1, period2, gender = "Both", age = "All ages", vari = SR, title = "Suicide rate", type = "np", conf = 0.95) {
 
 text <- case_when(type == "p" ~ "Mean",
                   type == "np" ~ "Median" )
     
 suicidedata_ANOVA <- suicidedata_eda %>% 
-  filter(year == year,
+  filter(year > period1 & year < period2,
          sex_name == gender,
          age_name == age) %>%
   select(c(3,7,8,9,10,11,12))
@@ -382,7 +382,7 @@ suicidedata_ANOVA %>% ggbetweenstats(x = region, y = {{vari}},
                xlab = "Region", ylab = title,
                type = type, pairwise.comparisons = T, pairwise.display = "ns", 
                mean.ci = T, p.adjust.method = "fdr",  conf.level = conf,
-               title = paste0("Comparison of ",text," ",title, " (", gender, " gender, ", age, ") across Regions in ", year),
+               title = paste0("Comparison of ",text," ",title, " (", gender, " gender, ", age, ") across Regions between ", period1, " and ", period2),
                subtitle = paste0("One-way ANOVA at ", conf*100, "% confidence level"),
                package = "ggthemes", palette = "Tableau_10")
 
@@ -393,7 +393,96 @@ suicidedata_ANOVA %>% ggbetweenstats(x = region, y = {{vari}},
 ```{r}
 #| fig-height: 8
 #| fig-width: 10
-plot_ANOVA_region(2010, "Both", "Age-standardized", SR, type = "np")
+plot_ANOVA_region(2000, 2015, "Both", "Age-standardized", SR, type = "np")
+```
+By Countries
+
+```{r}
+plot_ANOVA_country <- function(period1, period2, gender = "Both", age = "All ages", countrylist, vari = SR, title = "Suicide rate", type = "np", conf = 0.95) {
+
+text <- case_when(type == "p" ~ "Mean",
+                  type == "np" ~ "Median" )
+    
+suicidedata_ANOVA <- suicidedata_eda %>% 
+  filter(year > period1 & year < period2,
+         sex_name == gender,
+         age_name == age,
+         country %in% countrylist) %>%
+  select(c(1,7,8,9,10,11,12))
+
+suicidedata_ANOVA %>% ggbetweenstats(x = country, y = {{vari}},
+               xlab = "Countries", ylab = title,
+               type = type, pairwise.comparisons = T, pairwise.display = "ns", 
+               mean.ci = T, p.adjust.method = "fdr",  conf.level = conf,
+               title = paste0("Comparison of ",text," ",title, " (", gender, " gender, ", age, ") across Countries between ", period1, " and ", period2),
+               subtitle = paste0("One-way ANOVA at ", conf*100, "% confidence level"),
+               package = "ggthemes", palette = "Tableau_10")
+
+}
+
 ```
 
+```{r}
+#| fig-height: 8
+#| fig-width: 10
+plot_ANOVA_country(2000, 2015, "Both", "Age-standardized", c("China", "Japan", "Singapore", "Greenland", "Indonesia"),SR, type = "np")
+```
+Number of data is very small when compared across countries. Hence this will not go to Shiny App
+
+
+### 5. Comparing population groups in a country within a particular period
+
+#### 5.1 Plotting the suicide metrics pyramid
+
+```{r}
+plot_pyramid <- function(period, location, vari = SR, varilabel = "Suicide Rate"){
+
+suicidedata_pyramid <- suicidedata_eda %>%
+  filter(sex_name %in% c("Male", "Female"),
+         age_name %in% c("10-14", "15-24", "25-44", "45-64", "65-74", "75+"),
+         year == period,
+         country == location) %>%
+  mutate(SN = round(ifelse(sex_name == "Male", SN*(-1), SN), 0),
+         DN = round(ifelse(sex_name == "Male", DN*(-1), DN), 0),
+         SP = round(ifelse(sex_name == "Male", SP*(-1), SP), 2),
+         SR = round(ifelse(sex_name == "Male", SR*(-1), SR), 2),
+         DR = round(ifelse(sex_name == "Male", DR*(-1), DR), 2),
+         age_name = factor(age_name, levels = c("10-14", "15-24", "25-44", "45-64", "65-74", "75+"))) %>%
+  rename(Age = age_name,
+         Gender = sex_name)
+
+suicidedata_pyramid_summary <- suicidedata_pyramid %>%
+  summarise(max = max(abs({{vari}}))) 
+
+#computing summary statistics of mean, median and lower and upper whiskers in boxplot
+max_limit <- suicidedata_pyramid_summary$max
+interval <- suicidedata_pyramid_summary$max/2
+tickvals <- seq(-max_limit, max_limit, interval)
+ticktext <- c(as.character(max_limit), as.character(interval), "0", as.character(interval), as.character(max_limit))
+
+p <- suicidedata_pyramid %>%
+  ggplot(aes(x = Age,
+             y = {{vari}}, 
+             fill = Gender,
+             text = paste(varilabel, ":", abs({{vari}})))) +
+  geom_col() +
+  coord_flip() +
+  labs (x = varilabel, title=paste0(varilabel,' by Gender and Age Group, ',location, ", ",period )) +
+  theme_bw() +
+  theme(axis.ticks.y = element_blank(),
+        axis.title.y = element_blank()) +
+  scale_fill_manual(values = c("Male" = "lightblue", "Female" = "lightpink")) 
+
+ggplotly(p,session="knitr", tooltip = c("x", "fill", "text")) %>%
+  
+  layout(xaxis = list(title = varilabel,
+                      tickmode = 'array', 
+                      tickvals = tickvals,
+                      ticktext = ticktext))
+}
+```
+
+```{r}
+plot_pyramid(2010, "China", SR, "Suicide Rate")
+```
 
