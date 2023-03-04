@@ -1,5 +1,5 @@
 ---
-title: "EDA: Overview of Suicide Rate in a Particular Year"
+title: "EDA: Overview of Suicide Rate in a Particular Year/Period"
 author: "Michael"
 date: 03 Mar 2023
 date-modified: "`r Sys.Date()`"
@@ -17,7 +17,7 @@ toc-depth: 5
 ### 1. Installing and launching required R packages
 
 ```{r}
-pacman::p_load("patchwork", "tmap", "ExPanDaR", "kableExtra", "ggstatsplot", "plotly", "DT", "tidyverse")
+pacman::p_load("patchwork", "tmap", "ExPanDaR", "kableExtra", "ggstatsplot", "plotly", "DT", "FunnelPlotR", "tidyverse")
 ```
 
 ### 2. Loading the data
@@ -656,5 +656,51 @@ suicidedata_ANOVA %>% ggbetweenstats(x = {{xvari}}, y = {{yvari}},
 plot_ANOVA_pop(2000, 2015, "China", xvari = age_name, yvari = SR, xlabel = "Age Group", ylabel = "Suicide rate", type = "np")
 ```
 
+### 6. Funnel Plot
 
+```{r}
+suicide_funnel <- suicidedata_eda %>%
+  filter(sex_name == "Both",
+         age_name == "All ages") %>%
+  mutate(rate = SN/DN) 
+```
+
+#### 6.1 Check for normality
+
+```{r}
+suicide_funnel %>%
+  ggplot() +
+  geom_histogram(aes(x = rate), binwidth = 0.001)
+```
+Based on the trend above, this is not normal distribution. However, it is still interesting to check the funnel plot distribution as a visual aid for detecting bias or systematic heterogeneity
+
+#### 6.2 Funnel Plot
+
+```{r}
+plot_funnel <- function(period1, period2, type = "PR"){
+  
+suicide_funnel <- suicidedata_eda %>%
+  filter(year >= period1 & year <= period2,
+         sex_name == "Both",
+         age_name == "All ages")
+
+funnel_plot(
+  numerator = suicide_funnel$SN,
+  denominator = suicide_funnel$DN,
+  group = suicide_funnel$country,
+  data_type = type,
+  xrange = c(0, 75000000), 
+  multiplier = 10,
+  label_outliers = TRUE,
+  title = paste0("Cumulative Suicide Rate by Cumulative Total Number of Deaths from ",period1," to ",period2),            
+  x_label = "Cumulative Number of Deaths"
+)
+}
+```
+
+```{r}
+#| fig-height: 8
+#| fig-width: 10
+plot_funnel(2000,2015, "PR")
+```
 
