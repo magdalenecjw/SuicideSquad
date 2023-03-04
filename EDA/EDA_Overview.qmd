@@ -304,11 +304,11 @@ plot_map_eda(2016, "SR", "M", "jenks")
 tmap_mode("plot")
 ```
 
-#### 4.2 Statistical testing on difference in suicide metrics between Regions or Countries
+#### 4.2 Statistical testing on difference in suicide metrics between Regions
 
-##### 4.2.1 Between Regions
+Note that it does not make sense to compare the statistical testing between countries within a particular year as there is only one metric per country. As such, statistical test will be done for a time period for a country (in EDA Time Series segment)
 
-###### 4.2.1.1 Normality assumption
+##### 4.2.1.1 Normality assumption
 
 Plotting histogram by regions
 
@@ -364,7 +364,7 @@ DT::datatable(normaltest, class= "compact")
 adtest_region(2010, "Both", "All ages", "SR")
 ```
 
-###### 4.2.1.2 ANOVA Test
+##### 4.2.1.2 ANOVA Test
 
 ```{r}
 plot_ANOVA_region <- function(year, gender = "Both", age = "All ages", vari = SR, title = "Suicide rate", type = "np", conf = 0.95) {
@@ -395,3 +395,5 @@ suicidedata_ANOVA %>% ggbetweenstats(x = region, y = {{vari}},
 #| fig-width: 10
 plot_ANOVA_region(2010, "Both", "Age-standardized", SR, type = "np")
 ```
+
+
