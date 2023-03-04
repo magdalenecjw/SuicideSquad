@@ -316,7 +316,7 @@ Plotting histogram by regions
 plot_multi_distribution_region <- function(period1, period2, gender = "Both", age = "All ages", vari = SR) {
   
 suicidedata_hist <- suicidedata_eda %>% 
-  filter(year > period1 & year < period2,
+  filter(year >= period1 & year <= period2,
          sex_name == gender,
          age_name == age) %>%
   select(c(3,7,8,9,10,11,12))
@@ -340,7 +340,7 @@ Anderson-Darling Test by Region
 adtest_region <- function(period1, period2, gender = "Both", age = "All ages", vari = "SR") {
 
 suicidedata_ad <- suicidedata_eda %>% 
-  filter(year > period1 & year < period2,
+  filter(year >= period1 & year <= period2,
          sex_name == gender,
          age_name == age) %>%
   select(c(3,7,8,9,10,11,12))
@@ -351,7 +351,7 @@ for (i in unique(suicidedata_ad$region)){
   normaltestlist[[i]] <- nortest::ad.test(subdf[[vari]])
 }
 
-normaltest <- tibble(town = unique(suicidedata_ad$region),
+normaltest <- tibble(Region = unique(suicidedata_ad$region),
                      p_value = unlist(lapply(normaltestlist, `[[`, 2))) 
 
 names(normaltest)[2] <- paste0(vari, " p-value")
@@ -373,7 +373,7 @@ text <- case_when(type == "p" ~ "Mean",
                   type == "np" ~ "Median" )
     
 suicidedata_ANOVA <- suicidedata_eda %>% 
-  filter(year > period1 & year < period2,
+  filter(year >= period1 & year <= period2,
          sex_name == gender,
          age_name == age) %>%
   select(c(3,7,8,9,10,11,12))
@@ -382,7 +382,7 @@ suicidedata_ANOVA %>% ggbetweenstats(x = region, y = {{vari}},
                xlab = "Region", ylab = title,
                type = type, pairwise.comparisons = T, pairwise.display = "ns", 
                mean.ci = T, p.adjust.method = "fdr",  conf.level = conf,
-               title = paste0("Comparison of ",text," ",title, " (", gender, " gender, ", age, ") across Regions between ", period1, " and ", period2),
+               title = paste0("Comparison of ",text," ",title, " (", gender, " gender, ", age, ") across Regions from ", period1, " to ", period2),
                subtitle = paste0("One-way ANOVA at ", conf*100, "% confidence level"),
                package = "ggthemes", palette = "Tableau_10")
 
@@ -404,7 +404,7 @@ text <- case_when(type == "p" ~ "Mean",
                   type == "np" ~ "Median" )
     
 suicidedata_ANOVA <- suicidedata_eda %>% 
-  filter(year > period1 & year < period2,
+  filter(year >= period1 & year <= period2,
          sex_name == gender,
          age_name == age,
          country %in% countrylist) %>%
@@ -414,7 +414,7 @@ suicidedata_ANOVA %>% ggbetweenstats(x = country, y = {{vari}},
                xlab = "Countries", ylab = title,
                type = type, pairwise.comparisons = T, pairwise.display = "ns", 
                mean.ci = T, p.adjust.method = "fdr",  conf.level = conf,
-               title = paste0("Comparison of ",text," ",title, " (", gender, " gender, ", age, ") across Countries between ", period1, " and ", period2),
+               title = paste0("Comparison of ",text," ",title, " (", gender, " gender, ", age, ") across Countries from ", period1, " to ", period2),
                subtitle = paste0("One-way ANOVA at ", conf*100, "% confidence level"),
                package = "ggthemes", palette = "Tableau_10")
 
@@ -485,4 +485,127 @@ ggplotly(p,session="knitr", tooltip = c("x", "fill", "text")) %>%
 ```{r}
 plot_pyramid(2010, "China", SR, "Suicide Rate")
 ```
+
+#### 5.2 Statistical testing on difference in suicide metrics between population structure of a country
+
+##### 5.2.1 Normality assumption
+
+Plotting histogram by population structure
+
+```{r}
+plot_multi_distribution_pop <- function(period1, period2, location, xvari = SR, gridvari) {
+  
+suicidedata_hist <- suicidedata_eda %>% 
+  filter(year >= period1 & year <= period2,
+         sex_name %in% c("Male", "Female"),
+         age_name %in% c("10-14", "15-24", "25-44", "45-64", "65-74", "75+"),
+         country == location) 
+  
+plot <- suicidedata_hist %>% 
+  ggplot(aes(x = {{xvari}})) +
+  facet_grid(cols = vars({{gridvari}}), scales = "free") +
+  geom_histogram()
+
+ggplotly(plot)
+}
+```
+
+```{r}
+plot_multi_distribution_pop(2000, 2015, "China", SR, gridvari=sex_name)
+```
+
+Anderson-Darling Test by Gender
+
+```{r}
+adtest_gender <- function(period1, period2, location, vari = "SR") {
+
+suicidedata_ad <- suicidedata_eda %>% 
+  filter(year >= period1 & year <= period2,
+         sex_name %in% c("Male", "Female"),
+         age_name %in% c("10-14", "15-24", "25-44", "45-64", "65-74", "75+"),
+         country == location) 
+    
+normaltestlist <- list()
+for (i in unique(suicidedata_ad$sex_name)){
+  subdf <- subset(x = suicidedata_ad, subset=sex_name==i)
+  normaltestlist[[i]] <- nortest::ad.test(subdf[[vari]])
+}
+
+normaltest <- tibble(Gender = unique(suicidedata_ad$sex_name),
+                     p_value = unlist(lapply(normaltestlist, `[[`, 2))) 
+
+names(normaltest)[2] <- paste0(vari, " p-value")
+
+DT::datatable(normaltest, class= "compact")
+}
+```
+
+```{r}
+adtest_gender(2000, 2015, "China", "SR")
+```
+
+
+Anderson-Darling Test by Age
+
+```{r}
+adtest_age <- function(period1, period2, location, vari = "SR") {
+
+suicidedata_ad <- suicidedata_eda %>% 
+  filter(year >= period1 & year <= period2,
+         sex_name %in% c("Male", "Female"),
+         age_name %in% c("10-14", "15-24", "25-44", "45-64", "65-74", "75+"),
+         country == location) 
+    
+normaltestlist <- list()
+for (i in unique(suicidedata_ad$age_name)){
+  subdf <- subset(x = suicidedata_ad, subset=age_name==i)
+  normaltestlist[[i]] <- nortest::ad.test(subdf[[vari]])
+}
+
+normaltest <- tibble(`Age Group` = unique(suicidedata_ad$age_name),
+                     p_value = unlist(lapply(normaltestlist, `[[`, 2))) 
+
+names(normaltest)[2] <- paste0(vari, " p-value")
+
+DT::datatable(normaltest, class= "compact")
+}
+```
+
+```{r}
+adtest_age(2000, 2015, "China", "SR")
+```
+
+##### 5.2.2 ANOVA Test
+
+```{r}
+plot_ANOVA_pop <- function(period1, period2, location, xvari, yvari = SR, xlabel, ylabel = "Suicide rate", type = "np", conf = 0.95) {
+
+text <- case_when(type == "p" ~ "Mean",
+                  type == "np" ~ "Median" )
+    
+suicidedata_ANOVA <- suicidedata_eda %>% 
+  filter(year >= period1 & year <= period2,
+         sex_name %in% c("Male", "Female"),
+         age_name %in% c("10-14", "15-24", "25-44", "45-64", "65-74", "75+"),
+         country == location)
+
+suicidedata_ANOVA %>% ggbetweenstats(x = {{xvari}}, y = {{yvari}},
+               xlab = xlabel, ylab = ylabel,
+               type = type, pairwise.comparisons = T, pairwise.display = "ns", 
+               mean.ci = T, p.adjust.method = "fdr",  conf.level = conf,
+               title = paste0("Comparison of ",text," ",ylabel, " between ", xlabel, " in ",location, " from ", period1, " to ", period2),
+               subtitle = paste0("One-way ANOVA at ", conf*100, "% confidence level"),
+               package = "ggthemes", palette = "Tableau_10")
+
+}
+
+```
+
+```{r}
+#| fig-height: 8
+#| fig-width: 10
+plot_ANOVA_pop(2000, 2015, "China", xvari = age_name, yvari = SR, xlabel = "Age Group", ylabel = "Suicide rate", type = "np")
+```
+
+
 
