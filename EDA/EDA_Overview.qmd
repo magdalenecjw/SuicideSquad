@@ -9,6 +9,7 @@ execute:
   warning: false
 format: html
 editor: visual
+toc-depth: 5
 ---
 
 ## Step-by-Step Data Preparation
@@ -16,7 +17,7 @@ editor: visual
 ### 1. Installing and launching required R packages
 
 ```{r}
-pacman::p_load("patchwork", "tmap", "ExPanDaR", "kableExtra", "ggstatsplot", "tidyverse")
+pacman::p_load("patchwork", "tmap", "ExPanDaR", "kableExtra", "ggstatsplot", "plotly", "DT", "tidyverse")
 ```
 
 ### 2. Loading the data
@@ -30,9 +31,11 @@ suicidedata_eda <- read_csv("data/suicidedata_eda.csv", show_col_types = FALSE)
 ```
 
 ### 3. Dataset overview
+
 We will check the suicidedata_eda as suicidedata_eda_formap is meant to be combined with the sf file (world)
 
 #### 3.1 Missing Values
+
 ```{r}
 missing.values <- suicidedata_eda %>%
     gather(key = "key", value = "val") %>%
@@ -46,6 +49,7 @@ missing.values %>% kable()
 ```
 
 Visualising Missing Values
+
 ```{r}
 missing_values <- function(vari = "age_name"){
 prepare_missing_values_graph(suicidedata_eda, ts_id = vari)
@@ -53,37 +57,40 @@ prepare_missing_values_graph(suicidedata_eda, ts_id = vari)
 ```
 
 By country
+
 ```{r}
 #| fig-height: 15
 #| fig-width: 10
 missing_values("country")
 ```
 
-
 By gender
+
 ```{r}
 missing_values("sex_name")
 ```
 
 By age group
+
 ```{r}
 missing_values("age_name")
 ```
 
 By year
+
 ```{r}
 missing_values("year")
 ```
+
 Conclusion : The missing values are because of age-standardised (only for Suicide Rates)
 
 #### 3.2 Descriptive statistics
 
 ```{r}
-descr_stats <- function(year, gender = "Both", age = "All ages") {
+descr_stats <- function(gender = "Both", age = "All ages") {
   
   descr <- prepare_descriptive_table(suicidedata_eda %>%
-                                       filter(year == year,
-                                              sex_name == gender,
+                                       filter(sex_name == gender,
                                               age_name == age) %>%
                                        select(!c(6,8)) %>%
                                        rename("Number of suicide" = "SN",
@@ -97,18 +104,18 @@ descr$kable_ret  %>%
 ```
 
 ```{r}
-descr_stats(2010, "Both", "All ages")
+descr_stats("Both", "All ages")
 ```
 
-#### 3.3 Distribution 
+#### 3.3 Distribution
 
 ##### 3.3.1 Histogram of multiple variables
+
 ```{r}
-plot_multi_distribution <- function(year, gender = "Both", age = "All ages") {
+plot_multi_distribution <- function(gender = "Both", age = "All ages") {
   
 suicidedata_hist <- suicidedata_eda %>% 
-  filter(year == year,
-         sex_name == gender,
+  filter(sex_name == gender,
          age_name == age) %>%
   select(c(7,9,10,11,12)) %>%
   rename("Number of suicide" = "SN",
@@ -117,61 +124,51 @@ suicidedata_hist <- suicidedata_eda %>%
          "Suicide rate" = "SR",
          "Mortality rate" = "DR")
   
-suicidedata_hist %>% 
+plot <- suicidedata_hist %>% 
   gather() %>%
   ggplot(aes(value)) +
   facet_wrap( ~key, ncol=3, scales="free") +
   geom_histogram()
+
+ggplotly(plot)
 }
 ```
 
 ```{r}
-plot_multi_distribution(2010, "Both", "All ages")
-```
-```{r}
-suicidedata_hist <- suicidedata_eda %>% 
-  filter(year == 2010,
-         sex_name == "Both",
-         age_name == "All ages")
-
-
-suicidedata_summary <- suicidedata_hist %>%
-  summarise(mean = round(mean(SR)),
-            median = round(median(SR)),
-            ymax = as.numeric(round((IQR(SR)*1.5) + quantile(SR,0.75))),
-            ymin = as.integer(min(SR))) 
-
-#var_mean <- mean(suicidedata_hist[,11])
+plot_multi_distribution("Both", "All ages")
 ```
 
+It does not make sense to look at numbers due to different population sizes. Hence we will only look at Suicide Rate, Mortality Rate and Share of deaths from suicide (%) from now on
 
 ##### 3.3.2 Histogram of individual variables
+
 ```{r}
-plot_distribution <- function(year, gender = "Both", age = "All ages", vari = SR, title = "Suicide Rate", binwidth = 2) {
+plot_distribution <- function(gender = "Both", age = "All ages", vari = SR, title = "Suicide Rate", binwidth = 2) {
   
 suicidedata_hist <- suicidedata_eda %>% 
-  filter(year == year,
-         sex_name == gender,
+  filter(sex_name == gender,
          age_name == age)
 
 suicidedata_summary <- suicidedata_hist %>%
   summarise(mean = round(mean({{vari}})),
             median = round(median({{vari}})),
             ymax = as.numeric(round((IQR({{vari}})*1.5) + quantile({{vari}},0.75))),
-            ymin = as.integer(min({{vari}}))) 
+            ymin = as.integer(min({{vari}})),
+            rangemax = as.integer(max({{vari}}))) 
 
 #computing summary statistics of mean, median and lower and upper whiskers in boxplot
 var_mean <- suicidedata_summary$mean
 var_median <- suicidedata_summary$median
 ymax <- suicidedata_summary$ymax
 ymin <- suicidedata_summary$ymin
+rangemax <- suicidedata_summary$rangemax
 
 #plotting histogram
 h1 <- ggplot(suicidedata_hist, aes(x = {{vari}})) + 
   geom_histogram(color="black", fill="azure4", binwidth = binwidth)  
   
-h <- h1 + scale_x_continuous(labels = scales::comma) +
-  labs(x = paste0(title,", ",gender,", ",age,", ", year), y = "Count") +
+h <- h1 + scale_x_continuous(limits = c(0,rangemax), labels = scales::comma) +
+  labs(x = paste0(title,", ",gender,", ",age), y = "Count") +
   geom_vline(aes(xintercept = var_mean), col="darkblue", linewidth=1, linetype = "dashed") +
   annotate("text", x=var_mean*1.05, y=max(ggplot_build(h1)$data[[1]]$count)*1.2, label="Mean:", 
            size=4, color="darkblue", hjust = 0) +
@@ -189,7 +186,7 @@ b <- ggplot(suicidedata_hist, aes(y = {{vari}})) +
   geom_boxplot(outlier.colour="firebrick", outlier.shape=16,
                outlier.size=1, notch=FALSE) + 
   coord_flip() + labs(y = "", x = "") + 
-  scale_y_continuous(labels = scales::comma) +
+  scale_y_continuous(limits = c(0,rangemax), labels = scales::comma) +
   theme(axis.text = element_blank(), axis.ticks = element_blank()) + 
   stat_boxplot(geom="errorbar", width=0.5) +
   annotate("text", x=0.35, y=ymax, label=format(ymax, big.mark = ","), 
@@ -206,13 +203,42 @@ suicide_distri
 ```
 
 ```{r}
-plot_distribution(2010, "Both", "All ages", SR, "Suicide Rate", 2)
+plot_distribution("Both", "All ages", SR, "Suicide Rate", 2)
 ```
 
+#### 3.4 Outliers
 
+```{r}
+outliers_table <- function(gender = "Both", age = "All ages", vari = "Suicide rate") {
+  
+  outliers <- prepare_ext_obs_table(suicidedata_eda %>%
+                                       filter(sex_name == gender,
+                                              age_name == age) %>%
+                                      select(!c(2,3,4,5)) %>%
+                                      rename("Share of deaths from suicide (%)" = "SP",
+                                             "Suicide rate" = "SR",
+                                             "Mortality rate" = "DR"),
+                                    n = 10,
+                                    cs_id = "country",
+                                    ts_id = "year",
+                                    var = vari)
+    
+outliers$kable_ret  %>%
+  kable_styling("condensed", full_width = F, position = "center")
+}
+```
 
-### 4. Plotting the choropleth map
-#### 4.1 Joining with world map (tmap object)
+```{r}
+outliers_table("Both", "All ages", "Suicide rate")
+```
+
+More outliers on the high-end as compared to the other side with Greenland dominating the outliers. There might be interesting pattern here, hence windsorising the data using `treat_outliers()` function might not be recommended
+
+### 4. Comparing between countries and regions within a particular year
+
+#### 4.1 Plotting the choropleth map
+
+##### 4.1.1 Joining with world map (tmap object)
 
 The object `World` is a spatial object of class `sf` from the [sf package](https://cran.r-project.org/package=sf); it is a `data.frame` with a special column that contains a geometry for each row, in this case polygons
 
@@ -235,8 +261,7 @@ suicidedata_eda_map <- left_join(World,
   na.omit()
 ```
 
-
-Creating a function to plot
+##### 4.1.2 Creating function to plot choropleth map
 
 ```{r}
 plot_map_eda <- function(year, metric = "SR", gender = "T", style = "jenks"){
@@ -279,3 +304,94 @@ plot_map_eda(2016, "SR", "M", "jenks")
 tmap_mode("plot")
 ```
 
+#### 4.2 Statistical testing on difference in suicide metrics between Regions or Countries
+
+##### 4.2.1 Between Regions
+
+###### 4.2.1.1 Normality assumption
+
+Plotting histogram by regions
+
+```{r}
+plot_multi_distribution_region <- function(year, gender = "Both", age = "All ages", vari = SR) {
+  
+suicidedata_hist <- suicidedata_eda %>% 
+  filter(year == year,
+         sex_name == gender,
+         age_name == age) %>%
+  select(c(3,7,8,9,10,11,12))
+  
+plot <- suicidedata_hist %>% 
+  ggplot(aes(x = {{vari}})) +
+  facet_wrap( ~region, ncol=4, scales="free") +
+  geom_histogram()
+
+ggplotly(plot)
+}
+```
+
+```{r}
+plot_multi_distribution_region(2010, "Both", "All ages", SR)
+```
+
+Anderson-Darling Test by Region
+
+```{r}
+adtest_region <- function(year, gender = "Both", age = "All ages", vari = "SR") {
+
+suicidedata_ad <- suicidedata_eda %>% 
+  filter(year == year,
+         sex_name == gender,
+         age_name == age) %>%
+  select(c(3,7,8,9,10,11,12))
+    
+normaltestlist <- list()
+for (i in unique(suicidedata_ad$region)){
+  subdf <- subset(x = suicidedata_ad, subset=region==i)
+  normaltestlist[[i]] <- nortest::ad.test(subdf[[vari]])
+}
+
+normaltest <- tibble(town = unique(suicidedata_ad$region),
+                     p_value = unlist(lapply(normaltestlist, `[[`, 2))) 
+
+names(normaltest)[2] <- paste0(vari, " p-value")
+
+DT::datatable(normaltest, class= "compact")
+}
+```
+
+```{r}
+adtest_region(2010, "Both", "All ages", "SR")
+```
+
+###### 4.2.1.2 ANOVA Test
+
+```{r}
+plot_ANOVA_region <- function(year, gender = "Both", age = "All ages", vari = SR, title = "Suicide rate", type = "np", conf = 0.95) {
+
+text <- case_when(type == "p" ~ "Mean",
+                  type == "np" ~ "Median" )
+    
+suicidedata_ANOVA <- suicidedata_eda %>% 
+  filter(year == year,
+         sex_name == gender,
+         age_name == age) %>%
+  select(c(3,7,8,9,10,11,12))
+
+suicidedata_ANOVA %>% ggbetweenstats(x = region, y = {{vari}},
+               xlab = "Region", ylab = title,
+               type = type, pairwise.comparisons = T, pairwise.display = "ns", 
+               mean.ci = T, p.adjust.method = "fdr",  conf.level = conf,
+               title = paste0("Comparison of ",text," ",title, " (", gender, " gender, ", age, ") across Regions in ", year),
+               subtitle = paste0("One-way ANOVA at ", conf*100, "% confidence level"),
+               package = "ggthemes", palette = "Tableau_10")
+
+}
+
+```
+
+```{r}
+#| fig-height: 8
+#| fig-width: 10
+plot_ANOVA_region(2010, "Both", "Age-standardized", SR, type = "np")
+```
