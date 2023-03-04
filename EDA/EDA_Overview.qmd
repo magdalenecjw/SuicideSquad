@@ -306,8 +306,6 @@ tmap_mode("plot")
 
 #### 4.2 Statistical testing on difference in suicide metrics between Regions
 
-Note that it does not make sense to perform the statistical testing between countries within a fixed particular period. Hence, statistical test will be done to check whether there are changes in the metric of particular country across time period (in EDA Time Series segment)
-
 ##### 4.2.1.1 Normality assumption
 
 Plotting histogram by regions
@@ -395,7 +393,37 @@ suicidedata_ANOVA %>% ggbetweenstats(x = region, y = {{vari}},
 #| fig-width: 10
 plot_ANOVA_region(2000, 2015, "Both", "Age-standardized", SR, type = "np")
 ```
-By Countries
+#### 4.3 Statistical testing on difference in suicide metrics between Countries
+
+##### 4.3.1.1 Normality assumption
+
+Plotting histogram by countries
+
+```{r}
+plot_multi_distribution_countries <- function(period1, period2, gender = "Both", age = "All ages", countrylist, vari = SR) {
+  
+suicidedata_hist <- suicidedata_eda %>% 
+  filter(year >= period1 & year <= period2,
+         sex_name == gender,
+         age_name == age,
+         country %in% countrylist) 
+  
+plot <- suicidedata_hist %>% 
+  ggplot(aes(x = {{vari}})) +
+  facet_wrap( ~country, ncol=3, scales="free") +
+  geom_histogram()
+
+ggplotly(plot)
+}
+```
+
+```{r}
+plot_multi_distribution_countries(2000, 2015, "Both", "All ages", c("China", "Japan", "Singapore", "Greenland", "Indonesia"),SR)
+```
+
+There is no need to test for normality assumption as the distribution clearly does not resemble normal distribution and sample size < 30
+
+##### 4.3.1.2 ANOVA Test
 
 ```{r}
 plot_ANOVA_country <- function(period1, period2, gender = "Both", age = "All ages", countrylist, vari = SR, title = "Suicide rate", type = "np", conf = 0.95) {
@@ -428,6 +456,7 @@ suicidedata_ANOVA %>% ggbetweenstats(x = country, y = {{vari}},
 plot_ANOVA_country(2000, 2015, "Both", "Age-standardized", c("China", "Japan", "Singapore", "Greenland", "Indonesia"),SR, type = "np")
 ```
 Number of data is very small when compared across countries. Hence this will not go to Shiny App
+Statistical test will be done to check whether there are changes in the metric of particular country across time period (in EDA Time Series segment)
 
 
 ### 5. Comparing population groups in a country within a particular period
@@ -517,6 +546,25 @@ plot_multi_distribution_pop(2000, 2015, "China", SR, gridvari=sex_name)
 Anderson-Darling Test by Gender
 
 ```{r}
+suicidedata_ad <- suicidedata_eda %>% 
+  filter(year >= 2000 & year <= 2015,
+         sex_name %in% c("Male", "Female"),
+         age_name %in% c("10-14", "15-24", "25-44", "45-64", "65-74", "75+"),
+         country == "China") 
+    
+normaltestlist <- list()
+for (i in unique(suicidedata_ad$sex_name)){
+  subdf <- subset(x = suicidedata_ad, subset=sex_name==i)
+  normaltestlist[[i]] <- nortest::ad.test(subdf[["SR"]])
+}
+
+normaltest <- tibble(Gender = unique(suicidedata_ad$sex_name),
+                     p_value = unlist(lapply(normaltestlist, `[[`, 2))) 
+```
+
+
+
+```{r}
 adtest_gender <- function(period1, period2, location, vari = "SR") {
 
 suicidedata_ad <- suicidedata_eda %>% 
@@ -574,6 +622,7 @@ DT::datatable(normaltest, class= "compact")
 ```{r}
 adtest_age(2000, 2015, "China", "SR")
 ```
+Note that the number of observations per age group is small (<30), hence it should not be considered normal
 
 ##### 5.2.2 ANOVA Test
 
