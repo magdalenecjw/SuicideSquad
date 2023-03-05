@@ -662,7 +662,7 @@ plot_ANOVA_pop(2000, 2015, "China", xvari = age_name, yvari = SR, xlabel = "Age 
 suicide_funnel <- suicidedata_eda %>%
   filter(sex_name == "Both",
          age_name == "All ages") %>%
-  mutate(rate = SN/DN) 
+  mutate(rate = sqrt(SN)/sqrt(DN)) 
 ```
 
 #### 6.1 Check for normality
@@ -670,30 +670,38 @@ suicide_funnel <- suicidedata_eda %>%
 ```{r}
 suicide_funnel %>%
   ggplot() +
-  geom_histogram(aes(x = rate), binwidth = 0.001)
+  geom_histogram(aes(x = rate), binwidth = 0.0001)
 ```
-Based on the trend above, this is not normal distribution. However, it is still interesting to check the funnel plot distribution as a visual aid for detecting bias or systematic heterogeneity
+```{r}
+nortest::ad.test(suicide_funnel[["rate"]])
+```
+
+Based on the plot above, this is close to normal distribution, however AD test does not show that. However, it is still interesting to check the funnel plot distribution as a visual aid for detecting bias or systematic heterogeneity
 
 #### 6.2 Funnel Plot
 
 ```{r}
-plot_funnel <- function(period1, period2, type = "PR"){
+plot_funnel <- function(period1, period2, type = "PR", xrangemax = 100){
   
 suicide_funnel <- suicidedata_eda %>%
   filter(year >= period1 & year <= period2,
          sex_name == "Both",
-         age_name == "All ages")
+         age_name == "All ages") %>%
+  mutate(num = sqrt(SN),
+         denom = sqrt(DN))
 
 funnel_plot(
-  numerator = suicide_funnel$SN,
-  denominator = suicide_funnel$DN,
+  numerator = suicide_funnel$num,
+  denominator = suicide_funnel$denom,
   group = suicide_funnel$country,
   data_type = type,
-  xrange = c(0, 75000000), 
-  multiplier = 10,
+  yrange = c(0,max(suicide_funnel$num/suicide_funnel$denom)*1.1),
+  xrange = c(0,xrangemax),
+  #multiplier = 10,
   label_outliers = TRUE,
-  title = paste0("Cumulative Suicide Rate by Cumulative Total Number of Deaths from ",period1," to ",period2),            
-  x_label = "Cumulative Number of Deaths"
+  title = paste0("Cumulative log Number of Suicide by Cumulative log Number of Deaths from ",period1," to ",period2),            
+  x_label = "Cumulative log Number of Deaths",
+  y_label = "Cumulative log Number of Suicide"
 )
 }
 ```
@@ -701,6 +709,6 @@ funnel_plot(
 ```{r}
 #| fig-height: 8
 #| fig-width: 10
-plot_funnel(2000,2015, "PR")
+plot_funnel(1990,2019, "PR", xrangemax = 60000)
 ```
 
