@@ -59,9 +59,7 @@ suicidedata_mod <- suicidedata %>%
 suicidedata_mod
 ```
 
-### 4. Matching country's name with region (*ISO 3166-1 alpha-3* country code
-
-data)
+### 4. Matching country's name with region (*ISO 3166-1 alpha-3* country code data)
 
 Identify key differences
 
@@ -676,13 +674,43 @@ suicidedata_analysis <- left_join(suicidedata_eda_formap %>%
   #infer HAQ data from previous survey year
   group_by(code) %>%
   fill(HAQ, .direction = "down") %>%
-  ungroup()
+  ungroup() %>%
 
-knitr::kable(head(suicidedata_analysis))
+  #infer gini data from previous years
+  group_by(code) %>%
+  fill(gini) %>%
+  ungroup() %>%
+
+  #infer population of extreme poverty data from previous years
+  group_by(code) %>%
+  fill(`pop%extreme_poverty`) %>%
+  ungroup() %>%
+
+  #infer average working hours from previous years
+  group_by(code) %>%
+  fill(avg_hrs_worked) %>%
+  ungroup() %>%
+
+  #infer happiness from previous years
+  group_by(code) %>%
+  fill(happiness) %>%
+  ungroup() %>%
+
+  #infer unemployment rate from previous years
+  group_by(code) %>%
+  fill(unemployment_rate) %>%
+  ungroup() %>%
+
+  #infer mental & substance use disorder rate from previous years
+  group_by(code) %>%
+  fill(mental_disorder) %>%
+  ungroup()
+  
+  knitr::kable(head(suicidedata_analysis))
 ```
 
 ```{r}
-#write_csv(suicidedata_analysis,'C:/magdalenecjw/SuicideSquad/EDA/data/suicidedata_analysis.csv')
+write_csv(suicidedata_analysis,'C:/magdalenecjw/SuicideSquad/EDA/data/suicidedata_analysis.csv')
 ```
 
 Other References using typical world map - https://rpubs.com/Thom_JH/798825

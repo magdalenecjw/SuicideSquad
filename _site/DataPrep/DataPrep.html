@@ -194,7 +194,7 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
   <li><a href="#installing-and-launching-required-r-packages" id="toc-installing-and-launching-required-r-packages" class="nav-link" data-scroll-target="#installing-and-launching-required-r-packages">1. Installing and launching required R packages</a></li>
   <li><a href="#loading-the-data" id="toc-loading-the-data" class="nav-link" data-scroll-target="#loading-the-data">2. Loading the data</a></li>
   <li><a href="#data-wrangling" id="toc-data-wrangling" class="nav-link" data-scroll-target="#data-wrangling">3. Data wrangling</a></li>
-  <li><a href="#matching-countrys-name-with-region-iso-3166-1-alpha-3-country-code" id="toc-matching-countrys-name-with-region-iso-3166-1-alpha-3-country-code" class="nav-link" data-scroll-target="#matching-countrys-name-with-region-iso-3166-1-alpha-3-country-code">4. Matching country’s name with region (<em>ISO 3166-1 alpha-3</em> country code</a></li>
+  <li><a href="#matching-countrys-name-with-region-iso-3166-1-alpha-3-country-code-data" id="toc-matching-countrys-name-with-region-iso-3166-1-alpha-3-country-code-data" class="nav-link" data-scroll-target="#matching-countrys-name-with-region-iso-3166-1-alpha-3-country-code-data">4. Matching country’s name with region (<em>ISO 3166-1 alpha-3</em> country code data)</a></li>
   <li><a href="#preparing-data-for-analysis" id="toc-preparing-data-for-analysis" class="nav-link" data-scroll-target="#preparing-data-for-analysis">5. Preparing data for analysis</a></li>
   </ul></li>
   </ul>
@@ -341,9 +341,8 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 </div>
 </div>
 </section>
-<section id="matching-countrys-name-with-region-iso-3166-1-alpha-3-country-code" class="level3">
-<h3 class="anchored" data-anchor-id="matching-countrys-name-with-region-iso-3166-1-alpha-3-country-code">4. Matching country’s name with region (<em>ISO 3166-1 alpha-3</em> country code</h3>
-<p>data)</p>
+<section id="matching-countrys-name-with-region-iso-3166-1-alpha-3-country-code-data" class="level3">
+<h3 class="anchored" data-anchor-id="matching-countrys-name-with-region-iso-3166-1-alpha-3-country-code-data">4. Matching country’s name with region (<em>ISO 3166-1 alpha-3</em> country code data)</h3>
 <p>Identify key differences</p>
 <div class="cell">
 <div class="sourceCode cell-code" id="cb7"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a>suicide_vs_region <span class="ot">&lt;-</span> <span class="fu">setdiff</span>(suicidedata_mod<span class="sc">$</span>location_name, world_region<span class="sc">$</span>Entity) <span class="sc">%&gt;%</span></span>
@@ -2223,9 +2222,29 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <span id="cb46-29"><a href="#cb46-29" aria-hidden="true" tabindex="-1"></a>  <span class="co">#infer HAQ data from previous survey year</span></span>
 <span id="cb46-30"><a href="#cb46-30" aria-hidden="true" tabindex="-1"></a>  <span class="fu">group_by</span>(code) <span class="sc">%&gt;%</span></span>
 <span id="cb46-31"><a href="#cb46-31" aria-hidden="true" tabindex="-1"></a>  <span class="fu">fill</span>(HAQ, <span class="at">.direction =</span> <span class="st">"down"</span>) <span class="sc">%&gt;%</span></span>
-<span id="cb46-32"><a href="#cb46-32" aria-hidden="true" tabindex="-1"></a>  <span class="fu">ungroup</span>()</span>
+<span id="cb46-32"><a href="#cb46-32" aria-hidden="true" tabindex="-1"></a>  <span class="fu">ungroup</span>() <span class="sc">%&gt;%</span></span>
 <span id="cb46-33"><a href="#cb46-33" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb46-34"><a href="#cb46-34" aria-hidden="true" tabindex="-1"></a>knitr<span class="sc">::</span><span class="fu">kable</span>(<span class="fu">head</span>(suicidedata_analysis))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<span id="cb46-34"><a href="#cb46-34" aria-hidden="true" tabindex="-1"></a>  <span class="co">#infer gini data from previous years</span></span>
+<span id="cb46-35"><a href="#cb46-35" aria-hidden="true" tabindex="-1"></a>  <span class="fu">group_by</span>(code) <span class="sc">%&gt;%</span></span>
+<span id="cb46-36"><a href="#cb46-36" aria-hidden="true" tabindex="-1"></a>  <span class="fu">fill</span>(gini) <span class="sc">%&gt;%</span></span>
+<span id="cb46-37"><a href="#cb46-37" aria-hidden="true" tabindex="-1"></a>  <span class="fu">ungroup</span>() <span class="sc">%&gt;%</span></span>
+<span id="cb46-38"><a href="#cb46-38" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb46-39"><a href="#cb46-39" aria-hidden="true" tabindex="-1"></a>  <span class="co">#infer population of extreme poverty data from previous years</span></span>
+<span id="cb46-40"><a href="#cb46-40" aria-hidden="true" tabindex="-1"></a>  <span class="fu">group_by</span>(code) <span class="sc">%&gt;%</span></span>
+<span id="cb46-41"><a href="#cb46-41" aria-hidden="true" tabindex="-1"></a>  <span class="fu">fill</span>(<span class="st">`</span><span class="at">pop%extreme_poverty</span><span class="st">`</span>) <span class="sc">%&gt;%</span></span>
+<span id="cb46-42"><a href="#cb46-42" aria-hidden="true" tabindex="-1"></a>  <span class="fu">ungroup</span>() <span class="sc">%&gt;%</span></span>
+<span id="cb46-43"><a href="#cb46-43" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb46-44"><a href="#cb46-44" aria-hidden="true" tabindex="-1"></a>  <span class="co">#infer average working hours from previous years</span></span>
+<span id="cb46-45"><a href="#cb46-45" aria-hidden="true" tabindex="-1"></a>  <span class="fu">group_by</span>(code) <span class="sc">%&gt;%</span></span>
+<span id="cb46-46"><a href="#cb46-46" aria-hidden="true" tabindex="-1"></a>  <span class="fu">fill</span>(avg_hrs_worked) <span class="sc">%&gt;%</span></span>
+<span id="cb46-47"><a href="#cb46-47" aria-hidden="true" tabindex="-1"></a>  <span class="fu">ungroup</span>() <span class="sc">%&gt;%</span></span>
+<span id="cb46-48"><a href="#cb46-48" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb46-49"><a href="#cb46-49" aria-hidden="true" tabindex="-1"></a>  <span class="co">#infer happiness from previous years</span></span>
+<span id="cb46-50"><a href="#cb46-50" aria-hidden="true" tabindex="-1"></a>  <span class="fu">group_by</span>(code) <span class="sc">%&gt;%</span></span>
+<span id="cb46-51"><a href="#cb46-51" aria-hidden="true" tabindex="-1"></a>  <span class="fu">fill</span>(happiness) <span class="sc">%&gt;%</span></span>
+<span id="cb46-52"><a href="#cb46-52" aria-hidden="true" tabindex="-1"></a>  <span class="fu">ungroup</span>()</span>
+<span id="cb46-53"><a href="#cb46-53" aria-hidden="true" tabindex="-1"></a>  </span>
+<span id="cb46-54"><a href="#cb46-54" aria-hidden="true" tabindex="-1"></a>  knitr<span class="sc">::</span><span class="fu">kable</span>(<span class="fu">head</span>(suicidedata_analysis))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output-display">
 <table class="table table-sm table-striped">
 <colgroup>

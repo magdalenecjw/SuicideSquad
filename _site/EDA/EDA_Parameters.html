@@ -189,7 +189,7 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
    
   <ul>
   <li><a href="#load-packages-and-data-set" id="toc-load-packages-and-data-set" class="nav-link active" data-scroll-target="#load-packages-and-data-set">Load Packages and Data Set</a></li>
-  <li><a href="#data-wrangling" id="toc-data-wrangling" class="nav-link" data-scroll-target="#data-wrangling">Data Wrangling</a></li>
+  <li><a href="#visualising-missing-values" id="toc-visualising-missing-values" class="nav-link" data-scroll-target="#visualising-missing-values">Visualising Missing Values</a></li>
   </ul>
 </nav>
     </div>
@@ -227,8 +227,8 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a>suicide_analysis <span class="ot">&lt;-</span> <span class="fu">read.csv</span>(<span class="st">'data/suicidedata_analysis.csv'</span>, <span class="at">header =</span> T)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 </section>
-<section id="data-wrangling" class="level1">
-<h1>Data Wrangling</h1>
+<section id="visualising-missing-values" class="level1">
+<h1>Visualising Missing Values</h1>
 <div class="cell">
 <div class="sourceCode cell-code" id="cb2"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a>missing.values <span class="ot">&lt;-</span> suicide_analysis <span class="sc">%&gt;%</span></span>
 <span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a>    <span class="fu">pivot_longer</span>(<span class="at">cols =</span> SR_AS_M<span class="sc">:</span>mental_disorder, </span>
@@ -252,51 +252,124 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 </thead>
 <tbody>
 <tr class="odd">
-<td style="text-align: left;">gini</td>
-<td style="text-align: right;">4735</td>
+<td style="text-align: left;">avg_hrs_worked</td>
+<td style="text-align: right;">4154</td>
 </tr>
 <tr class="even">
-<td style="text-align: left;">pop.extreme_poverty</td>
-<td style="text-align: right;">4732</td>
-</tr>
-<tr class="odd">
 <td style="text-align: left;">happiness</td>
-<td style="text-align: right;">4469</td>
+<td style="text-align: right;">3673</td>
 </tr>
-<tr class="even">
+<tr class="odd">
 <td style="text-align: left;">healthcare_spend</td>
-<td style="text-align: right;">2534</td>
+<td style="text-align: right;">2386</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">gini</td>
+<td style="text-align: right;">2252</td>
 </tr>
 <tr class="odd">
+<td style="text-align: left;">pop.extreme_poverty</td>
+<td style="text-align: right;">2234</td>
+</tr>
+<tr class="even">
 <td style="text-align: left;">hdi</td>
-<td style="text-align: right;">1409</td>
+<td style="text-align: right;">981</td>
 </tr>
-<tr class="even">
+<tr class="odd">
 <td style="text-align: left;">unemployment_rate</td>
-<td style="text-align: right;">1250</td>
+<td style="text-align: right;">842</td>
 </tr>
-<tr class="odd">
+<tr class="even">
 <td style="text-align: left;">gdp_per_capita</td>
-<td style="text-align: right;">1200</td>
-</tr>
-<tr class="even">
-<td style="text-align: left;">mental_disorder</td>
-<td style="text-align: right;">1096</td>
-</tr>
-<tr class="odd">
-<td style="text-align: left;">depr_rate</td>
-<td style="text-align: right;">438</td>
-</tr>
-<tr class="even">
-<td style="text-align: left;">violent_death_rate</td>
-<td style="text-align: right;">438</td>
+<td style="text-align: right;">762</td>
 </tr>
 <tr class="odd">
 <td style="text-align: left;">HAQ</td>
 <td style="text-align: right;">300</td>
 </tr>
+<tr class="even">
+<td style="text-align: left;">mental_disorder</td>
+<td style="text-align: right;">270</td>
+</tr>
 </tbody>
 </table>
+</div>
+</div>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb3"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="fu">prepare_missing_values_graph</span>(<span class="at">df =</span> suicide_analysis</span>
+<span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a>                               <span class="sc">|&gt;</span> <span class="fu">select</span>(region, year,</span>
+<span id="cb3-3"><a href="#cb3-3" aria-hidden="true" tabindex="-1"></a>                                         gdp_per_capita<span class="sc">:</span>mental_disorder), </span>
+<span id="cb3-4"><a href="#cb3-4" aria-hidden="true" tabindex="-1"></a>                               <span class="at">ts_id =</span> <span class="st">"region"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+<p><img src="EDA_Parameters_files/figure-html/unnamed-chunk-3-1.png" class="img-fluid" width="672"></p>
+</div>
+</div>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb4"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a><span class="fu">prepare_missing_values_graph</span>(<span class="at">df =</span> suicide_analysis </span>
+<span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a>                             <span class="sc">|&gt;</span> <span class="fu">select</span>(year, gdp_per_capita<span class="sc">:</span>mental_disorder), </span>
+<span id="cb4-3"><a href="#cb4-3" aria-hidden="true" tabindex="-1"></a>                               <span class="at">ts_id =</span> <span class="st">"year"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+<p><img src="EDA_Parameters_files/figure-html/unnamed-chunk-4-1.png" class="img-fluid" width="672"></p>
+</div>
+</div>
+<p>As there is a large amount of missing values between the years 1990 to 2005 for a few variables, we will filter the data down to only include values from 2005 onwards. We will also exclude the variable “Average hours worked” since there is a consistently high proportion of missing values.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb5"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a><span class="fu">prepare_missing_values_graph</span>(<span class="at">df =</span> suicide_analysis </span>
+<span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a>                             <span class="sc">|&gt;</span> <span class="fu">filter</span>(year <span class="sc">%in%</span> <span class="fu">seq</span>(<span class="dv">2005</span>,<span class="dv">2020</span>,<span class="dv">1</span>))</span>
+<span id="cb5-3"><a href="#cb5-3" aria-hidden="true" tabindex="-1"></a>                             <span class="sc">|&gt;</span> <span class="fu">select</span>(region, year,</span>
+<span id="cb5-4"><a href="#cb5-4" aria-hidden="true" tabindex="-1"></a>                                       gdp_per_capita<span class="sc">:</span>mental_disorder)</span>
+<span id="cb5-5"><a href="#cb5-5" aria-hidden="true" tabindex="-1"></a>                             <span class="sc">|&gt;</span> <span class="fu">select</span>(<span class="sc">!</span>avg_hrs_worked), </span>
+<span id="cb5-6"><a href="#cb5-6" aria-hidden="true" tabindex="-1"></a>                               <span class="at">ts_id =</span> <span class="st">"region"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+<p><img src="EDA_Parameters_files/figure-html/unnamed-chunk-5-1.png" class="img-fluid" width="672"></p>
+</div>
+</div>
+<p>This seems to bring down the proportion of missing values, but there remains areas and variables with a high number of missing values. Let’s take a look at how the missing values are distributed within countries in each region.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb6"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a>missing_val_graph <span class="ot">&lt;-</span> <span class="cf">function</span>(a){</span>
+<span id="cb6-2"><a href="#cb6-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">prepare_missing_values_graph</span>(<span class="at">df =</span> suicide_analysis </span>
+<span id="cb6-3"><a href="#cb6-3" aria-hidden="true" tabindex="-1"></a>                             <span class="sc">|&gt;</span> <span class="fu">filter</span>(year <span class="sc">%in%</span> <span class="fu">seq</span>(<span class="dv">2005</span>,<span class="dv">2020</span>,<span class="dv">1</span>))</span>
+<span id="cb6-4"><a href="#cb6-4" aria-hidden="true" tabindex="-1"></a>                             <span class="sc">|&gt;</span> <span class="fu">filter</span>(region <span class="sc">==</span> a)</span>
+<span id="cb6-5"><a href="#cb6-5" aria-hidden="true" tabindex="-1"></a>                             <span class="sc">|&gt;</span> <span class="fu">select</span>(region, country, year,</span>
+<span id="cb6-6"><a href="#cb6-6" aria-hidden="true" tabindex="-1"></a>                                       gdp_per_capita<span class="sc">:</span>mental_disorder)</span>
+<span id="cb6-7"><a href="#cb6-7" aria-hidden="true" tabindex="-1"></a>                             <span class="sc">|&gt;</span> <span class="fu">select</span>(<span class="sc">!</span>avg_hrs_worked), </span>
+<span id="cb6-8"><a href="#cb6-8" aria-hidden="true" tabindex="-1"></a>                               <span class="at">ts_id =</span> <span class="st">"country"</span>)</span>
+<span id="cb6-9"><a href="#cb6-9" aria-hidden="true" tabindex="-1"></a>}</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb7"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a><span class="fu">missing_val_graph</span>(<span class="st">"Sub-Saharan Africa"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+<p><img src="EDA_Parameters_files/figure-html/unnamed-chunk-7-1.png" class="img-fluid" width="672"></p>
+</div>
+</div>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb8"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a><span class="fu">missing_val_graph</span>(<span class="st">"Middle East and North Africa"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+<p><img src="EDA_Parameters_files/figure-html/unnamed-chunk-8-1.png" class="img-fluid" width="672"></p>
+</div>
+</div>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb9"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a><span class="fu">missing_val_graph</span>(<span class="st">"South Asia"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+<p><img src="EDA_Parameters_files/figure-html/unnamed-chunk-9-1.png" class="img-fluid" width="672"></p>
+</div>
+</div>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb10"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb10-1"><a href="#cb10-1" aria-hidden="true" tabindex="-1"></a><span class="fu">missing_val_graph</span>(<span class="st">"East Asia and Pacific"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+<p><img src="EDA_Parameters_files/figure-html/unnamed-chunk-10-1.png" class="img-fluid" width="672"></p>
+</div>
+</div>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb11"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb11-1"><a href="#cb11-1" aria-hidden="true" tabindex="-1"></a><span class="fu">missing_val_graph</span>(<span class="st">"North America"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+<p><img src="EDA_Parameters_files/figure-html/unnamed-chunk-11-1.png" class="img-fluid" width="672"></p>
+</div>
+</div>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb12"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb12-1"><a href="#cb12-1" aria-hidden="true" tabindex="-1"></a><span class="fu">missing_val_graph</span>(<span class="st">"Europe and Central Asia"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+<p><img src="EDA_Parameters_files/figure-html/unnamed-chunk-12-1.png" class="img-fluid" width="672"></p>
 </div>
 </div>
 

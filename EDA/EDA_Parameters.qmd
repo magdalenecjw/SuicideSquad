@@ -13,7 +13,7 @@ pacman::p_load(tidyverse, ExPanDaR, knitr)
 suicide_analysis <- read.csv('data/suicidedata_analysis.csv', header = T)
 ```
 
-# Data Wrangling
+# Visualising Missing Values
 
 ```{r}
 missing.values <- suicide_analysis %>%
@@ -28,4 +28,107 @@ missing.values <- suicide_analysis %>%
     arrange(desc(num.missing)) 
 
 missing.values %>% kable()
+```
+
+```{r}
+prepare_missing_values_graph(df = suicide_analysis
+                               |> select(region, year,
+                                         gdp_per_capita:mental_disorder), 
+                               ts_id = "region")
+```
+
+```{r}
+prepare_missing_values_graph(df = suicide_analysis 
+                             |> select(year, gdp_per_capita:mental_disorder), 
+                               ts_id = "year")
+```
+
+As there is a large amount of missing values between the years 1990 to 2005 for a few variables, we will filter the data down to only include values from 2005 onwards. We will also exclude the variable "Average hours worked" since there is a consistently high proportion of missing values.
+
+```{r}
+prepare_missing_values_graph(df = suicide_analysis 
+                             |> filter(year %in% seq(2005,2020,1))
+                             |> select(region, year,
+                                       gdp_per_capita:mental_disorder)
+                             |> select(!avg_hrs_worked), 
+                               ts_id = "region")
+```
+
+This seems to bring down the proportion of missing values, but there remains areas and variables with a high number of missing values. Let's take a look at how the missing values are distributed within countries in each region.
+
+```{r}
+missing_val_graph <- function(a){
+  prepare_missing_values_graph(df = suicide_analysis 
+                             |> filter(year %in% seq(2005,2020,1))
+                             |> filter(region == a)
+                             |> select(region, country, year,
+                                       gdp_per_capita:mental_disorder)
+                             |> select(!avg_hrs_worked), 
+                               ts_id = "country")
+}
+```
+
+```{r}
+missing_val_graph("Sub-Saharan Africa")
+```
+
+```{r}
+missing_val_graph("Middle East and North Africa")
+```
+
+```{r}
+missing_val_graph("South Asia")
+```
+
+```{r}
+missing_val_graph("East Asia and Pacific")
+```
+
+```{r}
+missing_val_graph("North America")
+```
+
+```{r}
+missing_val_graph("Europe and Central Asia")
+```
+
+# Missing Values Graph v2 after exclusions
+
+```{r}
+exclude_countries <- c('Afghanistan', 'Maldives', 'Bhutan', 'Bermuda', 
+                       'San Marino', 'Monaco', 'Greenland', 'Andorra',
+                       'Montenegro', 'Turkmenistan', 'Iceland', 'Luxembourg',
+                       'Serbia', 'Cyprus', 'Vanuatu', 'Tuvalu', 'Tokelau',
+                       'Solomon Islands', 'Papau New Guinea', 'Palau', 
+                       'Northern Mariana Islands', 'Samoa', 'North Korea', 
+                       'Niue', 'Nauru', 'Guam', 'Cook Islands', 'Timor-Leste',
+                       'American Samoa', 'Marshall Islands', 'Tonga', 'Taiwan',
+                       'Papua New Guinea', 'Micronesia', 'Kiribati', 'Fiji',
+                       'Brunei')
+
+missing_val_graph_v2 <- function(a){
+  prepare_missing_values_graph(df = suicide_analysis 
+                             |> filter(year %in% seq(2005,2020,1))
+                             |> filter(!(country %in% exclude_countries))
+                             |> filter(region == a)
+                             |> select(region, country, year,                                         gdp_per_capita:mental_disorder)
+                             |> select(!avg_hrs_worked), 
+                               ts_id = "country")
+}
+```
+
+```{r}
+missing_val_graph_v2("South Asia")
+```
+
+```{r}
+missing_val_graph_v2("North America")
+```
+
+```{r}
+missing_val_graph_v2("Europe and Central Asia")
+```
+
+```{r}
+missing_val_graph_v2("East Asia and Pacific")
 ```
