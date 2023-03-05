@@ -16,7 +16,7 @@ editor: visual
 ### 1. Installing and launching required R packages
 
 ```{r}
-pacman::p_load("tmap", "tidyverse")
+pacman::p_load("tmap", "tidyverse", "readxl")
 ```
 
 ### 2. Loading the data
@@ -416,7 +416,24 @@ unemployment <- unemployment %>%
   na.omit()
 ```
 
-#### 5.10 Healthcare Access and Spending
+#### 5.10 Average Annual Hours Worked by Employed Persons
+
+Reference - https://www.rug.nl/ggdc/productivity/pwt/
+
+```{r}
+avh <- read_xlsx("data/pwt1001.xlsx", sheet = "Data")
+```
+
+```{r}
+avh <- avh %>%
+  select(countrycode, year, avh) %>%
+  rename("code" = "countrycode",
+         "avg_hrs_worked" = "avh") %>%
+  filter(year %in% (1990:2019)) %>%
+  filter(!is.na(avg_hrs_worked))
+```
+
+#### 5.11 Healthcare Access and Spending
 
 Reference - https://ourworldindata.org/grapher/haq-by-level-of-healthcare-spending-endpoints?time=earliest
 
@@ -435,7 +452,27 @@ healthcare <- healthcare %>%
   filter(!is.na(HAQ) | !is.na(healthcare_spend))
 ```
 
-#### 5.11 Life Satisfaction
+#### 5.12 Global Disease Burden
+
+Reference - data: https://ourworldindata.org/burden-of-disease, explanation on NCD: https://www.who.int/news-room/fact-sheets/detail/noncommunicable-diseases
+
+Chronic pain is a potential risk factor of suicide. As such, we look at the Global Disease Burden for Non-communicable diseases (or chronic diseases) as a proxy for the prevalence of chronic pain.
+
+```{r}
+chronic_illness <- read.csv("data/total-disease-burden-by-cause.csv")
+```
+
+```{r}
+chronic_illness <- chronic_illness %>%
+  select(2,3,6) %>%
+  rename("code" = "Code",
+         "year" = "Year",
+         "DALYs_NCD" = 3) %>%
+  filter(year %in% (1990:2019)) %>%
+  filter(!is.na(DALYs_NCD))
+```
+
+#### 5.13 Life Satisfaction
 
 Reference - https://ourworldindata.org/grapher/happiness-cantril-ladder?time=latest
 
@@ -453,7 +490,7 @@ happiness <- happiness %>%
   na.omit()
 ```
 
-#### 5.12 Mental and Substance Use
+#### 5.14 Mental and Substance Use
 
 Reference - https://ourworldindata.org/grapher/suicide-rates-vs-prevalence-of-mental-and-substance-use-disorders?time=latest
 
@@ -624,7 +661,11 @@ suicidedata_analysis <- left_join(suicidedata_eda_formap %>%
   
   left_join(., unemployment, by = c('code' = 'code', 'year' = 'year')) %>%
   
+  left_join(., avh, by = c('code' = 'code', 'year' = 'year')) %>%
+  
   left_join(., healthcare, by = c('code' = 'code', 'year' = 'year')) %>%
+  
+  left_join(., chronic_illness, by = c('code' = 'code', 'year' = 'year')) %>%
   
   left_join(., happiness, by = c('code' = 'code', 'year' = 'year')) %>%
   
@@ -641,7 +682,7 @@ knitr::kable(head(suicidedata_analysis))
 ```
 
 ```{r}
-#write_csv(suicidedata_analysis,'C:/michaeldjo/SuicideSquad/EDA/data/suicidedata_analysis.csv')
+#write_csv(suicidedata_analysis,'C:/magdalenecjw/SuicideSquad/EDA/data/suicidedata_analysis.csv')
 ```
 
 Other References using typical world map - https://rpubs.com/Thom_JH/798825
