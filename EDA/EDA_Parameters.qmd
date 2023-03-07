@@ -8,7 +8,7 @@ execute:
 # Load Packages and Data Set
 
 ```{r}
-pacman::p_load(tidyverse, ExPanDaR, knitr)
+pacman::p_load(tidyverse, ExPanDaR, knitr, ggstatsplot)
 
 suicide_analysis <- read.csv('data/suicidedata_analysis.csv', header = T)
 ```
@@ -131,4 +131,76 @@ missing_val_graph_v2("Europe and Central Asia")
 
 ```{r}
 missing_val_graph_v2("East Asia and Pacific")
+```
+
+# Comparison between Factors
+
+```{r}
+suicide_analysis_factors <- suicide_analysis %>%
+  select(gdp_per_capita:mental_disorder)
+
+ggcorrmat(data = suicide_analysis_factors, ggcorrplot.args = list(lab_size = 2)) + 
+  theme(axis.text.x = element_text(size = 7, angle = 90, vjust = 0.5, hjust=1),
+        axis.text.y = element_text(size =7, vjust = 0.3)) 
+```
+
+```{r}
+correl_plot <- function(df, col_x, col_y){
+  ggscatterstats(data = df |> filter(!is.na({{col_x}})) 
+                 |> filter(!is.na({{col_y}})), 
+                 x = {{col_x}}, y = {{col_y}}, 
+                 type = "nonparametric") + 
+      theme(axis.text.x = element_text(size = 7, angle = 90, vjust = 1, hjust=1),
+            axis.text.y = element_text(size =7)) +
+      labs(title = paste0("Correlation between ", deparse(substitute(col_x)), 
+                      " and ", deparse(substitute(col_y))))
+}
+```
+
+```{r}
+correl_plot(suicide_analysis, gdp_per_capita, SR_AS_T)
+```
+
+```{r}
+correl_plot(suicide_analysis, hdi, SR_AS_T)
+```
+
+```{r}
+correl_plot(suicide_analysis, depr_rate, SR_AS_T)
+```
+
+```{r}
+correl_plot(suicide_analysis, gini, SR_AS_T)
+```
+
+```{r}
+correl_plot(suicide_analysis, violent_death_rate, SR_AS_T)
+```
+
+```{r}
+correl_plot(suicide_analysis, pop.extreme_poverty, SR_AS_T)
+```
+
+```{r}
+correl_plot(suicide_analysis, unemployment_rate, SR_AS_T)
+```
+
+```{r}
+correl_plot(suicide_analysis, avg_hrs_worked, SR_AS_T)
+```
+
+```{r}
+correl_plot(suicide_analysis, HAQ, SR_AS_T)
+```
+
+```{r}
+correl_plot(suicide_analysis, healthcare_spend, SR_AS_T)
+```
+
+```{r}
+correl_plot(suicide_analysis, DALYs_NCD, SR_AS_T)
+```
+
+```{r}
+correl_plot(suicide_analysis, happiness, SR_AS_T)
 ```
