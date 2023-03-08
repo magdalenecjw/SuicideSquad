@@ -46,107 +46,120 @@ prepare_missing_values_graph(df = suicide_analysis
 As there is a large amount of missing values between the years 1990 to 2005 for a few variables, we will filter the data down to only include values from 2005 onwards. We will also exclude the variable "Average hours worked" since there is a consistently high proportion of missing values.
 
 ```{r}
-prepare_missing_values_graph(df = suicide_analysis 
-                             |> filter(year %in% seq(2005,2020,1))
-                             |> select(region, year,
-                                       gdp_per_capita:mental_disorder)
-                             |> select(!avg_hrs_worked), 
-                               ts_id = "region")
+suicide_analysis_filtered <- suicide_analysis %>%
+  filter(year %in% seq(2005,2020,1)) %>%
+  select(!avg_hrs_worked) %>%
+  select(region, country, year, SR_AS_T, gdp_per_capita:mental_disorder)
+
+prepare_missing_values_graph(df = suicide_analysis_filtered, 
+                             ts_id = "region")
 ```
 
 This seems to bring down the proportion of missing values, but there remains areas and variables with a high number of missing values. Let's take a look at how the missing values are distributed within countries in each region.
 
 ```{r}
-missing_val_graph <- function(a){
-  prepare_missing_values_graph(df = suicide_analysis 
-                             |> filter(year %in% seq(2005,2020,1))
-                             |> filter(region == a)
-                             |> select(region, country, year,
-                                       gdp_per_capita:mental_disorder)
-                             |> select(!avg_hrs_worked), 
+missing_val_graph <- function(df, filter_col, filter_val){
+  prepare_missing_values_graph(df = df 
+                             |> filter({{filter_col}} == filter_val),
                                ts_id = "country")
 }
 ```
 
 ```{r}
-missing_val_graph("Sub-Saharan Africa")
+missing_val_graph(suicide_analysis_filtered, region, "Sub-Saharan Africa")
 ```
 
 ```{r}
-missing_val_graph("Middle East and North Africa")
+missing_val_graph(suicide_analysis_filtered, region, "Middle East and North Africa")
 ```
 
 ```{r}
-missing_val_graph("South Asia")
+missing_val_graph(suicide_analysis_filtered, region, "South Asia")
 ```
 
 ```{r}
-missing_val_graph("East Asia and Pacific")
+missing_val_graph(suicide_analysis_filtered, region, "East Asia and Pacific")
 ```
 
 ```{r}
-missing_val_graph("North America")
+missing_val_graph(suicide_analysis_filtered, region, "Europe and Central Asia")
 ```
 
 ```{r}
-missing_val_graph("Europe and Central Asia")
+missing_val_graph(suicide_analysis_filtered, region, "North America")
+```
+
+```{r}
+missing_val_graph(suicide_analysis_filtered, region, "Latin America and Caribbean")
 ```
 
 # Missing Values Graph v2 after exclusions
 
 ```{r}
-exclude_countries <- c('Afghanistan', 'Maldives', 'Bhutan', 'Bermuda', 
-                       'San Marino', 'Monaco', 'Greenland', 'Andorra',
-                       'Montenegro', 'Turkmenistan', 'Iceland', 'Luxembourg',
-                       'Serbia', 'Cyprus', 'Vanuatu', 'Tuvalu', 'Tokelau',
-                       'Solomon Islands', 'Papau New Guinea', 'Palau', 
-                       'Northern Mariana Islands', 'Samoa', 'North Korea', 
-                       'Niue', 'Nauru', 'Guam', 'Cook Islands', 'Timor-Leste',
-                       'American Samoa', 'Marshall Islands', 'Tonga', 'Taiwan',
-                       'Papua New Guinea', 'Micronesia', 'Kiribati', 'Fiji',
-                       'Brunei')
+exclude_countries <- c('South Sudan', 'Somalia', 'Seychelles', 'Eritrea', 
+                       'Equitorial Guinea', 'Yemen', 'Syria', 'Libya',
+                       'Vanuatu', 'Tuvalu', 'Tokelau', 'Taiwan', 'Palau',
+                       'Northern Mariana Islands', 'North Korea', 'Niue',
+                       'Nauru', 'Marshall Islands', 'Guam', 'Cook Islands',
+                       'American Samoa', 'San Marino', 'Monaco', 'Greenland',
+                       'Andorra', 'Bermuda', 'United States Virgin Islands', 
+                       'Saint Kitts and Nevis', 'Puerto Rico', 'Grenada', 
+                       'Dominica', 'Cuba', 'Bahamas', 'Antigua and Barbuda',
+                       'Zimbabwe')
 
-missing_val_graph_v2 <- function(a){
-  prepare_missing_values_graph(df = suicide_analysis 
-                             |> filter(year %in% seq(2005,2020,1))
-                             |> filter(!(country %in% exclude_countries))
-                             |> filter(region == a)
-                             |> select(region, country, year,                                         gdp_per_capita:mental_disorder)
-                             |> select(!avg_hrs_worked), 
+missing_val_graph_v2 <- function(df, filter_col, filter_val){
+  prepare_missing_values_graph(df = df 
+                               |> filter(!(country %in% exclude_countries))
+                               |> filter({{filter_col}} == filter_val),
                                ts_id = "country")
 }
 ```
 
+
 ```{r}
-missing_val_graph_v2("South Asia")
+missing_val_graph_v2(suicide_analysis_filtered, region, "Sub-Saharan Africa")
 ```
 
 ```{r}
-missing_val_graph_v2("North America")
+missing_val_graph_v2(suicide_analysis_filtered, region, "Middle East and North Africa")
 ```
 
 ```{r}
-missing_val_graph_v2("Europe and Central Asia")
+missing_val_graph_v2(suicide_analysis_filtered, region, "South Asia")
 ```
 
 ```{r}
-missing_val_graph_v2("East Asia and Pacific")
+missing_val_graph_v2(suicide_analysis_filtered, region, "East Asia and Pacific")
+```
+
+```{r}
+missing_val_graph_v2(suicide_analysis_filtered, region, "Europe and Central Asia")
+```
+
+```{r}
+missing_val_graph_v2(suicide_analysis_filtered, region, "North America")
+```
+
+```{r}
+missing_val_graph_v2(suicide_analysis_filtered, region, "Latin America and Caribbean")
 ```
 
 # Comparison between Factors
 
 ```{r}
-suicide_analysis_factors <- suicide_analysis %>%
+suicide_analysis_factors <- suicide_analysis_filtered %>%
   select(gdp_per_capita:mental_disorder)
 
-ggcorrmat(data = suicide_analysis_factors, ggcorrplot.args = list(lab_size = 2)) + 
+ggcorrmat(data = suicide_analysis_factors,
+          ggcorrplot.args = list(lab_size = 2)) + 
   theme(axis.text.x = element_text(size = 7, angle = 90, vjust = 0.5, hjust=1),
         axis.text.y = element_text(size =7, vjust = 0.3)) 
 ```
 
 ```{r}
 correl_plot <- function(df, col_x, col_y){
-  ggscatterstats(data = df |> filter(!is.na({{col_x}})) 
+  ggscatterstats(data = df
+                 |> filter(!is.na({{col_x}})) 
                  |> filter(!is.na({{col_y}})), 
                  x = {{col_x}}, y = {{col_y}}, 
                  type = "nonparametric") + 
@@ -158,49 +171,45 @@ correl_plot <- function(df, col_x, col_y){
 ```
 
 ```{r}
-correl_plot(suicide_analysis, gdp_per_capita, SR_AS_T)
+correl_plot(suicide_analysis_filtered, gdp_per_capita, SR_AS_T)
 ```
 
 ```{r}
-correl_plot(suicide_analysis, hdi, SR_AS_T)
+correl_plot(suicide_analysis_filtered, hdi, SR_AS_T)
 ```
 
 ```{r}
-correl_plot(suicide_analysis, depr_rate, SR_AS_T)
+correl_plot(suicide_analysis_filtered, depr_rate, SR_AS_T)
 ```
 
 ```{r}
-correl_plot(suicide_analysis, gini, SR_AS_T)
+correl_plot(suicide_analysis_filtered, gini, SR_AS_T)
 ```
 
 ```{r}
-correl_plot(suicide_analysis, violent_death_rate, SR_AS_T)
+correl_plot(suicide_analysis_filtered, violent_death_rate, SR_AS_T)
 ```
 
 ```{r}
-correl_plot(suicide_analysis, pop.extreme_poverty, SR_AS_T)
+correl_plot(suicide_analysis_filtered, pop.extreme_poverty, SR_AS_T)
 ```
 
 ```{r}
-correl_plot(suicide_analysis, unemployment_rate, SR_AS_T)
+correl_plot(suicide_analysis_filtered, unemployment_rate, SR_AS_T)
 ```
 
 ```{r}
-correl_plot(suicide_analysis, avg_hrs_worked, SR_AS_T)
+correl_plot(suicide_analysis_filtered, HAQ, SR_AS_T)
 ```
 
 ```{r}
-correl_plot(suicide_analysis, HAQ, SR_AS_T)
+correl_plot(suicide_analysis_filtered, healthcare_spend, SR_AS_T)
 ```
 
 ```{r}
-correl_plot(suicide_analysis, healthcare_spend, SR_AS_T)
+correl_plot(suicide_analysis_filtered, DALYs_NCD, SR_AS_T)
 ```
 
 ```{r}
-correl_plot(suicide_analysis, DALYs_NCD, SR_AS_T)
-```
-
-```{r}
-correl_plot(suicide_analysis, happiness, SR_AS_T)
+correl_plot(suicide_analysis_filtered, happiness, SR_AS_T)
 ```

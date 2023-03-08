@@ -229,7 +229,7 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
     <div>
     <div class="quarto-title-meta-heading">Modified</div>
     <div class="quarto-title-meta-contents">
-      <p class="date-modified">March 7, 2023</p>
+      <p class="date-modified">March 8, 2023</p>
     </div>
   </div>
     
@@ -2226,32 +2226,32 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <span id="cb46-33"><a href="#cb46-33" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb46-34"><a href="#cb46-34" aria-hidden="true" tabindex="-1"></a>  <span class="co">#infer gini data from previous years</span></span>
 <span id="cb46-35"><a href="#cb46-35" aria-hidden="true" tabindex="-1"></a>  <span class="fu">group_by</span>(code) <span class="sc">%&gt;%</span></span>
-<span id="cb46-36"><a href="#cb46-36" aria-hidden="true" tabindex="-1"></a>  <span class="fu">fill</span>(gini) <span class="sc">%&gt;%</span></span>
+<span id="cb46-36"><a href="#cb46-36" aria-hidden="true" tabindex="-1"></a>  <span class="fu">fill</span>(gini, <span class="at">.direction =</span> <span class="st">"down"</span>) <span class="sc">%&gt;%</span></span>
 <span id="cb46-37"><a href="#cb46-37" aria-hidden="true" tabindex="-1"></a>  <span class="fu">ungroup</span>() <span class="sc">%&gt;%</span></span>
 <span id="cb46-38"><a href="#cb46-38" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb46-39"><a href="#cb46-39" aria-hidden="true" tabindex="-1"></a>  <span class="co">#infer population of extreme poverty data from previous years</span></span>
 <span id="cb46-40"><a href="#cb46-40" aria-hidden="true" tabindex="-1"></a>  <span class="fu">group_by</span>(code) <span class="sc">%&gt;%</span></span>
-<span id="cb46-41"><a href="#cb46-41" aria-hidden="true" tabindex="-1"></a>  <span class="fu">fill</span>(<span class="st">`</span><span class="at">pop%extreme_poverty</span><span class="st">`</span>) <span class="sc">%&gt;%</span></span>
+<span id="cb46-41"><a href="#cb46-41" aria-hidden="true" tabindex="-1"></a>  <span class="fu">fill</span>(<span class="st">`</span><span class="at">pop%extreme_poverty</span><span class="st">`</span>, <span class="at">.direction =</span> <span class="st">"down"</span>) <span class="sc">%&gt;%</span></span>
 <span id="cb46-42"><a href="#cb46-42" aria-hidden="true" tabindex="-1"></a>  <span class="fu">ungroup</span>() <span class="sc">%&gt;%</span></span>
 <span id="cb46-43"><a href="#cb46-43" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb46-44"><a href="#cb46-44" aria-hidden="true" tabindex="-1"></a>  <span class="co">#infer average working hours from previous years</span></span>
 <span id="cb46-45"><a href="#cb46-45" aria-hidden="true" tabindex="-1"></a>  <span class="fu">group_by</span>(code) <span class="sc">%&gt;%</span></span>
-<span id="cb46-46"><a href="#cb46-46" aria-hidden="true" tabindex="-1"></a>  <span class="fu">fill</span>(avg_hrs_worked) <span class="sc">%&gt;%</span></span>
+<span id="cb46-46"><a href="#cb46-46" aria-hidden="true" tabindex="-1"></a>  <span class="fu">fill</span>(avg_hrs_worked, <span class="at">.direction =</span> <span class="st">"down"</span>) <span class="sc">%&gt;%</span></span>
 <span id="cb46-47"><a href="#cb46-47" aria-hidden="true" tabindex="-1"></a>  <span class="fu">ungroup</span>() <span class="sc">%&gt;%</span></span>
 <span id="cb46-48"><a href="#cb46-48" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb46-49"><a href="#cb46-49" aria-hidden="true" tabindex="-1"></a>  <span class="co">#infer happiness from previous years</span></span>
 <span id="cb46-50"><a href="#cb46-50" aria-hidden="true" tabindex="-1"></a>  <span class="fu">group_by</span>(code) <span class="sc">%&gt;%</span></span>
-<span id="cb46-51"><a href="#cb46-51" aria-hidden="true" tabindex="-1"></a>  <span class="fu">fill</span>(happiness) <span class="sc">%&gt;%</span></span>
+<span id="cb46-51"><a href="#cb46-51" aria-hidden="true" tabindex="-1"></a>  <span class="fu">fill</span>(happiness, <span class="at">.direction =</span> <span class="st">"down"</span>) <span class="sc">%&gt;%</span></span>
 <span id="cb46-52"><a href="#cb46-52" aria-hidden="true" tabindex="-1"></a>  <span class="fu">ungroup</span>() <span class="sc">%&gt;%</span></span>
 <span id="cb46-53"><a href="#cb46-53" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb46-54"><a href="#cb46-54" aria-hidden="true" tabindex="-1"></a>  <span class="co">#infer unemployment rate from previous years</span></span>
 <span id="cb46-55"><a href="#cb46-55" aria-hidden="true" tabindex="-1"></a>  <span class="fu">group_by</span>(code) <span class="sc">%&gt;%</span></span>
-<span id="cb46-56"><a href="#cb46-56" aria-hidden="true" tabindex="-1"></a>  <span class="fu">fill</span>(unemployment_rate) <span class="sc">%&gt;%</span></span>
+<span id="cb46-56"><a href="#cb46-56" aria-hidden="true" tabindex="-1"></a>  <span class="fu">fill</span>(unemployment_rate, <span class="at">.direction =</span> <span class="st">"down"</span>) <span class="sc">%&gt;%</span></span>
 <span id="cb46-57"><a href="#cb46-57" aria-hidden="true" tabindex="-1"></a>  <span class="fu">ungroup</span>() <span class="sc">%&gt;%</span></span>
 <span id="cb46-58"><a href="#cb46-58" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb46-59"><a href="#cb46-59" aria-hidden="true" tabindex="-1"></a>  <span class="co">#infer mental &amp; substance use disorder rate from previous years</span></span>
 <span id="cb46-60"><a href="#cb46-60" aria-hidden="true" tabindex="-1"></a>  <span class="fu">group_by</span>(code) <span class="sc">%&gt;%</span></span>
-<span id="cb46-61"><a href="#cb46-61" aria-hidden="true" tabindex="-1"></a>  <span class="fu">fill</span>(mental_disorder) <span class="sc">%&gt;%</span></span>
+<span id="cb46-61"><a href="#cb46-61" aria-hidden="true" tabindex="-1"></a>  <span class="fu">fill</span>(mental_disorder, <span class="at">.direction =</span> <span class="st">"down"</span>) <span class="sc">%&gt;%</span></span>
 <span id="cb46-62"><a href="#cb46-62" aria-hidden="true" tabindex="-1"></a>  <span class="fu">ungroup</span>()</span>
 <span id="cb46-63"><a href="#cb46-63" aria-hidden="true" tabindex="-1"></a>  </span>
 <span id="cb46-64"><a href="#cb46-64" aria-hidden="true" tabindex="-1"></a>  knitr<span class="sc">::</span><span class="fu">kable</span>(<span class="fu">head</span>(suicidedata_analysis))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>

@@ -678,32 +678,32 @@ suicidedata_analysis <- left_join(suicidedata_eda_formap %>%
 
   #infer gini data from previous years
   group_by(code) %>%
-  fill(gini) %>%
+  fill(gini, .direction = "down") %>%
   ungroup() %>%
 
   #infer population of extreme poverty data from previous years
   group_by(code) %>%
-  fill(`pop%extreme_poverty`) %>%
+  fill(`pop%extreme_poverty`, .direction = "down") %>%
   ungroup() %>%
 
   #infer average working hours from previous years
   group_by(code) %>%
-  fill(avg_hrs_worked) %>%
+  fill(avg_hrs_worked, .direction = "down") %>%
   ungroup() %>%
 
   #infer happiness from previous years
   group_by(code) %>%
-  fill(happiness) %>%
+  fill(happiness, .direction = "down") %>%
   ungroup() %>%
 
   #infer unemployment rate from previous years
   group_by(code) %>%
-  fill(unemployment_rate) %>%
+  fill(unemployment_rate, .direction = "down") %>%
   ungroup() %>%
 
   #infer mental & substance use disorder rate from previous years
   group_by(code) %>%
-  fill(mental_disorder) %>%
+  fill(mental_disorder, .direction = "down") %>%
   ungroup()
   
   knitr::kable(head(suicidedata_analysis))
