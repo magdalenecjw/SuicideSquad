@@ -46,19 +46,21 @@ suicidedata_pyramid <- suicidedata_eda %>%
 ###### Shiny UI ######
 #========================#
 ui <- navbarPage(
-  title = "Suicide Squad: Interactive Data Exploration and Analysis for Worldwide suicide Data",
+  title = "Suicide Squad: Interactive Exploration and Analysis for Worldwide Suicide Data",
   fluid = TRUE,
-  theme=shinytheme("flatly"),
+  theme=shinytheme("darkly"),
   id = "navbarID",
   tabPanel("Introduction"),
   navbarMenu("Exploratory Data Analysis",
              tabPanel("Fixed year",
                       sidebarLayout(
                         sidebarPanel(width = 3,
-                          numericInput(inputId = "analysis_year", 
-                                       label = "Year of Analysis (1990 - 2019)", 
-                                       value = 2015,
-                                       min = 1990, max = 2019, step = 1),
+                          sliderInput(inputId = "analysis_year", 
+                                      label = "Year of Analysis (1990 - 2019)",
+                                      min = 1990, max = 2019,
+                                      value = 2015,
+                                      sep = "",
+                                      animate = animationOptions(interval = 300, loop = TRUE)),
                           
                           radioButtons(inputId = "suicidemetrics", 
                                        label = "Choose Metrics:", 
@@ -68,14 +70,14 @@ ui <- navbarPage(
                                        selected = "SR"),
                           
                           selectInput(inputId = "Gender",
-                                      label = "Select Gender:",
+                                      label = "Map - Select Gender:",
                                       choices = c("Both" = "T",
                                                   "Male" = "M",
                                                   "Female" = "F"),
                                       selected = "T"),
                           
                           selectInput(inputId = "mapstyle",
-                                      label = "Map Tab - Select Classification Method:",
+                                      label = "Map - Select Classification Method:",
                                       choices = c("Jenks" = "jenks",
                                                   "Fisher" = "fisher",
                                                   "Kernel Density" = "dpih",
@@ -84,7 +86,7 @@ ui <- navbarPage(
                                       selected = "Jenks"),
                           
                           selectizeInput(inputId = "selectedcountry",
-                                         label = "Pyramid Tab - Select Country:",
+                                         label = "Pyramid - Select Country:",
                                          choices = unique(suicidedata_eda$country),
                                          selected = "China",
                                          multiple = FALSE)
@@ -92,8 +94,15 @@ ui <- navbarPage(
                         
                         mainPanel(
                           tabsetPanel(
-                            tabPanel("Map", tmapOutput("suicide_map")),
-                            tabPanel("Pyramid", plotlyOutput("pyramid"))
+                            tabPanel("World Map", 
+                                     fluidRow(
+                                       column(12, htmlOutput("suicide_map_title")),
+                                       column(12, tmapOutput("suicide_map", height = 700, width = 1100)))),
+                            tabPanel("Country Pyramid", 
+                                     fluidRow(
+                                       column(12, htmlOutput("pyramid_title")),
+                                       column(12, plotlyOutput("pyramid", height = 500, width = 750)))
+                                     )
                             )
                         )
                       )
@@ -107,14 +116,14 @@ ui <- navbarPage(
 #========================#
 server <- function(input, output) {
 
-##### Shiny Server: Plotting the map #####  
+##### Shiny Server: Metrics and Title ##### 
   
   age_metrics <- reactive({
     switch(input$suicidemetrics,
            "SR" = "AS",
            "SP" = "All",
            "SN" = "All")
-    })
+  })
   
   metric_text <- reactive({
     switch(input$suicidemetrics,
@@ -128,6 +137,12 @@ server <- function(input, output) {
            "T" = "Total",
            "M" = "Male",
            "F" = "Female")
+  })
+  
+  
+##### Shiny Server: Plotting the map #####  
+  output$suicide_map_title <- renderUI({
+    h3(paste0("World-wide ", metric_text(), " in ", input$analysis_year))
   })
   
   output$suicide_map <- renderTmap({
@@ -149,15 +164,17 @@ server <- function(input, output) {
   })
 
 ##### Shiny Server: Plotting the pyramid ##### 
+  output$pyramid_title <- renderUI({
+    h3(paste0(metric_text(),' by Gender and Age Group, ',input$selectedcountry, ", ",input$analysis_year ))
+  })
   
   suicidedata_pyramid_summary <- reactive({
     suicidedata_pyramid %>%
-    filter(year == input$analysis_year,
-           country == input$selectedcountry) %>%
-    summarise(max = max(abs(!!sym(input$suicidemetrics))))
+      filter(country == input$selectedcountry) %>%
+      summarise(max = max(abs(!!sym(input$suicidemetrics))))
   })
   
-  #computing summary statistics of mean, median and lower and upper whiskers in boxplot
+  #computing the limits for the axis
   max_limit <- reactive({suicidedata_pyramid_summary()$max})
   interval <- reactive({suicidedata_pyramid_summary()$max/2})
   tickvals <- reactive({seq(-max_limit(), max_limit(), interval())})
@@ -175,7 +192,7 @@ server <- function(input, output) {
                   text = paste(metric_text(), ":", abs(!!sym(input$suicidemetrics))))) +
         geom_col() +
         coord_flip() +
-        labs (x = metric_text(), title=paste0(metric_text(),' by Gender and Age Group, ',input$selectedcountry, ", ",input$analysis_year )) +
+        labs (x = metric_text()) +
         theme_bw() +
         theme(axis.ticks.y = element_blank(),
               axis.title.y = element_blank()) +
@@ -183,7 +200,8 @@ server <- function(input, output) {
       session="knitr", tooltip = c("x", "fill", "text")) %>%
       
       layout(xaxis = list(title = metric_text(),
-                          tickmode = 'array', 
+                          tickmode = 'array',
+                          range = list(-max_limit()*1.05, max_limit()*1.05),
                           tickvals = tickvals(),
                           ticktext = ticktext()))
   
