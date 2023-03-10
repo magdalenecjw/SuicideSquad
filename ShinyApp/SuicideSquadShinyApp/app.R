@@ -7,7 +7,7 @@
 #    http://shiny.rstudio.com/
 #
 
-pacman::p_load("shiny", "tmap", "ExPanDaR", "shinydashboard", "shinyWidgets", "shinythemes", "plotly", "scales", "tidyverse")
+pacman::p_load("shiny", "tmap", "ExPanDaR", "kableExtra", "shinydashboard", "shinyWidgets", "shinythemes", "plotly", "scales", "tidyverse")
 
 #==============================#
 ###### Data Manipulation ######
@@ -67,7 +67,7 @@ ui <- navbarPage(
                                                  min = 1990, max = 2019,
                                                  value = 2015,
                                                  sep = "",
-                                                 animate = animationOptions(interval = 300, loop = TRUE)),
+                                                 animate = animationOptions(interval = 2000, loop = TRUE)),
                                      
                                      radioButtons(inputId = "suicidemetrics", 
                                                   label = "Choose Metrics:", 
@@ -89,24 +89,24 @@ ui <- navbarPage(
                           tabsetPanel(
                             tabPanel("World Map", 
                                      fluidRow(column(12, htmlOutput("suicide_map_title"))),
-                                     fluidRow(column(8, tmapOutput("suicide_map")),
-                                              column(4, box(title = "Map Panel", status = "primary", solidHeader = TRUE,
+                                     fluidRow(column(7, tmapOutput("suicide_map")),
+                                              column(5, box(title = "Side Panel", status = "primary", solidHeader = TRUE,
                                                             selectInput(inputId = "mapstyle",
-                                                                        label = "Select Classification Method:",
+                                                                        label = "Select Map Classification Method:",
                                                                         choices = c("Jenks" = "jenks",
                                                                                     "Fisher" = "fisher",
                                                                                     "Kernel Density" = "dpih",
                                                                                     "Headtails" = "headtails",
                                                                                     "Log10" = "log10_pretty"),
-                                                                        selected = "Jenks")))
-                                     ),
-                                     br(),
-                                     fluidRow(column(7, plotlyOutput("world_histo")),
-                                              column(5, box(title = "Histogram Panel", status = "primary", solidHeader = TRUE,
+                                                                        selected = "Jenks"),
                                                             sliderInput(inputId = "hist_bins", 
                                                                         label = "Number of bins:",
                                                                         min = 10, max = 50,
                                                                         value = 25)))
+                                     ),
+                                     br(),
+                                     fluidRow(column(7, plotlyOutput("world_histo")),
+                                              column(5, tableOutput("eda_stats_kable"))
                                               )
                             ),
                             tabPanel("Country Pyramid", 
@@ -122,9 +122,12 @@ ui <- navbarPage(
                                      
                                      br(),
                                      
-                                     fluidRow(column(8, valueBox(uiOutput("population"), 
+                                     fluidRow(column(12, valueBox(uiOutput("population"), 
                                                                   "Population", 
-                                                                  color = "navy"))
+                                                                  color = "navy")),
+                                              column(12, valueBox(uiOutput("suicide_number"), 
+                                                                  "Number of Suicide Cases", 
+                                                                  color = "red"))
                                               )
                                      )
                             )
@@ -216,6 +219,24 @@ server <- function(input, output) {
         )
   })
 
+##### Shiny Server: Prepare descriptive table ##### 
+  suicide_kable <- reactive({
+    suicidedata_eda %>%
+      filter(year == input$analysis_year,
+             sex_name == gender_text(),
+             age_name == age_metrics_eda()) %>%
+      select(!!sym(input$suicidemetrics))
+  })
+  
+  output$eda_stats_kable <- function() {
+    req(input$analysis_year, input$suicidemetrics)
+    descr <- prepare_descriptive_table(suicide_kable()) 
+      
+      kable(descr$df, digits = c(0, 1, 1, 1, 1, 1, 1, 1), row.names = FALSE) %>%
+        kable_styling("striped", full_width = F, position = "center")
+  }
+  
+  
 ##### Shiny Server: Plotting the pyramid ##### 
   output$pyramid_title <- renderUI({
     h3(paste0(metric_text(),' by Gender and Age Group, ',input$selectedcountry, ", ",input$analysis_year ))
@@ -234,6 +255,8 @@ server <- function(input, output) {
   })
   
   pops <- reactive({sum(suicidedata_pyramid_filter()$POP)})
+  
+  sn <- reactive({sum(abs(suicidedata_pyramid_filter()$SN))})
   
   #computing the limits for the axis
   max_limit <- reactive({suicidedata_pyramid_summary()$max})
@@ -255,10 +278,11 @@ server <- function(input, output) {
         theme_bw() +
         theme(axis.ticks.y = element_blank(),
               axis.title.y = element_blank()) +
-        scale_fill_manual(values = c("Male" = "lightblue", "Female" = "lightpink")),
+        scale_fill_manual(values = c("Male" = "steelblue", "Female" = "#f6546a")),
       session="knitr", tooltip = c("x", "fill", "text")) %>%
       
-      layout(showlegend = FALSE,
+      layout(plot_bgcolor='#D0CFD4',
+             showlegend = FALSE,
              xaxis = list(title = metric_text(),
                           tickmode = 'array',
                           range = list(-max_limit()*1.05, max_limit()*1.05),
@@ -266,9 +290,14 @@ server <- function(input, output) {
                           ticktext = ticktext()))
   
   })
-  
+
+##### Shiny Server: Valuebox #####   
   output$population <- renderUI({
     tagList(tags$p(paste0(comma(round(pops(),0))), style = "font-size: 50%;"))
+  })
+  
+  output$suicide_number <- renderUI({
+    tagList(tags$p(paste0(comma(round(sn(),0))), style = "font-size: 50%;"))
   })
     
 }
