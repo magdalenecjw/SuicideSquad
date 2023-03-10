@@ -99,12 +99,20 @@ ui <- navbarPage(
                                                                                     "Headtails" = "headtails",
                                                                                     "Log10" = "log10_pretty"),
                                                                         selected = "Jenks")))
-                                     )
+                                     ),
+                                     br(),
+                                     fluidRow(column(7, plotlyOutput("world_histo")),
+                                              column(5, box(title = "Histogram Panel", status = "primary", solidHeader = TRUE,
+                                                            sliderInput(inputId = "hist_bins", 
+                                                                        label = "Number of bins:",
+                                                                        min = 10, max = 50,
+                                                                        value = 25)))
+                                              )
                             ),
                             tabPanel("Country Pyramid", 
                                      fluidRow(column(12, htmlOutput("pyramid_title"))),
-                                     fluidRow(column(8, plotlyOutput("pyramid")),
-                                              column(4, box(title = "Pyramid Panel", status = "primary", solidHeader = TRUE,
+                                     fluidRow(column(7, plotlyOutput("pyramid")),
+                                              column(5, box(title = "Pyramid Panel", status = "primary", solidHeader = TRUE,
                                                             selectizeInput(inputId = "selectedcountry",
                                                                     label = "Select Country:",
                                                                     choices = unique(suicidedata_eda$country),
@@ -114,7 +122,7 @@ ui <- navbarPage(
                                      
                                      br(),
                                      
-                                     fluidRow(column(12, valueBox(uiOutput("population"), 
+                                     fluidRow(column(8, valueBox(uiOutput("population"), 
                                                                   "Population", 
                                                                   color = "navy"))
                                               )
@@ -142,6 +150,13 @@ server <- function(input, output) {
            "SN" = "All")
   })
   
+  age_metrics_eda <- reactive({
+    switch(input$suicidemetrics,
+           "SR" = "Age-standardized",
+           "SP" = "All ages",
+           "SN" = "All ages")
+  })
+  
   metric_text <- reactive({
     switch(input$suicidemetrics,
            "SR" = "Suicide rate",
@@ -151,7 +166,7 @@ server <- function(input, output) {
   
   gender_text <- reactive({
     switch(input$Gender,
-           "T" = "Total",
+           "T" = "Both",
            "M" = "Male",
            "F" = "Female")
   })
@@ -159,7 +174,7 @@ server <- function(input, output) {
   
 ##### Shiny Server: Plotting the map #####  
   output$suicide_map_title <- renderUI({
-    h3(paste0("World-wide ", metric_text(), " in ", input$analysis_year))
+    h3(paste0("World-wide ", metric_text(), ", ",gender_text(),", ", input$analysis_year))
   })
   
   output$suicide_map <- renderTmap({
@@ -178,6 +193,27 @@ server <- function(input, output) {
       tm_borders(col = "grey20",
                  alpha = 0.5) 
     
+  })
+
+##### Shiny Server: Plotting the histogram #####  
+  suicidedata_hist <- reactive({
+    suicidedata_eda %>% 
+      filter(year == input$analysis_year,
+             sex_name == gender_text(),
+             age_name == age_metrics_eda())
+  })
+  
+  output$world_histo <- renderPlotly({
+    ggplotly(
+      ggplot(data = suicidedata_hist(), 
+             aes(x = !!sym(input$suicidemetrics))) + 
+        geom_histogram(color="black", fill="azure4", bins = input$hist_bins) 
+      ) %>%
+      
+      layout(plot_bgcolor='#D0CFD4',
+        xaxis = list(title = metric_text()),
+        yaxis = list(title = "Count")
+        )
   })
 
 ##### Shiny Server: Plotting the pyramid ##### 
