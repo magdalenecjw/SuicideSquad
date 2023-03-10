@@ -88,20 +88,17 @@ ui <- navbarPage(
                         mainPanel(
                           tabsetPanel(
                             tabPanel("World Map", 
-                                     fluidRow(
-                                       column(12, htmlOutput("suicide_map_title")),
-                                       column(8, tmapOutput("suicide_map")),
-                                       column(4, box(title = "Map Panel", status = "primary", solidHeader = TRUE,
-                                         selectInput(inputId = "mapstyle",
-                                                                 label = "Select Classification Method:",
-                                                                 choices = c("Jenks" = "jenks",
-                                                                             "Fisher" = "fisher",
-                                                                             "Kernel Density" = "dpih",
-                                                                             "Headtails" = "headtails",
-                                                                             "Log10" = "log10_pretty"),
-                                                                 selected = "Jenks")
-                                                     )
-                                       )
+                                     fluidRow(column(12, htmlOutput("suicide_map_title"))),
+                                     fluidRow(column(8, tmapOutput("suicide_map")),
+                                              column(4, box(title = "Map Panel", status = "primary", solidHeader = TRUE,
+                                                            selectInput(inputId = "mapstyle",
+                                                                        label = "Select Classification Method:",
+                                                                        choices = c("Jenks" = "jenks",
+                                                                                    "Fisher" = "fisher",
+                                                                                    "Kernel Density" = "dpih",
+                                                                                    "Headtails" = "headtails",
+                                                                                    "Log10" = "log10_pretty"),
+                                                                        selected = "Jenks")))
                                      )
                             ),
                             tabPanel("Country Pyramid", 
@@ -112,13 +109,15 @@ ui <- navbarPage(
                                                                     label = "Select Country:",
                                                                     choices = unique(suicidedata_eda$country),
                                                                     selected = "China",
-                                                                    multiple = FALSE)))),
+                                                                    multiple = FALSE)))
+                                              ),
+                                     
                                      br(),
-                                     fluidRow(column(12, valueBox(
-                                       uiOutput("population"), "Population", 
-                                       color = "navy")
-                                       )
-                                       )
+                                     
+                                     fluidRow(column(12, valueBox(uiOutput("population"), 
+                                                                  "Population", 
+                                                                  color = "navy"))
+                                              )
                                      )
                             )
                           )
