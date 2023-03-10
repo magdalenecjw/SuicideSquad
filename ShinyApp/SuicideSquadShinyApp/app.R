@@ -7,7 +7,7 @@
 #    http://shiny.rstudio.com/
 #
 
-pacman::p_load("shiny", "tmap", "ExPanDaR", "shinydashboard", "shinythemes", "plotly", "tidyverse")
+pacman::p_load("shiny", "tmap", "ExPanDaR", "shinydashboard", "shinyWidgets", "shinythemes", "plotly", "scales", "tidyverse")
 
 #==============================#
 ###### Data Manipulation ######
@@ -45,51 +45,44 @@ suicidedata_pyramid <- suicidedata_eda %>%
 #========================#
 ###### Shiny UI ######
 #========================#
+
 ui <- navbarPage(
   title = "Suicide Squad: Interactive Exploration and Analysis for Worldwide Suicide Data",
+  
+  # use this in non shinydashboard app
+  setBackgroundColor(color = "ghostwhite"),
+  useShinydashboard(),
+  # -----------------
+  
   fluid = TRUE,
-  theme=shinytheme("darkly"),
+  theme=shinytheme("flatly"),
   id = "navbarID",
   tabPanel("Introduction"),
   navbarMenu("Exploratory Data Analysis",
              tabPanel("Fixed year",
                       sidebarLayout(
                         sidebarPanel(width = 3,
-                          sliderInput(inputId = "analysis_year", 
-                                      label = "Year of Analysis (1990 - 2019)",
-                                      min = 1990, max = 2019,
-                                      value = 2015,
-                                      sep = "",
-                                      animate = animationOptions(interval = 300, loop = TRUE)),
-                          
-                          radioButtons(inputId = "suicidemetrics", 
-                                       label = "Choose Metrics:", 
-                                       choices = c("Suicide rate" = "SR",
-                                                   "Share of deaths from suicide (%)" = "SP",
-                                                   "Number of suicide" = "SN"),
-                                       selected = "SR"),
-                          
-                          selectInput(inputId = "Gender",
-                                      label = "Map - Select Gender:",
-                                      choices = c("Both" = "T",
-                                                  "Male" = "M",
-                                                  "Female" = "F"),
-                                      selected = "T"),
-                          
-                          selectInput(inputId = "mapstyle",
-                                      label = "Map - Select Classification Method:",
-                                      choices = c("Jenks" = "jenks",
-                                                  "Fisher" = "fisher",
-                                                  "Kernel Density" = "dpih",
-                                                  "Headtails" = "headtails",
-                                                  "Log10" = "log10_pretty"),
-                                      selected = "Jenks"),
-                          
-                          selectizeInput(inputId = "selectedcountry",
-                                         label = "Pyramid - Select Country:",
-                                         choices = unique(suicidedata_eda$country),
-                                         selected = "China",
-                                         multiple = FALSE)
+                                     sliderInput(inputId = "analysis_year", 
+                                                 label = "Year of Analysis (1990 - 2019)",
+                                                 min = 1990, max = 2019,
+                                                 value = 2015,
+                                                 sep = "",
+                                                 animate = animationOptions(interval = 300, loop = TRUE)),
+                                     
+                                     radioButtons(inputId = "suicidemetrics", 
+                                                  label = "Choose Metrics:", 
+                                                  choices = c("Suicide rate" = "SR",
+                                                              "Share of deaths from suicide (%)" = "SP",
+                                                              "Number of suicide" = "SN"),
+                                                  selected = "SR"),
+                                     
+                                     selectInput(inputId = "Gender",
+                                                 label = "Select Gender:",
+                                                 choices = c("Both" = "T",
+                                                             "Male" = "M",
+                                                             "Female" = "F"),
+                                                 selected = "T")
+          
                         ),
                         
                         mainPanel(
@@ -97,18 +90,43 @@ ui <- navbarPage(
                             tabPanel("World Map", 
                                      fluidRow(
                                        column(12, htmlOutput("suicide_map_title")),
-                                       column(12, tmapOutput("suicide_map", height = 700, width = 1100)))),
+                                       column(8, tmapOutput("suicide_map")),
+                                       column(4, box(title = "Map Panel", status = "primary", solidHeader = TRUE,
+                                         selectInput(inputId = "mapstyle",
+                                                                 label = "Select Classification Method:",
+                                                                 choices = c("Jenks" = "jenks",
+                                                                             "Fisher" = "fisher",
+                                                                             "Kernel Density" = "dpih",
+                                                                             "Headtails" = "headtails",
+                                                                             "Log10" = "log10_pretty"),
+                                                                 selected = "Jenks")
+                                                     )
+                                       )
+                                     )
+                            ),
                             tabPanel("Country Pyramid", 
-                                     fluidRow(
-                                       column(12, htmlOutput("pyramid_title")),
-                                       column(12, plotlyOutput("pyramid", height = 500, width = 750)))
+                                     fluidRow(column(12, htmlOutput("pyramid_title"))),
+                                     fluidRow(column(8, plotlyOutput("pyramid")),
+                                              column(4, box(title = "Pyramid Panel", status = "primary", solidHeader = TRUE,
+                                                            selectizeInput(inputId = "selectedcountry",
+                                                                    label = "Select Country:",
+                                                                    choices = unique(suicidedata_eda$country),
+                                                                    selected = "China",
+                                                                    multiple = FALSE)))),
+                                     br(),
+                                     fluidRow(column(12, valueBox(
+                                       uiOutput("population"), "Population", 
+                                       color = "navy")
+                                       )
+                                       )
                                      )
                             )
+                          )
                         )
                       )
              )
   )
-)
+
 
 
 #========================#
@@ -168,11 +186,19 @@ server <- function(input, output) {
     h3(paste0(metric_text(),' by Gender and Age Group, ',input$selectedcountry, ", ",input$analysis_year ))
   })
   
+  suicidedata_pyramid_filter <- reactive({
+    suicidedata_pyramid %>%
+    filter(year == input$analysis_year,
+           country == input$selectedcountry)
+  })
+  
   suicidedata_pyramid_summary <- reactive({
     suicidedata_pyramid %>%
       filter(country == input$selectedcountry) %>%
       summarise(max = max(abs(!!sym(input$suicidemetrics))))
   })
+  
+  pops <- reactive({sum(suicidedata_pyramid_filter()$POP)})
   
   #computing the limits for the axis
   max_limit <- reactive({suicidedata_pyramid_summary()$max})
@@ -183,9 +209,7 @@ server <- function(input, output) {
   output$pyramid <- renderPlotly({
     
     ggplotly(
-      ggplot(data = suicidedata_pyramid %>%
-               filter(year == input$analysis_year,
-                      country == input$selectedcountry),
+      ggplot(data = suicidedata_pyramid_filter(),
               aes(x = Age,
                   y = !!sym(input$suicidemetrics), 
                   fill = Gender,
@@ -199,12 +223,17 @@ server <- function(input, output) {
         scale_fill_manual(values = c("Male" = "lightblue", "Female" = "lightpink")),
       session="knitr", tooltip = c("x", "fill", "text")) %>%
       
-      layout(xaxis = list(title = metric_text(),
+      layout(showlegend = FALSE,
+             xaxis = list(title = metric_text(),
                           tickmode = 'array',
                           range = list(-max_limit()*1.05, max_limit()*1.05),
                           tickvals = tickvals(),
                           ticktext = ticktext()))
   
+  })
+  
+  output$population <- renderUI({
+    tagList(tags$p(paste0(comma(round(pops(),0))), style = "font-size: 50%;"))
   })
     
 }
