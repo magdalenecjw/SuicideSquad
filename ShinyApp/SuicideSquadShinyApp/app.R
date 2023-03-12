@@ -113,11 +113,12 @@ ui <- navbarPage(
                                      fluidRow(column(12, htmlOutput("pyramid_title"))),
                                      fluidRow(column(7, plotlyOutput("pyramid")),
                                               column(5, box(title = "Pyramid Panel", status = "primary", solidHeader = TRUE,
-                                                            selectizeInput(inputId = "selectedcountry",
+                                                            pickerInput(inputId = "selectedcountry",
                                                                     label = "Select Country:",
                                                                     choices = unique(suicidedata_eda$country),
-                                                                    selected = "China",
-                                                                    multiple = FALSE)))
+                                                                    selected = "China", 
+                                                                    options = list(`actions-box` = TRUE),
+                                                                    multiple = TRUE)))
                                               ),
                                      
                                      br(),
